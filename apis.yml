@@ -1,0 +1,62 @@
+aid: nimble
+name: Nimble
+description: >-
+  Nimble is a relationship-focused CRM that unifies contacts, communications,
+  social profiles, calendar, and email into a single workspace for small
+  businesses and sales teams. The platform enriches contact records with
+  social and business data, supports pipeline management, group messaging,
+  and workflow automation across Microsoft 365 and Google Workspace. Nimble's
+  REST API exposes contacts, deals, activities, and tasks via Bearer token
+  authentication for building integrations and syncing CRM data.
+type: Index
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+tags:
+  - CRM
+  - Sales
+  - Contact Management
+  - Relationship Management
+  - Marketing Automation
+  - Pipeline Management
+url: >-
+  https://raw.githubusercontent.com/api-evangelist/nimble/refs/heads/main/apis.yml
+created: '2026-05-11'
+modified: '2026-05-11'
+specificationVersion: '0.19'
+apis:
+  - aid: nimble:rest-api
+    name: Nimble REST API
+    description: >-
+      REST API for managing contacts, companies, deals, activities, tasks,
+      and notes in Nimble CRM. Authentication uses an API key passed as a
+      Bearer token in the Authorization header.
+    humanURL: https://www.nimble.com/developers/docs/
+    baseURL: https://api.nimble.com/api/v1
+    tags:
+      - CRM
+      - Contacts
+      - Deals
+      - Activities
+      - Tasks
+    properties:
+      - type: Documentation
+        url: https://www.nimble.com/developers/docs/
+      - type: Developer Portal
+        url: https://www.nimble.com/developers/
+      - type: Authentication
+        url: https://nimble.readthedocs.io/en/latest/authentication.html
+common:
+  - type: Website
+    url: https://www.nimble.com
+  - type: Documentation
+    url: https://www.nimble.com/developers/docs/
+  - type: Pricing
+    url: https://www.nimble.com/pricing/
+  - type: Sign Up
+    url: https://app.nimble.com/signup
+  - type: Support
+    url: https://support.nimble.com
+  - type: Developer Portal
+    url: https://www.nimble.com/developers/
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
