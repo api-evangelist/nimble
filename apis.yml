@@ -45,6 +45,8 @@ apis:
       - type: Authentication
         url: https://nimble.readthedocs.io/en/latest/authentication.html
 common:
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/nimblecrm
   - type: Website
     url: https://www.nimble.com
   - type: Documentation
