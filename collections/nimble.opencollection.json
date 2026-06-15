@@ -1,0 +1,523 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Nimble CRM API",
+    "version": "v1"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "authorization_code",
+      "authorizationUrl": "https://app.nimble.com/oauth/authorize",
+      "accessTokenUrl": "https://app.nimble.com/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Users",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve information about the authenticated user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.nimble.com/api/v1/myself"
+          },
+          "docs": "Retrieve information about the authenticated user"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Contacts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List contacts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.nimble.com/api/v1/contacts",
+            "params": [
+              {
+                "name": "query",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "per_page",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "List contacts"
+        },
+        {
+          "info": {
+            "name": "Delete multiple contacts by query",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://app.nimble.com/api/v1/contacts"
+          },
+          "docs": "Delete multiple contacts by query"
+        },
+        {
+          "info": {
+            "name": "List contact IDs only",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.nimble.com/api/v1/contacts/ids"
+          },
+          "docs": "List contact IDs only"
+        },
+        {
+          "info": {
+            "name": "Retrieve specific contacts by IDs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.nimble.com/api/v1/contact",
+            "params": [
+              {
+                "name": "ids",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Retrieve specific contacts by IDs"
+        },
+        {
+          "info": {
+            "name": "Create a new contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.nimble.com/api/v1/contact"
+          },
+          "docs": "Create a new contact"
+        },
+        {
+          "info": {
+            "name": "Get an individual contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.nimble.com/api/v1/contact/:contact_id",
+            "params": [
+              {
+                "name": "contact_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get an individual contact"
+        },
+        {
+          "info": {
+            "name": "Update a contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://app.nimble.com/api/v1/contact/:contact_id",
+            "params": [
+              {
+                "name": "contact_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Update a contact"
+        },
+        {
+          "info": {
+            "name": "Delete a contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://app.nimble.com/api/v1/contact/:contact_id",
+            "params": [
+              {
+                "name": "contact_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete a contact"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Notes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a contact note",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.nimble.com/api/v1/contact/:contact_id/note",
+            "params": [
+              {
+                "name": "contact_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Create a contact note"
+        },
+        {
+          "info": {
+            "name": "List contact notes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.nimble.com/api/v1/contact/:contact_id/notes",
+            "params": [
+              {
+                "name": "contact_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "List contact notes"
+        },
+        {
+          "info": {
+            "name": "Get a specific contact note",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.nimble.com/api/v1/contact/:contact_id/note/:note_id",
+            "params": [
+              {
+                "name": "contact_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "note_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get a specific contact note"
+        },
+        {
+          "info": {
+            "name": "Update a contact note",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://app.nimble.com/api/v1/contact/:contact_id/note/:note_id",
+            "params": [
+              {
+                "name": "contact_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "note_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Update a contact note"
+        },
+        {
+          "info": {
+            "name": "Delete a contact note",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://app.nimble.com/api/v1/contact/:contact_id/note/:note_id",
+            "params": [
+              {
+                "name": "contact_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "note_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete a contact note"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Fields",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List contact field metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.nimble.com/api/v1/contact/fields/metadata"
+          },
+          "docs": "List contact field metadata"
+        },
+        {
+          "info": {
+            "name": "Create a custom contact field",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.nimble.com/api/v1/contact/field"
+          },
+          "docs": "Create a custom contact field"
+        },
+        {
+          "info": {
+            "name": "Update a contact field",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://app.nimble.com/api/v1/contact/field/:field_id",
+            "params": [
+              {
+                "name": "field_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Update a contact field"
+        },
+        {
+          "info": {
+            "name": "Delete a contact field",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://app.nimble.com/api/v1/contact/field/:field_id",
+            "params": [
+              {
+                "name": "field_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete a contact field"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Deals",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List deals",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.nimble.com/api/v1/deals"
+          },
+          "docs": "List deals"
+        },
+        {
+          "info": {
+            "name": "Create a deal",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.nimble.com/api/v1/deal"
+          },
+          "docs": "Create a deal"
+        },
+        {
+          "info": {
+            "name": "Get a deal",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.nimble.com/api/v1/deal/:deal_id",
+            "params": [
+              {
+                "name": "deal_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get a deal"
+        },
+        {
+          "info": {
+            "name": "Update a deal",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://app.nimble.com/api/v1/deal/:deal_id",
+            "params": [
+              {
+                "name": "deal_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Update a deal"
+        },
+        {
+          "info": {
+            "name": "Delete a deal",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://app.nimble.com/api/v1/deal/:deal_id",
+            "params": [
+              {
+                "name": "deal_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete a deal"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Pipelines",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List deal pipelines",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.nimble.com/api/v1/pipelines"
+          },
+          "docs": "List deal pipelines"
+        },
+        {
+          "info": {
+            "name": "Create a pipeline",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.nimble.com/api/v1/pipeline"
+          },
+          "docs": "Create a pipeline"
+        },
+        {
+          "info": {
+            "name": "Update a pipeline",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://app.nimble.com/api/v1/pipeline/:pipeline_id",
+            "params": [
+              {
+                "name": "pipeline_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Update a pipeline"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Messages",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List draft messages",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.nimble.com/api/v1/messages/drafts"
+          },
+          "docs": "List draft messages"
+        },
+        {
+          "info": {
+            "name": "Create a draft message",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.nimble.com/api/v1/message/draft"
+          },
+          "docs": "Create a draft message"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
