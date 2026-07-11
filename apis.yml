@@ -62,3 +62,9 @@ common:
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
+
+common:
+  - type: OAuthScopes
+    url: scopes/nimble-scopes.yml
+  - url: https://www.nimble.com/blog/feed/
+    type: Blog

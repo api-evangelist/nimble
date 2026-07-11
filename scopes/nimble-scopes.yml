@@ -1,0 +1,28 @@
+generated: '2026-07-11'
+method: searched
+source: openapi/nimble-openapi.yml
+docs: https://www.nimble.com/developers/docs/#tag/Authentication
+schemes:
+- name: bearerAuth
+  source: openapi/nimble-openapi.yml
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://app.nimble.com/oauth/authorize
+    tokenUrl: https://app.nimble.com/oauth/token
+  description: |-
+    OAuth 2.0 bearer token. Provide the token via either the
+    `Authorization: Bearer <token>` header or the
+    `access_token=<token>` query parameter.
+scopes:
+- scope: basic
+  description: Access to user and company info.
+  sources:
+  - https://www.nimble.com/developers/docs/#tag/Authentication
+- scope: contacts
+  description: Access to contacts.
+  sources:
+  - https://www.nimble.com/developers/docs/#tag/Authentication
+- scope: deals
+  description: Access to deals.
+  sources:
+  - https://www.nimble.com/developers/docs/#tag/Authentication
