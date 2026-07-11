@@ -1,0 +1,22 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/nimble-openapi.yml
+summary:
+  types:
+  - oauth2
+  oauth2_flows:
+  - authorizationCode
+schemes:
+- name: bearerAuth
+  type: oauth2
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://app.nimble.com/oauth/authorize
+    tokenUrl: https://app.nimble.com/oauth/token
+    scopes: 0
+  description: |-
+    OAuth 2.0 bearer token. Provide the token via either the
+    `Authorization: Bearer <token>` header or the
+    `access_token=<token>` query parameter.
+  sources:
+  - openapi/nimble-openapi.yml

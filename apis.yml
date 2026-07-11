@@ -64,6 +64,10 @@ maintainers:
     email: kin@apievangelist.com
 
 common:
+  - type: DomainSecurity
+    url: security/nimble-domain-security.yml
+  - type: Authentication
+    url: authentication/nimble-authentication.yml
   - type: OAuthScopes
     url: scopes/nimble-scopes.yml
   - url: https://www.nimble.com/blog/feed/
