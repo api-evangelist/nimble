@@ -64,6 +64,8 @@ maintainers:
     email: kin@apievangelist.com
 
 common:
+  - type: AgenticAccess
+    url: agentic-access/nimble-agentic-access.yml
   - type: DomainSecurity
     url: security/nimble-domain-security.yml
   - type: Authentication
