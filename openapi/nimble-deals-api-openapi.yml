@@ -1,0 +1,100 @@
+openapi: 3.1.0
+info:
+  title: Nimble CRM Contacts Deals API
+  description: 'The Nimble REST API lets developers manage contacts, deals,
+
+    pipelines, notes, custom fields, and messages within a Nimble
+
+    account. Requests are authenticated with an OAuth 2.0 bearer
+
+    token, either via the Authorization header or an access_token
+
+    query parameter.
+
+    '
+  version: v1
+servers:
+- url: https://app.nimble.com/api/v1
+  description: Nimble production API base
+security:
+- bearerAuth: []
+tags:
+- name: Deals
+paths:
+  /deals:
+    get:
+      summary: List deals
+      operationId: listDeals
+      tags:
+      - Deals
+      responses:
+        '200':
+          description: Deals collection
+  /deal:
+    post:
+      summary: Create a deal
+      operationId: createDeal
+      tags:
+      - Deals
+      responses:
+        '201':
+          description: Deal created
+  /deal/{deal_id}:
+    get:
+      summary: Get a deal
+      operationId: getDeal
+      tags:
+      - Deals
+      parameters:
+      - in: path
+        name: deal_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Deal details
+    put:
+      summary: Update a deal
+      operationId: updateDeal
+      tags:
+      - Deals
+      parameters:
+      - in: path
+        name: deal_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Deal updated
+    delete:
+      summary: Delete a deal
+      operationId: deleteDeal
+      tags:
+      - Deals
+      parameters:
+      - in: path
+        name: deal_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Deal deleted
+components:
+  securitySchemes:
+    bearerAuth:
+      type: oauth2
+      description: 'OAuth 2.0 bearer token. Provide the token via either the
+
+        `Authorization: Bearer <token>` header or the
+
+        `access_token=<token>` query parameter.
+
+        '
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.nimble.com/oauth/authorize
+          tokenUrl: https://app.nimble.com/oauth/token
+          scopes: {}

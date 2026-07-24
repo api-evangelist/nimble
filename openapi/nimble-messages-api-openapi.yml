@@ -1,0 +1,57 @@
+openapi: 3.1.0
+info:
+  title: Nimble CRM Contacts Messages API
+  description: 'The Nimble REST API lets developers manage contacts, deals,
+
+    pipelines, notes, custom fields, and messages within a Nimble
+
+    account. Requests are authenticated with an OAuth 2.0 bearer
+
+    token, either via the Authorization header or an access_token
+
+    query parameter.
+
+    '
+  version: v1
+servers:
+- url: https://app.nimble.com/api/v1
+  description: Nimble production API base
+security:
+- bearerAuth: []
+tags:
+- name: Messages
+paths:
+  /messages/drafts:
+    get:
+      summary: List draft messages
+      operationId: listMessageDrafts
+      tags:
+      - Messages
+      responses:
+        '200':
+          description: Drafts collection
+  /message/draft:
+    post:
+      summary: Create a draft message
+      operationId: createMessageDraft
+      tags:
+      - Messages
+      responses:
+        '201':
+          description: Draft created
+components:
+  securitySchemes:
+    bearerAuth:
+      type: oauth2
+      description: 'OAuth 2.0 bearer token. Provide the token via either the
+
+        `Authorization: Bearer <token>` header or the
+
+        `access_token=<token>` query parameter.
+
+        '
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.nimble.com/oauth/authorize
+          tokenUrl: https://app.nimble.com/oauth/token
+          scopes: {}
