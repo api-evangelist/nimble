@@ -9,7 +9,19 @@ description: >-
   REST API exposes contacts, deals, activities, and tasks via Bearer token
   authentication for building integrations and syncing CRM data.
 type: Index
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: unknown
+  onboarding: approval
+  trial: false
+  try_now: false
+  public: false
+  label: Requires approval
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/nimble.png
 tags:
   - CRM
   - Sales
@@ -23,27 +35,96 @@ created: '2026-05-11'
 modified: '2026-05-11'
 specificationVersion: '0.19'
 apis:
-  - aid: nimble:rest-api
-    name: Nimble REST API
-    description: >-
-      REST API for managing contacts, companies, deals, activities, tasks,
-      and notes in Nimble CRM. Authentication uses an API key passed as a
-      Bearer token in the Authorization header.
-    humanURL: https://www.nimble.com/developers/docs/
-    baseURL: https://api.nimble.com/api/v1
-    tags:
-      - CRM
-      - Contacts
-      - Deals
-      - Activities
-      - Tasks
-    properties:
-      - type: Documentation
-        url: https://www.nimble.com/developers/docs/
-      - type: DeveloperPortal
-        url: https://www.nimble.com/developers/
-      - type: Authentication
-        url: https://nimble.readthedocs.io/en/latest/authentication.html
+- aid: nimble:rest-api
+  name: Nimble REST API
+  description: >-
+    REST API for managing contacts, companies, deals, activities, tasks, and notes in Nimble CRM. Authentication
+    uses an API key passed as a Bearer token in the Authorization header.
+  humanURL: https://www.nimble.com/developers/docs/
+  baseURL: https://api.nimble.com/api/v1
+  tags:
+  - CRM
+  - Contacts
+  - Deals
+  - Activities
+  - Tasks
+  properties:
+  - type: Documentation
+    url: https://www.nimble.com/developers/docs/
+  - type: DeveloperPortal
+    url: https://www.nimble.com/developers/
+  - type: Authentication
+    url: https://nimble.readthedocs.io/en/latest/authentication.html
+- aid: nimble:nimble-contacts-api
+  name: Nimble Contacts API
+  description: The Contacts API from Nimble — 4 operation(s) for contacts.
+  humanURL: https://www.nimble.com/developers/docs/
+  baseURL: https://api.nimble.com/api/v1
+  tags:
+  - Contacts
+  properties:
+  - type: OpenAPI
+    url: openapi/nimble-contacts-api-openapi.yml
+- aid: nimble:nimble-deals-api
+  name: Nimble Deals API
+  description: The Deals API from Nimble — 3 operation(s) for deals.
+  humanURL: https://www.nimble.com/developers/docs/
+  baseURL: https://api.nimble.com/api/v1
+  tags:
+  - Deals
+  properties:
+  - type: OpenAPI
+    url: openapi/nimble-deals-api-openapi.yml
+- aid: nimble:nimble-fields-api
+  name: Nimble Fields API
+  description: The Fields API from Nimble — 3 operation(s) for fields.
+  humanURL: https://www.nimble.com/developers/docs/
+  baseURL: https://api.nimble.com/api/v1
+  tags:
+  - Fields
+  properties:
+  - type: OpenAPI
+    url: openapi/nimble-fields-api-openapi.yml
+- aid: nimble:nimble-messages-api
+  name: Nimble Messages API
+  description: The Messages API from Nimble — 2 operation(s) for messages.
+  humanURL: https://www.nimble.com/developers/docs/
+  baseURL: https://api.nimble.com/api/v1
+  tags:
+  - Messages
+  properties:
+  - type: OpenAPI
+    url: openapi/nimble-messages-api-openapi.yml
+- aid: nimble:nimble-notes-api
+  name: Nimble Notes API
+  description: The Notes API from Nimble — 3 operation(s) for notes.
+  humanURL: https://www.nimble.com/developers/docs/
+  baseURL: https://api.nimble.com/api/v1
+  tags:
+  - Notes
+  properties:
+  - type: OpenAPI
+    url: openapi/nimble-notes-api-openapi.yml
+- aid: nimble:nimble-pipelines-api
+  name: Nimble Pipelines API
+  description: The Pipelines API from Nimble — 3 operation(s) for pipelines.
+  humanURL: https://www.nimble.com/developers/docs/
+  baseURL: https://api.nimble.com/api/v1
+  tags:
+  - Pipelines
+  properties:
+  - type: OpenAPI
+    url: openapi/nimble-pipelines-api-openapi.yml
+- aid: nimble:nimble-users-api
+  name: Nimble Users API
+  description: The Users API from Nimble — 1 operation(s) for users.
+  humanURL: https://www.nimble.com/developers/docs/
+  baseURL: https://api.nimble.com/api/v1
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/nimble-users-api-openapi.yml
 common:
   - type: LinkedIn
     url: https://www.linkedin.com/company/nimblecrm
