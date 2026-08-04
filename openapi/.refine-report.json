@@ -1,0 +1,26 @@
+{
+  "provider": "nimble",
+  "sources": [
+    "nimble-contacts-api-openapi.yml",
+    "nimble-deals-api-openapi.yml",
+    "nimble-fields-api-openapi.yml",
+    "nimble-messages-api-openapi.yml",
+    "nimble-notes-api-openapi.yml",
+    "nimble-pipelines-api-openapi.yml",
+    "nimble-users-api-openapi.yml"
+  ],
+  "outputs": [
+    "nimble-contacts-api-openapi.yml",
+    "nimble-deals-api-openapi.yml",
+    "nimble-fields-api-openapi.yml",
+    "nimble-messages-api-openapi.yml",
+    "nimble-notes-api-openapi.yml",
+    "nimble-pipelines-api-openapi.yml",
+    "nimble-users-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
