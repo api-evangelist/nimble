@@ -1,157 +1,330 @@
 aid: nimble
 name: Nimble
 description: >-
-  Nimble is a relationship-focused CRM that unifies contacts, communications,
-  social profiles, calendar, and email into a single workspace for small
-  businesses and sales teams. The platform enriches contact records with
-  social and business data, supports pipeline management, group messaging,
-  and workflow automation across Microsoft 365 and Google Workspace. Nimble's
-  REST API exposes contacts, deals, activities, and tasks via Bearer token
-  authentication for building integrations and syncing CRM data.
+  Nimble is a relationship-focused CRM that unifies contacts, communications, social profiles, calendar
+  and email into a single shared record for small businesses and whole-company teams. Founded in 2010
+  by GoldMine co-founder Jon Ferrara and headquartered in Santa Monica, California, the platform combines
+  contact management, sales pipelines, email marketing, sequences, web forms, web chat and workflow automation,
+  and enriches contact profiles automatically from email, calendar, social and web data. Nimble publishes
+  a full OpenAPI 3.0.0 contract for its REST API — 89 operations over contacts, user-definable contact
+  fields, contact and deal pipelines, deals, leads, activities, tasks and messages — authenticated with
+  an account API key or OAuth 2.0 authorization_code.
 type: Index
 accessModel:
-  pricing: unknown
-  onboarding: approval
-  trial: false
+  pricing: paid
+  onboarding: self-service
+  trial: true
   try_now: false
-  public: false
-  label: Requires approval
-  confidence: medium
+  public: true
+  label: Self-service with free trial
+  confidence: high
   source:
-  - authentication
-  generated: '2026-07-22'
-  method: derived
+  - https://www.nimble.com/pricing/
+  - https://support.nimble.com/en/articles/502755-nimble-api-access
+  generated: '2026-08-13'
+  method: searched
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/nimble.png
 tags:
-  - CRM
-  - Sales
-  - Contact Management
-  - Relationship Management
-  - Marketing Automation
-  - Pipeline Management
-url: >-
-  https://raw.githubusercontent.com/api-evangelist/nimble/refs/heads/main/apis.yml
+- CRM
+- Sales
+- Contact Management
+- Relationship Management
+- Marketing Automation
+- Pipeline Management
+- Small Business
+- Email Marketing
+- Sales Automation
+- Lead Management
+url: https://raw.githubusercontent.com/api-evangelist/nimble/refs/heads/main/apis.yml
 created: '2026-05-11'
-modified: '2026-05-11'
+modified: '2026-08-13'
 specificationVersion: '0.19'
 apis:
 - aid: nimble:rest-api
   name: Nimble REST API
   description: >-
-    REST API for managing contacts, companies, deals, activities, tasks, and notes in Nimble CRM. Authentication
-    uses an API key passed as a Bearer token in the Authorization header.
+    The Nimble CRM REST API — 89 operations across contacts, contact custom fields, contact and deal pipelines,
+    deals, leads, activities, tasks, messages and users. Nimble publishes a full OpenAPI 3.0.0 contract
+    (58 paths, 180 component schemas) embedded in its developer reference. Authentication accepts an account
+    API key as an X-Nimble-Token header or an Authorization: Bearer token, or OAuth 2.0 authorization_code
+    with the coarse basic / contacts / deals scopes. Versioning is per resource family: /api/v1 for contacts,
+    /api/v2 for deals.
   humanURL: https://www.nimble.com/developers/docs/
-  baseURL: https://api.nimble.com/api/v1
+  baseURL: https://app.nimble.com
   tags:
   - CRM
   - Contacts
   - Deals
   - Activities
   - Tasks
+  - Leads
   properties:
+  - type: OpenAPI
+    url: openapi/_original/nimble-openapi-original.yml
   - type: Documentation
     url: https://www.nimble.com/developers/docs/
+  - type: APIReference
+    url: https://www.nimble.com/developers/docs/
   - type: DeveloperPortal
-    url: https://www.nimble.com/developers/
+    url: https://www.nimble.com/developers/docs/
   - type: Authentication
-    url: https://nimble.readthedocs.io/en/latest/authentication.html
+    url: authentication/nimble-authentication.yml
+  - type: GettingStarted
+    url: https://support.nimble.com/en/articles/502755-nimble-api-access
+  - type: Support
+    url: mailto:api-support@nimble.com
+- aid: nimble:nimble-activities-api
+  name: Nimble Activities API
+  description: >-
+    Account activity stream — list activities across contacts and deals, walked with a next_tstamp timestamp
+    cursor. 1 operation(s).
+  humanURL: https://www.nimble.com/developers/docs/
+  baseURL: https://app.nimble.com
+  tags:
+  - Activities
+  - Timeline
+  properties:
+  - type: OpenAPI
+    url: openapi/nimble-activities-api-openapi.yml
+  - type: Overlay
+    url: overlays/nimble-activities-overlay.yaml
 - aid: nimble:nimble-contacts-api
   name: Nimble Contacts API
-  description: The Contacts API from Nimble — 4 operation(s) for contacts.
+  description: >-
+    Contact records — the Nimble platform root object. Create, read, update and delete person and company
+    contacts, search them with keyword or the advanced JSON query syntax, manage notes and tags. Contact
+    fields are returned as arrays of labelled {value, label, modifier} objects rather than flat scalars.
+    19 operation(s).
   humanURL: https://www.nimble.com/developers/docs/
-  baseURL: https://api.nimble.com/api/v1
+  baseURL: https://app.nimble.com
   tags:
   - Contacts
-  properties:
-  - type: OpenAPI
-    url: openapi/nimble-contacts-api-openapi.yml
-- aid: nimble:nimble-deals-api
-  name: Nimble Deals API
-  description: The Deals API from Nimble — 3 operation(s) for deals.
-  humanURL: https://www.nimble.com/developers/docs/
-  baseURL: https://api.nimble.com/api/v1
-  tags:
-  - Deals
-  properties:
-  - type: OpenAPI
-    url: openapi/nimble-deals-api-openapi.yml
-- aid: nimble:nimble-fields-api
-  name: Nimble Fields API
-  description: The Fields API from Nimble — 3 operation(s) for fields.
-  humanURL: https://www.nimble.com/developers/docs/
-  baseURL: https://api.nimble.com/api/v1
-  tags:
-  - Fields
-  properties:
-  - type: OpenAPI
-    url: openapi/nimble-fields-api-openapi.yml
-- aid: nimble:nimble-messages-api
-  name: Nimble Messages API
-  description: The Messages API from Nimble — 2 operation(s) for messages.
-  humanURL: https://www.nimble.com/developers/docs/
-  baseURL: https://api.nimble.com/api/v1
-  tags:
-  - Messages
-  properties:
-  - type: OpenAPI
-    url: openapi/nimble-messages-api-openapi.yml
-- aid: nimble:nimble-notes-api
-  name: Nimble Notes API
-  description: The Notes API from Nimble — 3 operation(s) for notes.
-  humanURL: https://www.nimble.com/developers/docs/
-  baseURL: https://api.nimble.com/api/v1
-  tags:
+  - CRM
+  - Search
   - Notes
   properties:
   - type: OpenAPI
-    url: openapi/nimble-notes-api-openapi.yml
-- aid: nimble:nimble-pipelines-api
-  name: Nimble Pipelines API
-  description: The Pipelines API from Nimble — 3 operation(s) for pipelines.
+    url: openapi/nimble-contacts-api-openapi.yml
+  - type: Overlay
+    url: overlays/nimble-contacts-overlay.yaml
+- aid: nimble:nimble-contacts-fields-api
+  name: Nimble Contacts Fields API
+  description: >-
+    User-definable contact field schema — fields, choice option lists, field groups and tabs, plus primary-value
+    marks on multi-valued fields. The field set differs per account and must be read before writing contact
+    data. 15 operation(s).
   humanURL: https://www.nimble.com/developers/docs/
-  baseURL: https://api.nimble.com/api/v1
+  baseURL: https://app.nimble.com
   tags:
+  - Contacts
+  - Custom Fields
+  - Schema
+  properties:
+  - type: OpenAPI
+    url: openapi/nimble-contacts-fields-api-openapi.yml
+  - type: Overlay
+    url: overlays/nimble-contacts-fields-overlay.yaml
+- aid: nimble:nimble-contacts-pipelines-api
+  name: Nimble Contacts Pipelines API
+  description: Contact pipelines — the lead-progression surface for contacts, distinct from deal pipelines.
+    8 operation(s).
+  humanURL: https://www.nimble.com/developers/docs/
+  baseURL: https://app.nimble.com
+  tags:
+  - Contacts
+  - Pipelines
+  - Leads
+  properties:
+  - type: OpenAPI
+    url: openapi/nimble-contacts-pipelines-api-openapi.yml
+  - type: Overlay
+    url: overlays/nimble-contacts-pipelines-overlay.yaml
+- aid: nimble:nimble-deals-api
+  name: Nimble Deals API
+  description: >-
+    Deals on the /api/v2 surface — create, update and delete deals, attach notes and files, manage deal
+    tags, list overdue activity and read the won-last-month rollup. 18 operation(s).
+  humanURL: https://www.nimble.com/developers/docs/
+  baseURL: https://app.nimble.com
+  tags:
+  - Deals
+  - Sales
+  - Pipeline Management
+  properties:
+  - type: OpenAPI
+    url: openapi/nimble-deals-api-openapi.yml
+  - type: Overlay
+    url: overlays/nimble-deals-overlay.yaml
+- aid: nimble:nimble-deals-fields-api
+  name: Nimble Deals Fields API
+  description: >-
+    Deal field surface — the user deal field list and the column catalogue backing Nimble's deal listing
+    views. 2 operation(s).
+  humanURL: https://www.nimble.com/developers/docs/
+  baseURL: https://app.nimble.com
+  tags:
+  - Deals
+  - Custom Fields
+  properties:
+  - type: OpenAPI
+    url: openapi/nimble-deals-fields-api-openapi.yml
+  - type: Overlay
+    url: overlays/nimble-deals-fields-overlay.yaml
+- aid: nimble:nimble-deals-pipelines-api
+  name: Nimble Deals Pipelines API
+  description: >-
+    Deal pipelines and stages — create and reshape pipelines, add and archive stages, set lost reasons,
+    and read the deal book grouped by stage or by owner. 13 operation(s).
+  humanURL: https://www.nimble.com/developers/docs/
+  baseURL: https://app.nimble.com
+  tags:
+  - Deals
+  - Pipelines
+  - Sales
+  properties:
+  - type: OpenAPI
+    url: openapi/nimble-deals-pipelines-api-openapi.yml
+  - type: Overlay
+    url: overlays/nimble-deals-pipelines-overlay.yaml
+- aid: nimble:nimble-deals-pipelines-fields-api
+  name: Nimble Deals Pipelines Fields API
+  description: >-
+    Per-pipeline deal custom fields — fields, choice lists and field groups scoped to a single deal pipeline.
+    9 operation(s).
+  humanURL: https://www.nimble.com/developers/docs/
+  baseURL: https://app.nimble.com
+  tags:
+  - Deals
+  - Custom Fields
   - Pipelines
   properties:
   - type: OpenAPI
-    url: openapi/nimble-pipelines-api-openapi.yml
+    url: openapi/nimble-deals-pipelines-fields-api-openapi.yml
+  - type: Overlay
+    url: overlays/nimble-deals-pipelines-fields-overlay.yaml
+- aid: nimble:nimble-leads-api
+  name: Nimble Leads API
+  description: >-
+    Lead transitions through contact pipelines — move a lead between stages, mark it exited successfully
+    or unsuccessfully, and undo a transition. 7 operation(s).
+  humanURL: https://www.nimble.com/developers/docs/
+  baseURL: https://app.nimble.com
+  tags:
+  - Leads
+  - Pipelines
+  - Sales
+  properties:
+  - type: OpenAPI
+    url: openapi/nimble-leads-api-openapi.yml
+  - type: Overlay
+    url: overlays/nimble-leads-overlay.yaml
+- aid: nimble:nimble-messages-api
+  name: Nimble Messages API
+  description: Message drafts — list and create draft messages. 2 operation(s).
+  humanURL: https://www.nimble.com/developers/docs/
+  baseURL: https://app.nimble.com
+  tags:
+  - Messages
+  - Email
+  properties:
+  - type: OpenAPI
+    url: openapi/nimble-messages-api-openapi.yml
+  - type: Overlay
+    url: overlays/nimble-messages-overlay.yaml
+- aid: nimble:nimble-tasks-api
+  name: Nimble Tasks API
+  description: Task creation against contacts. 1 operation(s).
+  humanURL: https://www.nimble.com/developers/docs/
+  baseURL: https://app.nimble.com
+  tags:
+  - Tasks
+  - Productivity
+  properties:
+  - type: OpenAPI
+    url: openapi/nimble-tasks-api-openapi.yml
+  - type: Overlay
+    url: overlays/nimble-tasks-overlay.yaml
 - aid: nimble:nimble-users-api
   name: Nimble Users API
-  description: The Users API from Nimble — 1 operation(s) for users.
+  description: The authenticated user record — the credential-verification endpoint. 1 operation(s).
   humanURL: https://www.nimble.com/developers/docs/
-  baseURL: https://api.nimble.com/api/v1
+  baseURL: https://app.nimble.com
   tags:
   - Users
+  - Authentication
   properties:
   - type: OpenAPI
     url: openapi/nimble-users-api-openapi.yml
+  - type: Overlay
+    url: overlays/nimble-users-overlay.yaml
 common:
-  - type: LinkedIn
-    url: https://www.linkedin.com/company/nimblecrm
-  - type: Website
-    url: https://www.nimble.com
-  - type: Documentation
-    url: https://www.nimble.com/developers/docs/
-  - type: Pricing
-    url: https://www.nimble.com/pricing/
-  - type: Signup
-    url: https://app.nimble.com/signup
-  - type: Support
-    url: https://support.nimble.com
-  - type: DeveloperPortal
-    url: https://www.nimble.com/developers/
+- type: Website
+  url: https://www.nimble.com
+- type: DeveloperPortal
+  url: https://www.nimble.com/developers/docs/
+- type: Documentation
+  url: https://www.nimble.com/developers/docs/
+- type: APIReference
+  url: https://www.nimble.com/developers/docs/
+- type: GettingStarted
+  url: https://support.nimble.com/en/articles/502755-nimble-api-access
+- type: Support
+  url: https://support.nimble.com/en/
+- type: Blog
+  url: https://www.nimble.com/blog/
+- type: BlogRSS
+  url: https://www.nimble.com/blog/feed/
+- type: Pricing
+  url: https://www.nimble.com/pricing/
+- type: SignUp
+  url: https://www.nimble.com/register/business_trial/
+- type: Login
+  url: https://app.nimble.com/
+- type: TermsOfService
+  url: https://www.nimble.com/company/terms-of-service/
+- type: PrivacyPolicy
+  url: https://www.nimble.com/company/privacy/
+- type: StatusPage
+  url: https://status.nimble.com/
+- type: Integrations
+  url: https://www.nimble.com/marketplace/
+- type: LinkedIn
+  url: https://www.linkedin.com/company/nimblecrm
+- type: Authentication
+  url: authentication/nimble-authentication.yml
+- type: OAuthScopes
+  url: scopes/nimble-scopes.yml
+- type: Conventions
+  url: conventions/nimble-conventions.yml
+- type: ErrorCatalog
+  url: errors/nimble-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/nimble-lifecycle.yml
+- type: RateLimits
+  url: rate-limits/nimble-rate-limits.yml
+- type: Plans
+  url: plans/nimble-plans-pricing.yml
+- type: DataModel
+  url: data-model/nimble-data-model.yml
+- type: Conformance
+  url: conformance/nimble-conformance.yml
+- type: Packages
+  url: packages/nimble-packages.yml
+- type: MCPServer
+  url: mcp/nimble-mcp.yml
+- type: LLMsTxt
+  url: llms/nimble-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml
+- type: AgenticAccess
+  url: agentic-access/nimble-agentic-access.yml
+- type: DomainSecurity
+  url: security/nimble-domain-security.yml
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
-
-common:
-  - type: AgenticAccess
-    url: agentic-access/nimble-agentic-access.yml
-  - type: DomainSecurity
-    url: security/nimble-domain-security.yml
-  - type: Authentication
-    url: authentication/nimble-authentication.yml
-  - type: OAuthScopes
-    url: scopes/nimble-scopes.yml
-  - url: https://www.nimble.com/blog/feed/
-    type: Blog
+- FN: Kin Lane
+  email: kin@apievangelist.com
+x-enrichment:
+  date: '2026-08-13'
+  status: enriched
+  artifacts_added: 39
+  pass: local-v1
