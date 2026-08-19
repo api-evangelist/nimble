@@ -1,0 +1,86 @@
+generated: '2026-08-13'
+method: derived
+status: candidate
+source: openapi/_original/nimble-openapi-original.yml
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: probed
+  note: >-
+    Nimble ships NO MCP server — neither a hosted remote endpoint nor a
+    local stdio package. POST tools/list returned 404 on mcp.nimble.com/mcp,
+    www.nimble.com/mcp, app.nimble.com/mcp and api.nimble.com/mcp; no
+    @nimble/mcp-style package exists on npm or PyPI; and the developer
+    reference, the llms.txt Nimble publishes, and the app marketplace all
+    make no mention of MCP. The tools below are a DERIVED candidate surface
+    proposed from real OpenAPI operations, not something Nimble operates.
+notes: >-
+  Candidate tool list derived one-to-one from operationIds in the OpenAPI
+  Nimble publishes. Every source_operation below exists verbatim in the
+  spec. Each tool would inherit its real inputSchema from that operation's
+  parameters and requestBody. Because no MCP server and no GraphQL surface
+  exist, no tool crosswalk artifact is emitted — there is nothing to
+  reconcile against.
+roadmap_signal: >-
+  Nimble's own llms.txt names "Nimble Open Graph" as a roadmap item — "the
+  connector that will let users query their own Relationship Graph from their
+  own LLM". That is a stated intention, not a shipped agent surface, and is
+  recorded here only as a lead for a future pass.
+server:
+  name: nimble
+  transport: null
+  url: null
+tool_count: 12
+tools:
+  - name: get_myself
+    description: Retrieve the authenticated Nimble user record.
+    source_operation: openapi/nimble-users-api-openapi.yml#get-myself
+  - name: list_contacts
+    description: List and search contacts with keyword or advanced query filters.
+    source_operation: openapi/nimble-contacts-api-openapi.yml#list-contacts
+  - name: get_contact
+    description: Retrieve a single contact by id.
+    source_operation: openapi/nimble-contacts-api-openapi.yml#get-contact
+  - name: create_contact
+    description: Create a person or company contact record.
+    source_operation: openapi/nimble-contacts-api-openapi.yml#post-contact
+  - name: update_contact
+    description: Update fields on an existing contact.
+    source_operation: openapi/nimble-contacts-api-openapi.yml#put-contact
+  - name: create_contact_note
+    description: Attach a note to a contact.
+    source_operation: openapi/nimble-contacts-api-openapi.yml#post-contact-note-for-contact
+  - name: set_contact_tags
+    description: Replace the tag set on a contact.
+    source_operation: openapi/nimble-contacts-api-openapi.yml#put-contact-tags
+  - name: list_contact_fields
+    description: List the company's contact field metadata.
+    source_operation: openapi/nimble-contacts-fields-api-openapi.yml#list-company-contacts-fields
+  - name: list_deals
+    description: List deals visible to the authenticated user.
+    source_operation: openapi/nimble-deals-api-openapi.yml#list-user-deals
+  - name: create_deal
+    description: Create a deal in a pipeline stage.
+    source_operation: openapi/nimble-deals-api-openapi.yml#create-new-deal
+  - name: list_deals_pipelines
+    description: List deal pipelines and their stages.
+    source_operation: openapi/nimble-deals-pipelines-api-openapi.yml#list-deals-pipelines
+  - name: list_activities
+    description: List activities across the account.
+    source_operation: openapi/nimble-activities-api-openapi.yml#list-activities
+probes:
+  - url: https://mcp.nimble.com/mcp
+    method: POST tools/list
+    status: 404
+  - url: https://www.nimble.com/mcp
+    method: POST tools/list
+    status: 404
+  - url: https://app.nimble.com/mcp
+    method: POST tools/list
+    status: 404
+  - url: https://api.nimble.com/mcp
+    method: POST tools/list
+    status: 404

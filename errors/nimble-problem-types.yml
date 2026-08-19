@@ -1,0 +1,130 @@
+generated: '2026-08-13'
+method: searched
+source: https://www.nimble.com/developers/docs/#tag/Handling-Errors
+derived_from: openapi/_original/nimble-openapi-original.yml
+format: vendor-json
+rfc9457: false
+notes: >-
+  Nimble does NOT use RFC 9457 problem+json. Errors are returned as a plain
+  JSON object with a `message` string and a numeric extended `code`. The
+  numeric code is the machine-readable discriminator — the HTTP status alone
+  is not sufficient, because 409 is reused for every validation failure
+  across all 89 operations. Two response shapes carry extra structure:
+  contact create/update validation adds an `errors` map keyed by field name,
+  and NotFound returns `object_type` + `object_id` instead of `message`.
+envelope:
+  fields:
+    - name: message
+      type: string
+      description: Human-readable message about the error.
+    - name: code
+      type: integer
+      description: Nimble extended error code — the machine-readable discriminator.
+    - name: errors
+      type: object
+      required: false
+      description: >-
+        Present on contact create/update validation failures. Keyed by field
+        name; each value is a list of {message, field_id}.
+    - name: object_type
+      type: string
+      required: false
+      description: Present on NotFound responses in place of message/code.
+    - name: object_id
+      type: string
+      required: false
+      description: Present on NotFound responses in place of message/code.
+  example: |-
+    {
+        "message": "You can specify either `keyword` or `query` parameter, not both!",
+        "code": 245
+    }
+problems:
+  - status: 402
+    code: 108
+    title: Quota exceeded
+    description: >-
+      User exceeded a subscription quota value — for example the maximum
+      number of contact records allowed for the plan.
+    remediation: Upgrade the Nimble subscription or delete records to free quota.
+    source_operations:
+      - openapi/nimble-contacts-api-openapi.yml#post-contact
+  - status: 403
+    title: Forbidden
+    description: >-
+      The authenticated user lacks permission for the target object. Returned
+      on contact delete/update, deal delete, and pipeline/stage/field
+      mutations owned by another user.
+    remediation: Re-authenticate with an account that owns or can administer the object.
+    source_operations:
+      - openapi/nimble-contacts-api-openapi.yml#delete-contact
+      - openapi/nimble-deals-api-openapi.yml#delete-deal
+      - openapi/nimble-deals-pipelines-api-openapi.yml#delete-deals-pipeline
+  - status: 404
+    title: Not found
+    description: >-
+      Object requested by an invalid identifier. Body carries object_type and
+      object_id rather than message/code.
+    remediation: >-
+      Re-read the identifier from a list operation; Nimble object ids are
+      24-character hex strings.
+    example: |-
+      {
+          "object_type": "contact field",
+          "object_id": "111111111111111111111111"
+      }
+    source_operations:
+      - openapi/nimble-contacts-api-openapi.yml#get-contact
+      - openapi/nimble-contacts-fields-api-openapi.yml#put-contact-field
+  - status: 406
+    title: Not acceptable
+    description: >-
+      Request understood but rejected as unacceptable for the target
+      resource — used on tag, group, tab, stage and lost-reason mutations and
+      on lead pipeline transitions.
+    remediation: Check the constraint documented on the specific operation before retrying.
+    source_operations:
+      - openapi/nimble-deals-api-openapi.yml#post-deals-tags
+      - openapi/nimble-leads-api-openapi.yml#move-lead
+  - status: 409
+    code: 245
+    title: Validation error
+    description: >-
+      Sent on invalid parameters. The dominant error across the API — 409 is
+      the validation status for virtually every write operation and for list
+      operations given contradictory filters.
+    remediation: >-
+      Read `message` for the constraint; on contact writes read the `errors`
+      map, which names the offending field and its field_id.
+    example: |-
+      {
+          "message": "Validation errors",
+          "code": 245,
+          "errors": {
+              "first name": [{
+                  "message": "First name or last name field is required for person and should not be empty",
+                  "field_id": "5049f697a694620a07000043"
+              }]
+          }
+      }
+    source_operations:
+      - openapi/nimble-contacts-api-openapi.yml#post-contact
+      - openapi/nimble-contacts-api-openapi.yml#list-contacts
+  - status: 500
+    code: 107
+    title: Internal error handling request
+    description: Unrecoverable Nimble server error.
+    remediation: Retry with backoff; escalate to api-support@nimble.com if persistent.
+    note: >-
+      Documented in the error reference but not declared as a response on any
+      operation in the OpenAPI.
+codes:
+  - code: 107
+    status: 500
+    meaning: Internal error handling request
+  - code: 108
+    status: 402
+    meaning: Subscription quota exceeded
+  - code: 245
+    status: 409
+    meaning: Validation error

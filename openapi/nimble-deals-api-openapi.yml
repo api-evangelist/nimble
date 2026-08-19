@@ -1,100 +1,1655 @@
-openapi: 3.1.0
+openapi: 3.0.0
 info:
-  title: Nimble CRM Contacts Deals API
-  description: 'The Nimble REST API lets developers manage contacts, deals,
-
-    pipelines, notes, custom fields, and messages within a Nimble
-
-    account. Requests are authenticated with an OAuth 2.0 bearer
-
-    token, either via the Authorization header or an access_token
-
-    query parameter.
-
-    '
+  title: Nimble Deals API
+  description: Nimble CRM Deals operations. Split by tag from the OpenAPI Nimble publishes at https://www.nimble.com/developers/docs/
+    (embedded Redoc spec). Base host https://app.nimble.com.
   version: v1
 servers:
-- url: https://app.nimble.com/api/v1
-  description: Nimble production API base
-security:
-- bearerAuth: []
+- url: https://app.nimble.com
 tags:
 - name: Deals
+  description: Deals management
 paths:
-  /deals:
+  /api/v2/deals:
     get:
-      summary: List deals
-      operationId: listDeals
+      description: Retrieves list of all user deals
+      operationId: list-user-deals
+      summary: List all user's deals
+      tags:
+      - Deals
+      parameters:
+      - name: sort
+        in: query
+        required: true
+        schema:
+          type: string
+          format: field:order
+      - name: limit
+        in: query
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Meta and list of all deals
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deals.DealsList'
+    post:
+      description: Create a new deal_v2
+      operationId: create-new-deal
+      summary: Create new deal
+      tags:
+      - Deals
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Deals.CreateDealRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deals.DealView'
+          description: ''
+        '409':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+  /api/v2/deals/tags:
+    get:
+      description: Returns a list of deals tags
+      operationId: list-deals-tags
+      summary: List deals tags
+      tags:
+      - Deals
+      parameters:
+      - description: Find tags that start with
+        in: query
+        name: starts_with
+        schema:
+          type: string
+      - description: A number of tags to return
+        in: query
+        name: limit
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  tags:
+                    items:
+                      $ref: '#/components/schemas/Commons.Tag'
+                    type: array
+                required:
+                - tags
+                type: object
+          description: ''
+    post:
+      description: Assign tags to deals
+      operationId: post-deals-tags
+      summary: Add tags to deals
+      tags:
+      - Deals
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                preflight_checks:
+                  default: false
+                  description: check query's deals are editable
+                  type: boolean
+                query:
+                  description: query for deals advanced search
+                  type: object
+                tags:
+                  description: list of tags to assign
+                  items:
+                    type: string
+                  type: array
+              required:
+              - tags
+              - query
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  push_data:
+                    $ref: '#/components/schemas/Contacts.AssigmentProgress'
+                required:
+                - push_data
+                type: object
+          description: tags successfully assigned
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.PreflightCheckFailures'
+          description: ''
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+  /api/2/deals/tags/{tag_name}:
+    parameters:
+    - description: name of tag
+      in: path
+      name: tag_name
+      required: true
+      schema:
+        type: string
+    put:
+      description: update deals tag by name
+      operationId: put-deals-tag
+      summary: Update deals' tag by name
+      tags:
+      - Deals
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                new_tag:
+                  type: string
+              required:
+              - new_tag
+              type: object
+        required: true
+      responses:
+        '200':
+          description: Tag successfully updated
+        '406':
+          description: tag with tag_name already exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotAcceptableError'
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+    delete:
+      description: delete deals tag by name
+      operationId: delete-deals-tag
+      summary: Delete deals tag by name
+      tags:
+      - Deals
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                preflight_checks:
+                  default: false
+                  description: check query's deals are editable
+                  type: boolean
+              type: object
+        required: true
+      responses:
+        '200':
+          description: Tag successfully deleted/unlinked
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.PreflightCheckFailures'
+          description: ''
+  /api/v2/deals/widget/won_last_month:
+    get:
+      description: Returns sum of all deals amount won last month
+      operationId: get-won-last-month-deals-sum
+      summary: Get sum of all deals amount won last month
       tags:
       - Deals
       responses:
         '200':
-          description: Deals collection
-  /deal:
-    post:
-      summary: Create a deal
-      operationId: createDeal
+          description: Sum of all deals amount from all pipelines won for last month
+          content:
+            application/json:
+              schema:
+                properties:
+                  last_month_won_amount:
+                    type: number
+                    format: decimal
+                  last_month_won_count:
+                    type: integer
+  /api/v2/deals/{deal_id}:
+    parameters:
+    - description: id of a deal to operate on
+      in: path
+      name: deal_id
+      required: true
+      schema:
+        type: string
+    get:
+      description: Get deal by id
+      operationId: get-deal
+      summary: Get deal by id
       tags:
       - Deals
+      responses:
+        '200':
+          description: Retrieved deal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deals.DealView'
+        '404':
+          description: Deal not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+    delete:
+      description: Delete deal by id
+      operationId: delete-deal
+      summary: Delete deal by id
+      tags:
+      - Deals
+      responses:
+        '200':
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ForbiddenError'
+          description: ''
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+    put:
+      description: Edit deal by id
+      operationId: put-deal
+      summary: Update deal by id
+      tags:
+      - Deals
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Deals.EditDealRequest'
+      responses:
+        '200':
+          description: Updated deal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deals.DealView'
+        '409':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+  /api/v2/deals/{deal_id}/files:
+    parameters:
+    - description: id of deal to which the file should be stored
+      in: path
+      name: deal_id
+      required: true
+      schema:
+        type: string
+    post:
+      description: "Store a new deal file.\nWe can store two categories of files:\n\n1. Files from external\
+        \ sources (gdrive, dropbox, onedrive). In this scenario files are being select in the respective\n\
+        file picker, and the client should pass file details to this API call so the file gets stored\
+        \ for the deal\n\n2. Files uploaded from a computer using Azure SDK.\na) To perform the upload\
+        \ itself, the client must first use /api/files/azure/upload (this API is the same as one \nfor\
+        \ uploading Contact Files – we just moved it to a separate endpoint since it's independent \n\
+        from contact/deals/etc)\nb) after the upload was completed, the client has so-called `data_id`\
+        \ (the ID of this file in Azure Blob Storage)\nc) pass the `data_id` to this API so the file gets\
+        \ stored to the deal\n"
+      operationId: store-deal-file
+      summary: Store deal file
+      tags:
+      - Deals
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Deals.StoreFileRequest'
       responses:
         '201':
-          description: Deal created
-  /deal/{deal_id}:
-    get:
-      summary: Get a deal
-      operationId: getDeal
-      tags:
-      - Deals
-      parameters:
-      - in: path
-        name: deal_id
-        required: true
-        schema:
-          type: string
-      responses:
-        '200':
-          description: Deal details
+          description: File was successfully added
+  /api/v2/deals/{deal_id}/files/{file_id}:
+    parameters:
+    - in: path
+      name: deal_id
+      required: true
+      schema:
+        type: string
+    - description: id of a file to operate with
+      in: path
+      name: file_id
+      required: true
+      schema:
+        type: string
     put:
-      summary: Update a deal
-      operationId: updateDeal
+      description: |
+        Updates a file with new name. Note: only files uploaded using Azure SDK can be renamed
+      operationId: put-deal-file
+      summary: Update deal file
       tags:
       - Deals
-      parameters:
-      - in: path
-        name: deal_id
-        required: true
-        schema:
-          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Deals.UpdateDealFileRequest'
       responses:
         '200':
-          description: Deal updated
+          description: Empty response, file was successfully updated
     delete:
-      summary: Delete a deal
-      operationId: deleteDeal
+      description: Deletes file
+      operationId: delete-deal-file
+      summary: Delete deal file
       tags:
       - Deals
+      responses:
+        '200':
+          description: ''
+  /api/v2/deals/{deal_id}/files/{file_id}/url:
+    get:
+      description: Returns download link for selected deal file
+      operationId: get-deal-file-download-url
+      summary: Get deal file download url
+      tags:
+      - Deals
+      responses:
+        '200':
+          description: Retrieved URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    description: Download URL
+                    format: URL
+        '404':
+          description: File not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
       parameters:
       - in: path
         name: deal_id
         required: true
         schema:
           type: string
+      - description: id of a file to get link for
+        in: path
+        name: file_id
+        required: true
+        schema:
+          type: string
+  /api/v2/deals/{deal_id}/notes:
+    parameters:
+    - description: id of deal to which note should be attached
+      in: path
+      name: deal_id
+      required: true
+      schema:
+        type: string
+    post:
+      description: Create note to the deal
+      operationId: create-deal-note
+      summary: Create note to the deal
+      tags:
+      - Deals
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                title:
+                  type: string
+                  description: Title of the note.
+                  minLength: 1
+                  maxLength: 256
+                body:
+                  type: string
+                  description: Text of the note.
+              required:
+              - title
       responses:
-        '204':
-          description: Deal deleted
+        '201':
+          description: Created note
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deals.DealNote'
+        '409':
+          description: ValidationError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+  /api/v2/deals/{deal_id}/notes/{note_id}:
+    parameters:
+    - description: id of deal to which note should be attached
+      in: path
+      name: deal_id
+      required: true
+      schema:
+        type: string
+    - description: id of note to operate with
+      in: path
+      name: note_id
+      required: true
+      schema:
+        type: string
+    put:
+      description: Update note
+      operationId: put-deal-note
+      summary: Update deal note by id
+      tags:
+      - Deals
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                title:
+                  type: string
+                  description: Title of the note.
+                  minLength: 1
+                  maxLength: 256
+                body:
+                  type: string
+                  description: Text of the note.
+                  nullable: true
+      responses:
+        '200':
+          description: Updated note
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deals.DealNote'
+        '404':
+          description: Note not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+        '409':
+          description: ValidationError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+    delete:
+      description: Delete note
+      operationId: delete-deal-note
+      summary: Delete deal note by id
+      tags:
+      - Deals
+      responses:
+        '200':
+          description: ''
+  /api/v2/deals/{deal_id}/overdue:
+    parameters:
+    - in: path
+      name: deal_id
+      required: true
+      schema:
+        type: string
+    get:
+      description: |
+        Returns a feed of overdue activities for a given deals. Sorting order is time since overdue, descending
+      operationId: list-deals-overdue-activities
+      summary: List deals' overdue activities
+      tags:
+      - Deals
+      parameters:
+      - description: Indicates how many activities show per page.
+        in: query
+        name: limit
+        schema:
+          type: integer
+      - description: List of overdue activity types to return. If not present, we'll return activities
+          by all types.
+        in: query
+        name: types
+        schema:
+          items:
+            type: string
+          type: array
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  activities:
+                    description: List of activities that match query parameters.
+                    items:
+                      $ref: '#/components/schemas/Activities.Activity'
+                    type: array
+                required:
+                - activities
+                type: object
+          description: ''
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+security:
+- ApiKey: []
 components:
+  schemas:
+    Deals.StoreExternalFileRequest:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Deals.ExternalFileMetadata'
+        file_name:
+          type: string
+        file_size:
+          type: number
+    Deals.StoreAzureFileRequest:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Deals.AzureFileMetadata'
+    Deals.DealNote:
+      type: object
+      properties:
+        note_id:
+          type: string
+        title:
+          type: string
+        body:
+          type: string
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+        creator:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+    Commons.Comment:
+      properties:
+        author:
+          $ref: '#/components/schemas/Accounts.User'
+        comment_id:
+          type: string
+        created:
+          type: string
+        text:
+          type: string
+        updated:
+          type: string
+      required:
+      - comment_id
+      - author
+      - text
+      - created
+      - updated
+      type: object
+    Errors.NotAcceptableError:
+      example:
+        message: You can not reopen already active deal
+        type: lost_contact_access
+      properties:
+        message:
+          type: string
+        type:
+          type: string
+      required:
+      - message
+      - type
+      type: object
+    Deals.UpdateDealFileRequest:
+      type: object
+      properties:
+        new_file_name:
+          type: string
+    Activities.ActivityTypeDef:
+      properties:
+        archived:
+          description: True if the type was archived. We shouldn't create new activities of archived types
+          type: boolean
+        can_update_definition:
+          description: True if user can change definition of that type, False otherwise
+          type: boolean
+        can_update_lc:
+          description: True if completion of the activity should update the last contacted date
+          type: boolean
+        logo_id:
+          description: id of a picture to display for these activities
+          type: string
+        type_id:
+          description: unique and stable id for an activity type
+          type: string
+        type_name:
+          description: human-readable name for an activity type
+          type: string
+      required:
+      - type_id
+      - type_name
+      - logo_id
+      - can_update_lc
+      - can_update_definition
+      - archived
+      type: object
+    Legacy.UserMetadata:
+      properties:
+        city:
+          nullable: true
+          type: string
+          description: (deprecated)
+        company_name:
+          type: string
+          description: (deprecated)
+        country:
+          nullable: true
+          description: (deprecated)
+          type: string
+        employees_count:
+          nullable: true
+          description: (deprecated)
+          type: integer
+        help_tour_data:
+          description: (deprecated)
+          properties:
+            app/activities/list:
+              type: integer
+            app/b/homepage:
+              type: integer
+            app/contacts/list:
+              type: integer
+            app/contacts/view:
+              type: integer
+            app/deals/list:
+              type: integer
+            app/deals/view:
+              type: integer
+            app/groupmessages/create:
+              type: integer
+            app/messages/list:
+              type: integer
+            app/messages/view:
+              type: integer
+            app/settings/:
+              type: integer
+            app/social/list:
+              type: integer
+            contact_list_group_message:
+              type: integer
+            disabled:
+              type: integer
+            nimble_widget:
+              type: integer
+          type: object
+        industry:
+          description: (deprecated)
+          nullable: true
+          type: string
+        phone:
+          nullable: true
+          type: string
+        state:
+          description: (deprecated)
+          nullable: true
+          type: string
+        street:
+          description: (deprecated)
+          nullable: true
+          type: string
+        title:
+          nullable: true
+          type: string
+        zip:
+          description: (deprecated)
+          nullable: true
+          type: string
+      required:
+      - title
+      - company_name
+      - industry
+      - phone
+      - street
+      - city
+      - state
+      - zip
+      - country
+      - employees_count
+      - help_tour_data
+      type: object
+    Accounts.User:
+      properties:
+        account_type:
+          type: string
+        avatar_url:
+          nullable: true
+          type: string
+        company_id:
+          type: string
+        company_name:
+          type: string
+        created:
+          format: date-time
+          type: string
+        disabled:
+          type: boolean
+        email:
+          type: string
+        first_name:
+          type: object
+        is_company_owner:
+          type: boolean
+        is_pending:
+          description: true if that user has a pending invite
+          type: boolean
+        last_active:
+          description: timestamp when a user made his last API request to the platform
+          format: date-time
+          type: string
+        last_name:
+          type: object
+        name:
+          type: string
+        permissions:
+          $ref: '#/components/schemas/Settings.UserPermissions'
+        receive_newsletter:
+          type: boolean
+        has_password:
+          type: boolean
+          description: |
+            if this user has a password set (for some account types, like google accounts, the password is optional)
+        timezone:
+          type: string
+        under_gdpr:
+          type: boolean
+        user_id:
+          type: string
+        metadata:
+          $ref: '#/components/schemas/Legacy.UserMetadata'
+        email_verification_due:
+          type: boolean
+          description: |
+            A flag indicating whether the email verification is due. Almost all API call will result in 403 response
+            for users with unverified email.
+      required:
+      - under_gdpr
+      - user_id
+      - company_id
+      - company_name
+      - email
+      - name
+      - first_name
+      - last_name
+      - timezone
+      - disabled
+      - avatar_url
+      - created
+      - account_type
+      - is_company_owner
+      - receive_newsletter
+      - permissions
+      - last_active
+      - is_pending
+      - metadata
+      - has_password
+      type: object
+    Errors.PreflightCheckFailures:
+      description: action cannot be applied to all specified contacts
+      properties:
+        errors:
+          items:
+            $ref: '#/components/schemas/Errors.PreflightCheckError'
+          type: array
+      required:
+      - errors
+      type: object
+    Contacts.NotEditableContactsError:
+      properties:
+        error_type:
+          type: string
+        error_description:
+          type: string
+        count:
+          type: integer
+    Deals.AzureFileMetadata:
+      type: object
+      description: metadata for files uploaded from device using Azure JS SDK
+      properties:
+        data_id:
+          description: id of an object in the cloud
+          type: string
+        source:
+          enum:
+          - uploaded_azure
+    Activities.Activity:
+      properties:
+        activity_id:
+          type: string
+        activity_type:
+          $ref: '#/components/schemas/Activities.ActivityTypeDef'
+        assigned_to:
+          $ref: '#/components/schemas/Accounts.User'
+        comments:
+          items:
+            $ref: '#/components/schemas/Commons.Comment'
+          type: array
+        completed_tstamp:
+          type: object
+        created:
+          type: string
+        description:
+          type: string
+        details:
+          description: Activity specific data that only relevant for certain implementation
+          type: object
+        feed_tstamp:
+          type: object
+        is_important:
+          type: boolean
+        name:
+          type: string
+        owner:
+          $ref: '#/components/schemas/Accounts.User'
+        priority:
+          enum:
+          - high
+          - medium
+          - low
+          type: string
+        related_contacts:
+          items:
+            $ref: '#/components/schemas/Contacts.ShortContact'
+          type: array
+        new_related_deals:
+          items:
+            $ref: '#/components/schemas/Deals.ShortSavedDeal'
+          type: array
+        related_sequence:
+          $ref: '#/components/schemas/Sequences.SequenceBriefInfo'
+          nullable: true
+          description: sequence that created this activity, if applicable
+        scheduled_tstamp:
+          type: object
+        tags:
+          items:
+            type: string
+          type: array
+      required:
+      - details
+      - activity_type
+      - activity_id
+      - name
+      - description
+      - assigned_to
+      - related_contacts
+      - scheduled_tstamp
+      - completed_tstamp
+      - feed_tstamp
+      - tags
+      - priority
+      - comments
+      - is_important
+      - owner
+      - created
+      - related_sequence
+      type: object
+    Contacts.ContactsAlreadyLeadsError:
+      properties:
+        error_type:
+          type: string
+        error_description:
+          type: string
+        already_leads:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              full_name:
+                type: string
+    Deals.NamedFieldsValues:
+      type: object
+      description: Fields of the deals which was filled up by the owner/creator
+      properties:
+        field_name:
+          type: string
+          example: amount
+        values:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: string
+                example: value_1
+              is_primary:
+                type: boolean
+                example: true
+    Settings.UserPermissions:
+      additionalProperties:
+        type: number
+      description: users permission
+      example:
+        api use: 1
+        manage deals pipelines: 1
+        mass delete: 1
+        mass export: 1
+        private deals edit: 1
+        private deals view: 1
+      type: object
+    Deals.CreateDealRequest:
+      properties:
+        owner_id:
+          description: <code>id</code> of user who owns deal
+          type: string
+        privacy:
+          description: deal's read and edit privacy
+          $ref: '#/components/schemas/Deals.DealPrivacy'
+        fields_values:
+          description: 'Fields of the deals which was filled up by the owner/creator. At leas field <code>deal_name</code>
+            is required. <br> Standard fields description: <br> <ul><li><b style=''color:red''>name</b>
+            - required. Name of the deal.</li> <li><b style=''color:#ff7200''>probability</b> - required
+            (if none <code>Stage.default_probability</code> set). Deal probability. If not provided by
+            user,  deal will try to derive it from stage''s <code>default_probability</code>. If none,
+            will rise error</li> <li><b>description</b> - optional. Description of the deal. Sending just
+            '' '' (whitespace) removing it</li> <li><b>amount</b> - optional. Amount of tha money in the
+            deal. Can be only positive number or 0</li> <li><b>expected_close_date</b> - optional. Date
+            when deal is expected to be closed.</li> <li><b>actual_close_date</b> - optional. Actual date.
+            View only.</li> </ul> <br> To remove any field send <code>{field_id:[]}</code> List of available
+            fields can be obtained from <code>/api/v2/deals/fields</code>'
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: object
+              properties:
+                value:
+                  type: string
+          example:
+            63760e653af0e748fe48366a:
+            - value: Deal Name
+            63760e653af0e748fe48366b:
+            - value: '10000'
+            description:
+            - value: Important deal
+        pipeline_id:
+          description: <code>id</code> of the pipeline which belongs to this deal
+          type: string
+        stage_id:
+          type: string
+          description: <code>id</code> of stage on which deal is currently is
+        currency:
+          description: Currency of the deal in <code style='color:blue'>ISO-4217</code> format (3 char
+            code)
+          type: string
+          format: ISO-4217
+        related_contacts:
+          description: List of Nimble contacts that take part in the deal.
+          type: array
+          items:
+            type: object
+            properties:
+              contact_id:
+                type: string
+              note:
+                type: string
+                nullable: true
+        related_external_contacts:
+          description: A list with related external contacts. Similar to related_contacts, but instead
+            of <code>contact_id</code> we use <code>contact_info</code> (email, phone etc)
+          type: array
+          items:
+            $ref: '#/components/schemas/Deals.RelatedExternalContact'
+        tags:
+          type: array
+          items:
+            type: string
+      required:
+      - owner
+      - fields_values
+      - pipeline_id
+      - stage_id
+      type: object
+    Deals.RelatedExternalContact:
+      description: external contact related to this deal
+      type: object
+      properties:
+        contact_info:
+          type: string
+        note:
+          type: string
+    Deals.EmploymentInfo:
+      description: Information about date employment
+      type: object
+      properties:
+        employer:
+          $ref: '#/components/schemas/Contacts.ShortContact'
+        start_date:
+          description: First working day
+          type: string
+        end_date:
+          description: Last working day
+          type: string
+        title:
+          description: Job-title of contact
+          type: string
+    Errors.NotFoundError:
+      example:
+        object_id: 4f2acc3142a053dda595f00b
+        object_type: deal
+      properties:
+        object_id:
+          type: string
+        object_type:
+          type: string
+      required:
+      - object_type
+      - object_id
+      type: object
+    Deals.DealPipelineTransitions:
+      properties:
+        pipeline_id:
+          type: string
+        pipeline_color:
+          type: string
+        pipeline_name:
+          type: string
+        transitions:
+          items:
+            $ref: '#/components/schemas/Deals.DealStageTransition'
+          type: array
+        before_final_stage:
+          $ref: '#/components/schemas/Pipeline.DealStage'
+          nullable: true
+          description: previous to the final stage (if the deal is won or lost, otherwise - null)
+      required:
+      - pipeline_id
+      - pipeline_color
+      - pipeline_name
+      - transitions
+      type: object
+    Deals.DealsList:
+      type: object
+      description: List of user deals
+      properties:
+        meta:
+          type: object
+          properties:
+            per_page:
+              type: integer
+              description: amount of deals per page
+            total:
+              type: integer
+              description: total amount of deals
+            page:
+              type: integer
+              description: number of the current page
+            pages:
+              type: integer
+              description: total amount of pages
+        resources:
+          type: array
+          description: List of deals
+          items:
+            $ref: '#/components/schemas/Deals.DealView'
+    Deals.DealFile:
+      type: object
+      properties:
+        uploader:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        uploaded_at:
+          type: string
+        file_size:
+          type: number
+          description: the file size in bytes
+        file_name:
+          type: string
+        file_id:
+          type: string
+        metadata:
+          oneOf:
+          - $ref: '#/components/schemas/Deals.AzureFileMetadata'
+          - $ref: '#/components/schemas/Deals.ExternalFileMetadata'
+    Deals.DealView:
+      properties:
+        updated:
+          description: Time of the last Deal update
+          type: string
+        deal_id:
+          description: Id of created Deal
+          type: string
+        deal_number:
+          description: Auto-incrementing deal number, unique within company
+          type: integer
+        creator:
+          description: Deal creator
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        related_external_contacts:
+          description: List of external contacts related to this deal
+          type: array
+          items:
+            $ref: '#/components/schemas/Deals.RelatedExternalContact'
+        privacy:
+          description: Read/Edit privacy settings
+          $ref: '#/components/schemas/Deals.DealPrivacy'
+        updated_by:
+          description: Last updated by which user
+          type: string
+        created:
+          description: Datetime when deal was created
+          type: string
+        is_editable:
+          description: Is this deal is editable to a user who retrieved it
+          type: boolean
+        currency:
+          description: Currency of Deal
+          type: string
+          format: iso-4217
+        related_contacts:
+          description: List of Nimble contacts related to this deal
+          type: array
+          items:
+            $ref: '#/components/schemas/Deals.RelatedContact'
+        owner:
+          description: User who owns this deal
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        fields_values:
+          description: 'Fields of the deals which was filled up by the owner/creator. At leas field <code>deal_name</code>
+            is required. <br> Standard fields description: <br> <ul><li><b style=''color:red''>name</b>
+            - required. Name of the deal.</li> <li><b style=''color:#ff7200''>probability</b> - required
+            (if none <code>Stage.default_probability</code> set). Deal probability. If not provided by
+            user,  deal will try to derive it from stage''s <code>default_probability</code>. If none,
+            will rise error</li> <li><b>description</b> - optional. Description of the deal. Sending just
+            '' '' (whitespace) removing it</li> <li><b>amount</b> - optional. Amount of tha money in the
+            deal. Can be only positive number or 0</li> <li><b>expected_close_date</b> - optional. Date
+            when deal is expected to be closed.</li> <li><b>actual_close_date</b> - optional. Actual date.
+            View only.</li> </ul> <br> To remove any field send <code>{field_id:[]}</code>'
+          $ref: '#/components/schemas/Deals.FieldsValues'
+        fields_values_with_names:
+          $ref: '#/components/schemas/Deals.NamedFieldsValues'
+        stage_transitions:
+          $ref: '#/components/schemas/Deals.DealPipelineTransitions'
+        files:
+          $ref: '#/components/schemas/Deals.DealFile'
+        tags:
+          items:
+            type: string
+          type: array
+        final_probability:
+          description: custom deal probability if it specified or deal stage probability
+          type: integer
+        age_in_days:
+          type: number
+    Contacts.ShortContact:
+      properties:
+        avatar_url:
+          type: string
+        contact_type:
+          $ref: '#/components/schemas/Contacts.ContactType'
+        email:
+          items:
+            type: string
+          type: array
+        id:
+          type: string
+        is_viewable:
+          description: if this contact can be viewed in details by a calling user
+          type: boolean
+        name:
+          type: string
+        employment:
+          nullable: true
+          description: the most relevant contact employment (e.g., primary or present)
+          type: object
+          properties:
+            company_name:
+              type: string
+              nullable: true
+            title:
+              type: string
+              nullable: true
+        phones:
+          properties:
+            label:
+              description: phone label like "home", "work", etc
+              type: string
+            value:
+              type: string
+          required:
+          - label
+          - value
+          type: object
+      required:
+      - avatar_url
+      - contact_type
+      - id
+      - name
+      - email
+      - is_viewable
+      - phones
+      type: object
+    Deals.EditDealRequest:
+      type: object
+      properties:
+        owner_id:
+          description: <code>id</code> of user who owns the deal
+          type: string
+          example: 5049f696a694620a0700001c
+        privacy:
+          description: deal's read and edit privacy
+          $ref: '#/components/schemas/Deals.DealPrivacy'
+        fields_values:
+          description: 'Fields of the deals which was filled up by the owner/creator. At leas field <code>deal_name</code>
+            is required. <br> Standard fields description: <br> <ul><li><b style=''color:red''>name</b>
+            - required. Name of the deal.</li> <li><b style=''color:#ff7200''>probability</b> - required
+            (if none <code>Stage.default_probability</code> set). Deal probability. If not provided by
+            user,  deal will try to derive it from stage''s <code>default_probability</code>. If none,
+            will rise error</li> <li><b>description</b> - optional. Description of the deal. Sending just
+            '' '' (whitespace) removing it</li> <li><b>amount</b> - optional. Amount of tha money in the
+            deal. Can be only positive number or 0</li> <li><b>expected_close_date</b> - optional. Date
+            when deal is expected to be closed.</li> <li><b>actual_close_date</b> - optional. Actual date.
+            View only.</li> </ul> <br> To remove any field send <code>{field_id:[]}</code>'
+          oneOf:
+          - $ref: '#/components/schemas/Deals.FieldsValues'
+          - $ref: '#/components/schemas/Deals.NamedFieldsValues'
+        pipeline_id:
+          description: <code>id</code> of the pipeline to which this deal belongs
+          type: string
+          example: 630f34cfa34058dea76c0c0e
+        stage_id:
+          description: <code>id</code> of the stage on which deal is now
+          type: string
+          example: 62fd6587048065ca3510c6d5
+        currency:
+          description: 'Currency of the deal in <code style=''color: blue''>ISO-4217</code> (3 char code).'
+          type: string
+          format: ISO-4217
+          example: USD
+        related_contacts:
+          description: 'List of Nimble contacts that take part in the deal. If you want to clear contacts
+            list, send <code>{''related_external_contacts'': []}</code>'
+          type: array
+          items:
+            type: object
+            properties:
+              contact_id:
+                type: string
+              note:
+                type: string
+                nullable: true
+          example:
+          - contact_id: 630c6f7bf5943b012188c778
+            note: Some Note Text
+        related_external_contacts:
+          description: 'A list with related external contacts. Similar to <code>related_contacts</code>,
+            but instead of <code>contact_id</code> we use <code>contact_info</code> (email, phone etc).
+            <br> If you want to clear contacts list, send <code>{''related_external_contacts'': []}</code>'
+          type: array
+          items:
+            $ref: '#/components/schemas/Deals.RelatedExternalContact'
+        tags:
+          description: new list of deal's tags
+          items:
+            type: string
+          type: array
+    Errors.ValidationError:
+      description: request was malformed
+      example:
+        errors:
+          /:
+            message: 'missing required properties: ["calendar_id", "summary"]'
+          /base_occurrence/start_dtime:
+            message: Can't parse value 20000-01-01T01:01:00 as DATE-TIME
+        message: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]'
+        code: 245
+        human_readable_error: 'Invalid value {} (dict): missing required properties: []"calendar_id",
+          "summary"]"'
+        extra:
+        - {}
+      properties:
+        errors:
+          description: |
+            mapping where keys are paths to problematic request attributes
+            and values are objects with single message attribute
+          type: object
+        message:
+          type: string
+        code:
+          type: integer
+          description: legacy that you <span style='color:red'>SHOULD NOT USE</span>
+        human_readable_error:
+          type: string
+          description: Error message with some changes making it easier to read.
+        extra:
+          type: array
+          items:
+            type: object
+          description: extra data that would be useful to provide
+      required:
+      - message
+      - errors
+      - human_readable_error
+      type: object
+    Contacts.ContactType:
+      enum:
+      - person
+      - company
+      type: string
+    Commons.Tag:
+      properties:
+        name:
+          type: string
+        created:
+          description: datetime object that equals to time when tag was created
+          type: string
+          nullable: true
+      required:
+      - name
+      type: object
+    Deals.FieldsValues:
+      type: object
+      description: Fields of the deals which was filled up by the owner/creator
+      properties:
+        field_id:
+          type: string
+          example: 65958d7ef2e8748e6361ddb1
+        values:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: string
+                example: value_1
+              is_primary:
+                type: boolean
+                example: true
+    Deals.ShortSavedDeal:
+      properties:
+        deal_id:
+          description: unique id of a deal
+          type: string
+        is_editable:
+          description: Is this deal is editable to a user who retrieved it
+          type: boolean
+        is_viewable:
+          description: Is this deal is viewable to a user who retrieved it (True for private deals
+          type: boolean
+        name:
+          type: string
+        amount:
+          type: integer
+          nullable: true
+    Errors.ForbiddenError:
+      example:
+        message: You don't have access to this deal
+      properties:
+        message:
+          type: string
+          description: |
+            indicates that we can't authenticate the request. Message can be an arbitrary string, however there are
+            few special cases:<br/>
+            "Can't authenticate request" – something is wrong with the auth token<br/>
+            "email_verification_required" - if the user needs to verify their email address to continue having
+            access to Nimble<br/>
+      required:
+      - message
+      type: object
+    Deals.ExternalFileMetadata:
+      type: object
+      description: metadata for files from external sources (dropbox, google drive, one drive)
+      properties:
+        icon_url:
+          type: string
+        file_url:
+          type: string
+        source:
+          enum:
+          - dropbox
+          - one_drive
+          - google_drive
+    Deals.DealStageTransition:
+      properties:
+        from_stage:
+          $ref: '#/components/schemas/Pipeline.DealStage'
+          description: Can be null if this was the very first transition
+        to_stage:
+          $ref: '#/components/schemas/Pipeline.DealStage'
+        who:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        when:
+          type: string
+          format: date
+        notes:
+          type: string
+          nullable: true
+      required:
+      - from_stage
+      - to_stage
+      - who
+      - when
+      type: object
+    Accounts.ShortUserInfo:
+      properties:
+        avatar_url:
+          type: string
+        email:
+          type: string
+        is_active:
+          type: boolean
+        name:
+          type: string
+        user_id:
+          type: string
+      required:
+      - user_id
+      - name
+      - email
+      - avatar_url
+      - is_active
+      type: object
+    Pipeline.DealStage:
+      description: Stage in the deals pipeline
+      type: object
+      properties:
+        default_probability:
+          description: Probability, that will be set to a deal at this stage, if not specific deal probability
+            provided.
+          type: integer
+        stage_id:
+          type: string
+        description:
+          type: string
+        creator:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        created:
+          type: string
+        updated:
+          type: string
+        pipline_id:
+          description: Id of pipeline deals belongs to
+          type: string
+        role:
+          type: object
+          properties:
+            name:
+              type: string
+            is_final:
+              type: boolean
+              example: true
+        archived_at:
+          description: When and if this stage has been archived
+          type: string
+          nullable: true
+        expected_days:
+          description: The number of days a deal is expected to spend at this stage
+          type: integer
+        name:
+          description: Name of the stage
+          type: string
+    Contacts.AssigmentProgress:
+      properties:
+        is_completed:
+          type: boolean
+        operation_id:
+          type: string
+        processed:
+          type: integer
+        started_at:
+          type: string
+        total:
+          type: integer
+        errors:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Contacts.ContactsAlreadyLeadsError'
+            - $ref: '#/components/schemas/Contacts.NotEditableContactsError'
+      required:
+      - operation_id
+      - processed
+      - total
+      - started_at
+      - is_completed
+      - errors
+      type: object
+    Deals.DealPrivacy:
+      type: object
+      properties:
+        read:
+          $ref: '#/components/schemas/Deals.Principals'
+          description: Principals permitted to read deal. Null if permitted for everyone
+        edit:
+          $ref: '#/components/schemas/Deals.Principals'
+          description: Principals permitted to read and edit deal. Null if permitted for everyone
+      required:
+      - read
+      - edit
+      example:
+        read:
+          user_ids:
+          - 507f1f77bcf86cd799439011
+          group_ids:
+          - 507f1f77bcf86cd799439012
+        edit:
+          user_ids:
+          - 507f1f77bcf86cd799439013
+          group_ids:
+          - 507f1f77bcf86cd799439014
+    Errors.PreflightCheckError:
+      example:
+        message: Some contacts cannot be updated because of their privacy settings
+        nse_query:
+          and:
+          - is_editable:
+              is: false
+          - _id:
+              in:
+              - 5dfb9c3e84a6b90f0c01c23a
+              - 5dfb9c3e84a6b90f0c01c23b
+        total: 10
+        type: non_editable_contacts
+      properties:
+        message:
+          type: string
+        nse_query:
+          description: problem contacts selection query
+          type: object
+        total:
+          type: integer
+        type:
+          description: unique and stable identifier of error type
+          type: string
+      required:
+      - type
+      - message
+      - total
+      - nse_query
+      type: object
+    Deals.Principals:
+      type: object
+      properties:
+        user_ids:
+          type: array
+          items:
+            type: string
+            format: BSONObjectId
+          description: Set of user IDs with permissions
+          minItems: 0
+        group_ids:
+          type: array
+          items:
+            type: string
+            format: BSONObjectId
+          description: Set of group IDs with permissions
+          minItems: 0
+      required:
+      - user_ids
+      - group_ids
+      example:
+        user_ids:
+        - 507f1f77bcf86cd799439011
+        group_ids:
+        - 507f1f77bcf86cd799439012
+    Deals.RelatedContact:
+      description: Contacts related to deal
+      type: object
+      properties:
+        contact:
+          description: short info about related contact
+          $ref: '#/components/schemas/Contacts.ShortContact'
+        note:
+          description: contact's note
+          type: string
+        employments:
+          description: employments of this contact if applicable
+          type: array
+          items:
+            $ref: '#/components/schemas/Deals.EmploymentInfo'
+    Deals.StoreFileRequest:
+      oneOf:
+      - $ref: '#/components/schemas/Deals.StoreAzureFileRequest'
+      - $ref: '#/components/schemas/Deals.StoreExternalFileRequest'
+    Sequences.SequenceBriefInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: unique id of the sequence
+        name:
+          type: string
+          description: name of the sequence
+      required:
+      - id
+      - name
   securitySchemes:
-    bearerAuth:
-      type: oauth2
-      description: 'OAuth 2.0 bearer token. Provide the token via either the
-
-        `Authorization: Bearer <token>` header or the
-
-        `access_token=<token>` query parameter.
-
-        '
-      flows:
-        authorizationCode:
-          authorizationUrl: https://app.nimble.com/oauth/authorize
-          tokenUrl: https://app.nimble.com/oauth/token
-          scopes: {}
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Nimble-Token

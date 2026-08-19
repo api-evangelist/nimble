@@ -1,0 +1,593 @@
+openapi: 3.0.0
+info:
+  title: Nimble Activities API
+  description: Nimble CRM Activities operations. Split by tag from the OpenAPI Nimble publishes at https://www.nimble.com/developers/docs/
+    (embedded Redoc spec). Base host https://app.nimble.com.
+  version: v1
+servers:
+- url: https://app.nimble.com
+tags:
+- name: Activities
+  description: Activities management
+paths:
+  /api/v1/activities:
+    get:
+      description: Get all activities that match query parameters.
+      operationId: list-activities
+      summary: Activities listing
+      tags:
+      - Activities
+      parameters:
+      - description: |
+          Indicates a direction of the query. `pending` -- to get future activities, `past` -- to get old activities.
+        in: query
+        name: direction
+        required: true
+        schema:
+          enum:
+          - pending
+          - past
+          type: string
+      - description: Indicates how many activities show per page. Can't be set with untill_tstamp
+        in: query
+        name: limit
+        schema:
+          type: integer
+      - description: List of activity types to return. `Default:` return activities of all types
+        explode: false
+        in: query
+        name: types
+        style: form
+        schema:
+          items:
+            type: string
+          type: array
+      - description: List of contacts for which to select activities.
+        explode: false
+        in: query
+        name: contacts
+        style: form
+        schema:
+          items:
+            type: string
+          type: array
+      - description: List of deals for which to select activities.
+        explode: false
+        in: query
+        name: deals
+        style: form
+        schema:
+          items:
+            type: string
+          type: array
+      - description: List of users for which to select activities.
+        explode: false
+        in: query
+        name: users
+        style: form
+        schema:
+          items:
+            type: string
+          type: array
+      - description: True for only completed activities, False for uncompleted.
+        in: query
+        name: completed
+        schema:
+          type: boolean
+      - description: List of tags to filter by.
+        explode: false
+        in: query
+        name: tags
+        style: form
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Show activities before or after that timestamp (depending on the `direction`).
+        in: query
+        name: next_tstamp
+        schema:
+          type: string
+      - description: Show activities before or after that id (depending on the `direction`).
+        in: query
+        name: next_activity_id
+        schema:
+          type: string
+      - description: We will sellect activities until we don't met this date. Can't be set with limit
+        in: query
+        name: until_tstamp
+        schema:
+          type: string
+      - description: List of calendar ids to get related events.
+        explode: false
+        in: query
+        name: events__calendar_ids
+        style: form
+        schema:
+          items:
+            type: string
+          type: array
+      - description: status of calls which to select
+        in: query
+        name: calls__resolution
+        schema:
+          $ref: '#/components/schemas/Calls.CallResolutionSpec'
+      - description: |
+          When true, includes `meta.total` — an approximate count of all activities matching
+          the query filters. Intended for "Select All"
+          bulk-delete UX. Omit or set to false for regular listing to avoid extra DB queries.
+        in: query
+        name: include_total
+        schema:
+          type: boolean
+          default: false
+      - description: |
+          Filter activities to only those created by steps of the given sequence. Must be a 24-character hexadecimal MongoDB ObjectId identifying the sequence. Can be combined with `contacts`, `deals`, `users`, `completed`, and `tags` filters.
+        in: query
+        name: sequence_id
+        schema:
+          type: string
+          format: ObjectId
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  activities:
+                    description: List of activities that match query parameters.
+                    items:
+                      $ref: '#/components/schemas/Activities.Activity'
+                    type: array
+                  next_page:
+                    description: Url-encode these arguments and add them to the next request to retrieve
+                      the next page.
+                    nullable: true
+                    type: object
+                  meta:
+                    description: Metadata about the result set. `total` is present only when `include_total=true`.
+                    properties:
+                      total:
+                        description: Approximate total count of activities matching the filters. Present
+                          only when `include_total=true` was requested.
+                        type: integer
+                    type: object
+                required:
+                - activities
+                - next_page
+                - meta
+                type: object
+          description: ''
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+security:
+- ApiKey: []
+components:
+  schemas:
+    Contacts.ShortContact:
+      properties:
+        avatar_url:
+          type: string
+        contact_type:
+          $ref: '#/components/schemas/Contacts.ContactType'
+        email:
+          items:
+            type: string
+          type: array
+        id:
+          type: string
+        is_viewable:
+          description: if this contact can be viewed in details by a calling user
+          type: boolean
+        name:
+          type: string
+        employment:
+          nullable: true
+          description: the most relevant contact employment (e.g., primary or present)
+          type: object
+          properties:
+            company_name:
+              type: string
+              nullable: true
+            title:
+              type: string
+              nullable: true
+        phones:
+          properties:
+            label:
+              description: phone label like "home", "work", etc
+              type: string
+            value:
+              type: string
+          required:
+          - label
+          - value
+          type: object
+      required:
+      - avatar_url
+      - contact_type
+      - id
+      - name
+      - email
+      - is_viewable
+      - phones
+      type: object
+    Errors.ValidationError:
+      description: request was malformed
+      example:
+        errors:
+          /:
+            message: 'missing required properties: ["calendar_id", "summary"]'
+          /base_occurrence/start_dtime:
+            message: Can't parse value 20000-01-01T01:01:00 as DATE-TIME
+        message: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]'
+        code: 245
+        human_readable_error: 'Invalid value {} (dict): missing required properties: []"calendar_id",
+          "summary"]"'
+        extra:
+        - {}
+      properties:
+        errors:
+          description: |
+            mapping where keys are paths to problematic request attributes
+            and values are objects with single message attribute
+          type: object
+        message:
+          type: string
+        code:
+          type: integer
+          description: legacy that you <span style='color:red'>SHOULD NOT USE</span>
+        human_readable_error:
+          type: string
+          description: Error message with some changes making it easier to read.
+        extra:
+          type: array
+          items:
+            type: object
+          description: extra data that would be useful to provide
+      required:
+      - message
+      - errors
+      - human_readable_error
+      type: object
+    Contacts.ContactType:
+      enum:
+      - person
+      - company
+      type: string
+    Activities.Activity:
+      properties:
+        activity_id:
+          type: string
+        activity_type:
+          $ref: '#/components/schemas/Activities.ActivityTypeDef'
+        assigned_to:
+          $ref: '#/components/schemas/Accounts.User'
+        comments:
+          items:
+            $ref: '#/components/schemas/Commons.Comment'
+          type: array
+        completed_tstamp:
+          type: object
+        created:
+          type: string
+        description:
+          type: string
+        details:
+          description: Activity specific data that only relevant for certain implementation
+          type: object
+        feed_tstamp:
+          type: object
+        is_important:
+          type: boolean
+        name:
+          type: string
+        owner:
+          $ref: '#/components/schemas/Accounts.User'
+        priority:
+          enum:
+          - high
+          - medium
+          - low
+          type: string
+        related_contacts:
+          items:
+            $ref: '#/components/schemas/Contacts.ShortContact'
+          type: array
+        new_related_deals:
+          items:
+            $ref: '#/components/schemas/Deals.ShortSavedDeal'
+          type: array
+        related_sequence:
+          $ref: '#/components/schemas/Sequences.SequenceBriefInfo'
+          nullable: true
+          description: sequence that created this activity, if applicable
+        scheduled_tstamp:
+          type: object
+        tags:
+          items:
+            type: string
+          type: array
+      required:
+      - details
+      - activity_type
+      - activity_id
+      - name
+      - description
+      - assigned_to
+      - related_contacts
+      - scheduled_tstamp
+      - completed_tstamp
+      - feed_tstamp
+      - tags
+      - priority
+      - comments
+      - is_important
+      - owner
+      - created
+      - related_sequence
+      type: object
+    Deals.ShortSavedDeal:
+      properties:
+        deal_id:
+          description: unique id of a deal
+          type: string
+        is_editable:
+          description: Is this deal is editable to a user who retrieved it
+          type: boolean
+        is_viewable:
+          description: Is this deal is viewable to a user who retrieved it (True for private deals
+          type: boolean
+        name:
+          type: string
+        amount:
+          type: integer
+          nullable: true
+    Commons.Comment:
+      properties:
+        author:
+          $ref: '#/components/schemas/Accounts.User'
+        comment_id:
+          type: string
+        created:
+          type: string
+        text:
+          type: string
+        updated:
+          type: string
+      required:
+      - comment_id
+      - author
+      - text
+      - created
+      - updated
+      type: object
+    Settings.UserPermissions:
+      additionalProperties:
+        type: number
+      description: users permission
+      example:
+        api use: 1
+        manage deals pipelines: 1
+        mass delete: 1
+        mass export: 1
+        private deals edit: 1
+        private deals view: 1
+      type: object
+    Activities.ActivityTypeDef:
+      properties:
+        archived:
+          description: True if the type was archived. We shouldn't create new activities of archived types
+          type: boolean
+        can_update_definition:
+          description: True if user can change definition of that type, False otherwise
+          type: boolean
+        can_update_lc:
+          description: True if completion of the activity should update the last contacted date
+          type: boolean
+        logo_id:
+          description: id of a picture to display for these activities
+          type: string
+        type_id:
+          description: unique and stable id for an activity type
+          type: string
+        type_name:
+          description: human-readable name for an activity type
+          type: string
+      required:
+      - type_id
+      - type_name
+      - logo_id
+      - can_update_lc
+      - can_update_definition
+      - archived
+      type: object
+    Legacy.UserMetadata:
+      properties:
+        city:
+          nullable: true
+          type: string
+          description: (deprecated)
+        company_name:
+          type: string
+          description: (deprecated)
+        country:
+          nullable: true
+          description: (deprecated)
+          type: string
+        employees_count:
+          nullable: true
+          description: (deprecated)
+          type: integer
+        help_tour_data:
+          description: (deprecated)
+          properties:
+            app/activities/list:
+              type: integer
+            app/b/homepage:
+              type: integer
+            app/contacts/list:
+              type: integer
+            app/contacts/view:
+              type: integer
+            app/deals/list:
+              type: integer
+            app/deals/view:
+              type: integer
+            app/groupmessages/create:
+              type: integer
+            app/messages/list:
+              type: integer
+            app/messages/view:
+              type: integer
+            app/settings/:
+              type: integer
+            app/social/list:
+              type: integer
+            contact_list_group_message:
+              type: integer
+            disabled:
+              type: integer
+            nimble_widget:
+              type: integer
+          type: object
+        industry:
+          description: (deprecated)
+          nullable: true
+          type: string
+        phone:
+          nullable: true
+          type: string
+        state:
+          description: (deprecated)
+          nullable: true
+          type: string
+        street:
+          description: (deprecated)
+          nullable: true
+          type: string
+        title:
+          nullable: true
+          type: string
+        zip:
+          description: (deprecated)
+          nullable: true
+          type: string
+      required:
+      - title
+      - company_name
+      - industry
+      - phone
+      - street
+      - city
+      - state
+      - zip
+      - country
+      - employees_count
+      - help_tour_data
+      type: object
+    Accounts.User:
+      properties:
+        account_type:
+          type: string
+        avatar_url:
+          nullable: true
+          type: string
+        company_id:
+          type: string
+        company_name:
+          type: string
+        created:
+          format: date-time
+          type: string
+        disabled:
+          type: boolean
+        email:
+          type: string
+        first_name:
+          type: object
+        is_company_owner:
+          type: boolean
+        is_pending:
+          description: true if that user has a pending invite
+          type: boolean
+        last_active:
+          description: timestamp when a user made his last API request to the platform
+          format: date-time
+          type: string
+        last_name:
+          type: object
+        name:
+          type: string
+        permissions:
+          $ref: '#/components/schemas/Settings.UserPermissions'
+        receive_newsletter:
+          type: boolean
+        has_password:
+          type: boolean
+          description: |
+            if this user has a password set (for some account types, like google accounts, the password is optional)
+        timezone:
+          type: string
+        under_gdpr:
+          type: boolean
+        user_id:
+          type: string
+        metadata:
+          $ref: '#/components/schemas/Legacy.UserMetadata'
+        email_verification_due:
+          type: boolean
+          description: |
+            A flag indicating whether the email verification is due. Almost all API call will result in 403 response
+            for users with unverified email.
+      required:
+      - under_gdpr
+      - user_id
+      - company_id
+      - company_name
+      - email
+      - name
+      - first_name
+      - last_name
+      - timezone
+      - disabled
+      - avatar_url
+      - created
+      - account_type
+      - is_company_owner
+      - receive_newsletter
+      - permissions
+      - last_active
+      - is_pending
+      - metadata
+      - has_password
+      type: object
+    Calls.CallResolutionSpec:
+      enum:
+      - successful
+      - unsuccessful
+      - abandoned
+      - left_voicemail
+      type: string
+    Sequences.SequenceBriefInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: unique id of the sequence
+        name:
+          type: string
+          description: name of the sequence
+      required:
+      - id
+      - name
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Nimble-Token

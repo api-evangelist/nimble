@@ -1,0 +1,58 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  registry.npmjs.org, pypi.org, rubygems.org, packagist.org, api.github.com,
+  https://www.nimble.com/developers/docs/
+package_count: 0
+official_package_count: 0
+packages: []
+notes: >-
+  Nimble ships NO first-party client libraries in any public package
+  registry, and has no GitHub organization. The developer reference documents
+  raw HTTP only — curl examples against https://app.nimble.com with an
+  Authorization: Bearer header — and offers no SDK download, no code-sample
+  tabs beyond shell, and no source repository link. No SDKs pointer is
+  emitted; this is a verified zero, not an unchecked field.
+registries_checked:
+  - registry: npm
+    queries: [nimble, nimble-crm, nimble-api, node-nimble]
+    result: no first-party package
+    note: >-
+      The npm name `nimble` is held by an unrelated project — caolan/nimble,
+      a functional/async flow-control library, latest 0.0.2 published
+      2011-11-14. Not Nimble CRM.
+  - registry: pypi
+    queries: [nimble, nimble-crm, python-nimble, nimbleapi]
+    result: no first-party package
+    note: >-
+      The PyPI name `nimble` is held by an unrelated data-science tooling
+      project ("Interfaces and tools for data science", latest 0.5.3). Not
+      Nimble CRM.
+  - registry: rubygems
+    queries: [nimble]
+    result: no first-party package
+    note: >-
+      The gem `nimble` is an unrelated ActiveRecord connector by David
+      Trasbo, version 0.0.0 published 2009-10-31. Not Nimble CRM.
+  - registry: packagist
+    queries: ['nimble crm']
+    result: no first-party package
+  - registry: github
+    queries: [nimble, nimblecrm, nimble-crm, nimbleinc]
+    result: no organization found (404 on each)
+name_collision_warning: >-
+  "Nimble" is a heavily contested package name across every registry. None of
+  the packages carrying it belong to Nimble CRM (nimble.com). Any future pass
+  must verify first-party ownership from repository/homepage metadata before
+  recording a package here.
+third_party_connectivity:
+  note: >-
+    Integration with Nimble is instead reached through no-code connectors and
+    partner platforms rather than vendor SDKs.
+  examples:
+    - name: Nimble App Marketplace
+      url: https://www.nimble.com/marketplace/
+    - name: Make.com connector
+      url: https://support.nimble.com/en/articles/9774150-connect-nimble-to-external-services-with-make-com
+    - name: Zapier
+      note: Listed as an integration in https://www.nimble.com/llms.txt

@@ -1,0 +1,70 @@
+generated: '2026-08-13'
+method: probed
+source: live GET of /.well-known/* on every Nimble host in apis.yml and OpenAPI servers[]
+result: none
+notes: >-
+  Every /.well-known/ path returned 404 on every Nimble host. This file
+  records a verified ABSENCE — no WellKnown, APICatalog or SecurityTxt
+  pointer is emitted for this provider, because there is no document to
+  point at. The www/apex 404s are the WordPress marketing-site 404 template
+  (a ~49KB HTML body served with status 404); app/api 404s are the nginx
+  default. No path returned a 200 and no path returned a document.
+hosts_probed:
+  - https://api.nimble.com
+  - https://app.nimble.com
+  - https://www.nimble.com
+  - https://nimble.com
+documents: []
+probes:
+  - host: api.nimble.com
+    paths:
+      - {path: /.well-known/security.txt, status: 404}
+      - {path: /.well-known/openid-configuration, status: 404}
+      - {path: /.well-known/oauth-authorization-server, status: 404}
+      - {path: /.well-known/api-catalog, status: 404}
+      - {path: /.well-known/ai-plugin.json, status: 404}
+      - {path: /.well-known/agent-card.json, status: 404}
+      - {path: /.well-known/agent.json, status: 404}
+  - host: app.nimble.com
+    paths:
+      - {path: /.well-known/security.txt, status: 404}
+      - {path: /.well-known/openid-configuration, status: 404}
+      - {path: /.well-known/oauth-authorization-server, status: 404}
+      - {path: /.well-known/api-catalog, status: 404}
+      - {path: /.well-known/ai-plugin.json, status: 404}
+      - {path: /.well-known/agent-card.json, status: 404}
+      - {path: /.well-known/agent.json, status: 404}
+  - host: www.nimble.com
+    paths:
+      - {path: /.well-known/security.txt, status: 404}
+      - {path: /.well-known/openid-configuration, status: 404}
+      - {path: /.well-known/oauth-authorization-server, status: 404}
+      - {path: /.well-known/api-catalog, status: 404}
+      - {path: /.well-known/ai-plugin.json, status: 404}
+      - {path: /.well-known/agent-card.json, status: 404}
+      - {path: /.well-known/agent.json, status: 404}
+  - host: nimble.com
+    paths:
+      - {path: /.well-known/security.txt, status: 404}
+      - {path: /.well-known/openid-configuration, status: 404}
+      - {path: /.well-known/oauth-authorization-server, status: 404}
+      - {path: /.well-known/api-catalog, status: 404}
+      - {path: /.well-known/ai-plugin.json, status: 404}
+      - {path: /.well-known/agent-card.json, status: 404}
+      - {path: /.well-known/agent.json, status: 404}
+adjacent_finding:
+  path: /llms.txt
+  host: www.nimble.com
+  status: 200
+  note: >-
+    Not a /.well-known/ document, but the one agent-facing discovery file
+    Nimble does serve. Captured verbatim at llms/nimble-llms.txt.
+oauth_discovery:
+  rfc8414_metadata: false
+  note: >-
+    Nimble runs OAuth 2.0 authorization_code (authorize at
+    https://app.nimble.com/oauth/authorize, token at
+    https://app.nimble.com/api/oauth/token) but publishes no RFC 8414
+    authorization-server metadata and no OIDC discovery document, so the
+    endpoints cannot be discovered programmatically — only read out of prose
+    in the developer reference.

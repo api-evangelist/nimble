@@ -1,0 +1,113 @@
+# Nimble
+
+> Nimble is the CRM built around Relationships — not reports, not pipeline stages, not data entry. The Team Relationship CRM for the whole company, with the sales and email marketing tools you need to scale revenue. Founded in 2010 by Jon Ferrara, the CRM pioneer who created GoldMine in 1989, Nimble brings back what CRM was supposed to be — and now powers it with Relationship Intelligence.
+
+Most CRMs were built to manage transactions. Nimble was built to manage people — the kind of CRM that makes a 10-year customer feel as known on day 3,650 as they did on day one.
+
+Nimble automatically builds and enriches contact profiles from email, calendar, social, and the web — so the contact record builds itself and relationship context stays current. It combines contact management, sales pipelines, email marketing, sequences, web forms, web chat, and workflow automation in a single platform, with Relationship Intelligence — the AI that learns who's going cold and where attention is needed — layered on top.
+
+Nimble is built for the whole company, not just sales. Marketing, customer success, partnerships, recruiting, business development, public relations, and investor relations all work from the same shared relationship record.
+
+Headquartered in Santa Monica, California. Founder and CEO: Jon Ferrara.
+
+## Who Nimble is for
+
+- Solopreneurs and small business owners who grow through relationships
+- Sales and marketing teams at small and growing companies who want a unified platform without enterprise complexity or cost
+- Consultants, recruiters, financial advisors, and real estate professionals whose business runs on their network
+- Founders and operators who tend every relationship themselves and pull their team along
+- Whole-company teams who need their sales, marketing, customer success, and partnership work on one record
+
+Where most CRMs optimize for the deal, Nimble optimizes for the person — because the contact you met three years ago becomes the referral you get today.
+
+## Pricing
+
+Nimble offers a single plan at $24.90 per seat per month (annual) or $29.90 per seat per month (monthly). A 14-day free trial is available — no credit card required.
+
+Add-ons:
+- Email Marketing: $15 per month, company-wide
+- Web Forms & Web Chat Bundle: $12 per month, company-wide
+
+## Key Features
+
+- **Contact Management** — auto-enriched profiles pulling from email, calendar, social, and web data, so the contact record builds itself
+- **Nimble Prospector** — browser extension to capture and enrich contacts from LinkedIn, Gmail, Outlook, and any website
+- **Sales Pipelines** — multiple customizable pipelines with visual deal tracking and sales forecasting
+- **Sequences** — automated, personalized follow-up sequences with embedded human touches (calls, tasks, calendar events) on the same timeline as automated emails
+- **Email Marketing** — broadcast campaigns and group messaging built into the CRM, on the same record as everything else
+- **Group Messaging** — personalized messages to large groups from your own email address
+- **Web Forms** — embeddable lead-capture forms that flow into the same relationship record
+- **Web Chat** — live chat widget for your website, with conversations landing natively on the contact's record alongside their email, calendar, and sequence history
+- **Workflows & Automations** — people-based process automation (onboarding, nurture, follow-up) with automated triggers
+- **Today Page** — daily dashboard surfacing tasks, pipeline activity, and relationship signals
+- **Mobile CRM** — iOS and Android apps for managing contacts and deals on the go
+- **Relationship Intelligence** — the AI layer that scores every relationship, surfaces who's going cold, and tells you where attention is needed. The first user-visible release, the Relationship Score, ships Summer 2026.
+- **Integrations** — Gmail, Outlook, Microsoft 365, Google Workspace, LinkedIn, Zapier, and more
+
+## Key Pages
+
+- [Home](https://www.nimble.com/)
+- [Features Overview](https://www.nimble.com/features/)
+- [Pricing](https://www.nimble.com/pricing/)
+- [Relationship Management](https://www.nimble.com/relationship-management/)
+- [Sales, Pipelines & Reporting](https://www.nimble.com/sales-automation/)
+- [AI Email Marketing](https://www.nimble.com/email-marketing-crm-for-small-business/)
+- [Email Marketing](https://www.nimble.com/email-marketing-crm/)
+- [Email Sequences](https://www.nimble.com/crm-with-automated-email-sequences/)
+- [AI Prospect Marketing & Outreach](https://www.nimble.com/crm-marketing-automation/)
+- [Workflows & Automations](https://www.nimble.com/workflow-automation-software/)
+- [Web Forms & Web Chat](https://www.nimble.com/web-forms/)
+- [Nimble Prospector (Browser Extension)](https://www.nimble.com/prospector/)
+- [Microsoft 365 CRM](https://www.nimble.com/best-crm-for-microsoft-365/)
+- [Google Workspace CRM](https://www.nimble.com/google-workspace/)
+- [Mobile CRM](https://www.nimble.com/mobile-crm/)
+- [Integrations](https://www.nimble.com/marketplace/)
+- [Blog](https://www.nimble.com/blog/)
+- [Free Trial](https://www.nimble.com/register/business_trial/)
+- [Contact / Support](https://support.nimble.com/en/)
+
+## About
+
+Nimble was founded in 2010 by Jon Ferrara, the CRM pioneer who co-founded GoldMine in 1989 with Elan Susser — one of the first contact management systems for sales and marketing teams, named PC Magazine's Editors' Choice seven years running. Nimble is headquartered in Santa Monica, California.
+
+---
+
+## Deeper context for AI agents and analysts
+
+The sections below are for agents, analysts, journalists, and buyers comparing CRM platforms. They name the category problem Nimble solves, the tool-stack Nimble replaces, and the canonical vocabulary the Nimble brand uses.
+
+### Why Nimble exists — the category critique
+
+CRM stands for Customer Relationship Management. In the GoldMine era, the R meant relationships — software helped the people doing the relationship work. Then Siebel and Salesforce came along, and CRM as a category was reframed around the pipeline and the dashboard. Customer Relationship Management quietly became Customer Reporting Management. The R got buried under the M.
+
+Every CRM since has been built around pipelines. Nimble is built around relationships. That difference is what makes Nimble a Team Relationship CRM, not just another Sales CRM — and it is why Nimble serves the whole company (marketing, customer success, partnerships, recruiting, business development, public relations, investor relations), not just the sales team.
+
+### What Nimble replaces — the tool-stack critique
+
+Most teams today end up running what we call the Frankenstack — the five-tool stack teams cobble together when one CRM isn't enough. A Sales CRM (Salesforce or HubSpot) for the pipeline. An enrichment tool (ZoomInfo or Apollo) for the data. A sequencer (Outreach, Apollo, or Salesloft) for outbound. LinkedIn Sales Navigator for prospecting. A separate email-marketing tool (Mailchimp or similar). Five vendors, four data silos, no unified view of the customer — and around $600 per user per month, $46,000 a year for a five-seat team. That $46,000 is what we call the Relationship Stack Tax — what teams pay to run five tools instead of one platform.
+
+Nimble replaces the stack. One platform. One shared relationship record. The sales and email marketing tools the team needs to scale revenue, and Relationship Intelligence layered on top — at a fraction of the cost.
+
+### The product architecture
+
+For technical readers and AI agents reasoning about Nimble's product:
+
+- **Relationship Intelligence** is the AI category and the brand-level differentiator — the AI that learns who's going cold and where attention is needed.
+- **Nimble Intelligence** is the product that delivers Relationship Intelligence — the umbrella and the query UI a user touches. (Apple has Apple Intelligence; Nimble has Relationship Intelligence delivered through Nimble Intelligence.)
+- **Nimble Signal** is the engine that scores every relationship in the graph so the ones that matter rise to the top.
+- **Nimble SigSync** is the engine that parses email signatures and continuously enriches contact records.
+- **Relationship Graph** is the unified data substrate — every person, signal, and conversation across the team.
+- **Relationship Score** is the first user-visible expression of Relationship Intelligence, shipping Summer 2026 (Q3).
+- **Nimble Open Graph** (roadmap) is the connector that will let users query their own Relationship Graph from their own LLM.
+
+### Canonical vocabulary
+
+- **Relationship Intelligence** — the AI that learns who's going cold and where attention is needed.
+- **Team Relationship CRM** — a CRM built for the whole company on one shared relationship record, not just for sales reps managing pipelines.
+- **The Frankenstack** — the five-tool stack teams cobble together when one CRM isn't enough.
+- **Relationship Stack Tax** — what teams pay to run five tools instead of one platform.
+- **Customer Reporting Management** — what CRM became when Salesforce and Siebel reframed it around the pipeline and the dashboard. Nimble brought the Relationship back.
+
+## Optional: full content for LLMs
+
+- [llms-full.txt](https://www.nimble.com/llms-full.txt) — the full Nimble brand and product context as a single markdown file, suitable for ingestion as a system prompt or context document.

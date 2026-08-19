@@ -1,28 +1,66 @@
-generated: '2026-07-11'
+generated: '2026-08-13'
 method: searched
-source: openapi/nimble-openapi.yml
+source: https://www.nimble.com/developers/docs/#tag/Authentication
 docs: https://www.nimble.com/developers/docs/#tag/Authentication
+notes: >-
+  Nimble's OAuth scope model is coarse — three product-level scopes with no
+  read/write split and no per-resource granularity. An agent granted
+  `contacts` can create, update and delete contacts; there is no read-only
+  variant. Scopes are documented in prose in the Authentication reference;
+  they are NOT declared in the OpenAPI securitySchemes block, which carries
+  only the X-Nimble-Token apiKey scheme with no scopes map.
 schemes:
-- name: bearerAuth
-  source: openapi/nimble-openapi.yml
-  flows:
-  - flow: authorizationCode
-    authorizationUrl: https://app.nimble.com/oauth/authorize
-    tokenUrl: https://app.nimble.com/oauth/token
-  description: |-
-    OAuth 2.0 bearer token. Provide the token via either the
-    `Authorization: Bearer <token>` header or the
-    `access_token=<token>` query parameter.
+  - name: OAuth2
+    source: https://www.nimble.com/developers/docs/#tag/Authentication
+    declared_in_spec: false
+    flows:
+      - flow: authorizationCode
+        authorizationUrl: https://app.nimble.com/oauth/authorize
+        tokenUrl: https://app.nimble.com/api/oauth/token
+        refreshUrl: https://app.nimble.com/api/oauth/token
+scope_delimiter: >-
+  Comma or plus sign — send as "basic,contacts,deals" or
+  "basic+contacts+deals" on the authorize request.
+scope_count: 3
 scopes:
-- scope: basic
-  description: Access to user and company info.
-  sources:
-  - https://www.nimble.com/developers/docs/#tag/Authentication
-- scope: contacts
-  description: Access to contacts.
-  sources:
-  - https://www.nimble.com/developers/docs/#tag/Authentication
-- scope: deals
-  description: Access to deals.
-  sources:
-  - https://www.nimble.com/developers/docs/#tag/Authentication
+  - scope: basic
+    description: User and Company info.
+    grants:
+      - openapi/nimble-users-api-openapi.yml#get-myself
+    read_write: read
+    flows: [authorizationCode]
+    sources:
+      - https://www.nimble.com/developers/docs/#tag/Authentication
+  - scope: contacts
+    description: >-
+      Contacts access — contact records, contact custom fields, field groups
+      and tabs, notes, tags, activities, tasks and contact pipelines.
+    grants:
+      - openapi/nimble-contacts-api-openapi.yml
+      - openapi/nimble-contacts-fields-api-openapi.yml
+      - openapi/nimble-contacts-pipelines-api-openapi.yml
+    read_write: read-write
+    flows: [authorizationCode]
+    sources:
+      - https://www.nimble.com/developers/docs/#tag/Authentication
+  - scope: deals
+    description: >-
+      Deals access — deals, deal pipelines, deal stages, deal pipeline custom
+      fields, deal tags, files, notes and lead transitions.
+    grants:
+      - openapi/nimble-deals-api-openapi.yml
+      - openapi/nimble-deals-fields-api-openapi.yml
+      - openapi/nimble-deals-pipelines-api-openapi.yml
+      - openapi/nimble-deals-pipelines-fields-api-openapi.yml
+      - openapi/nimble-leads-api-openapi.yml
+    read_write: read-write
+    flows: [authorizationCode]
+    sources:
+      - https://www.nimble.com/developers/docs/#tag/Authentication
+unscoped_surfaces:
+  - openapi/nimble-messages-api-openapi.yml
+  - note: >-
+      The Messages (draft) operations are not attributed to any of the three
+      published scopes in the Authentication reference. Mapping above is by
+      the scope names Nimble publishes; where the docs are silent it is
+      recorded as unmapped rather than guessed.

@@ -1,0 +1,82 @@
+generated: '2026-08-13'
+method: searched
+source: https://www.nimble.com/developers/docs/
+versioning:
+  scheme: uri-path
+  current: mixed
+  versions:
+    - version: v1
+      prefix: /api/v1
+      covers: [Contacts, Contacts Fields, Activities, Tasks, Messages, Users]
+    - version: v2
+      prefix: /api/v2
+      covers: [Deals, Deals Fields, Deals Pipelines, Deals Pipelines Fields, Leads]
+    - version: '2'
+      prefix: /api/2
+      covers: [Deals tags]
+      note: >-
+        A single legacy prefix serving PUT/DELETE /api/2/deals/tags/{tag_name}
+        while the sibling list/create tag operations sit on /api/v2. Recorded
+        as observed in the published spec.
+  note: >-
+    There is no single current version. Nimble versions per resource family,
+    and three prefixes are live simultaneously in the published contract.
+  docs: https://www.nimble.com/developers/docs/
+stability:
+  statement: >-
+    "Given the early state of the API, some aspects of the API are subject to
+    change."
+  source: https://support.nimble.com/en/articles/502755-nimble-api-access
+  note: >-
+    Nimble ships an explicit no-stability-guarantee notice on its API access
+    page. Agents should not treat the contract as frozen.
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  note: >-
+    Nimble publishes no deprecation or sunset policy and no RFC 8594
+    Sunset/Deprecation header support. Deprecation is signalled only inline,
+    by renaming query parameters in the reference — no dated removal
+    commitment accompanies any of them. No Deprecation pointer is emitted.
+deprecated_parameters:
+  - name: last_contacted
+    replacement: contexts
+    operations:
+      - openapi/nimble-contacts-api-openapi.yml#list-contacts
+      - openapi/nimble-contacts-api-openapi.yml#list-contacts-for-identifiers
+  - name: files_data
+    replacement: contexts
+    operations:
+      - openapi/nimble-contacts-api-openapi.yml#get-contact
+  - name: leads_data
+    replacement: contexts
+    operations:
+      - openapi/nimble-contacts-api-openapi.yml#list-contacts
+deprecated_operations: []
+sla:
+  url: null
+  uptime_target: null
+  note: No public SLA or uptime commitment is published.
+status_page: https://status.nimble.com/
+status_page_note: >-
+  Live and publicly reachable (HTTP 200), hosted at status.nimble.com and
+  mirrored at nimble.statuspage.io. Carries a dated incident archive
+  (maintenance windows, email-tracking and payment-processor incidents),
+  though the most recent archived entries predate this probe.
+support:
+  api_contact: api-support@nimble.com
+  note: >-
+    Nimble directs API feedback, missing-endpoint requests and OAuth client
+    credential issuance to api-support@nimble.com.
+  help_center: https://support.nimble.com/en/
+changelog:
+  published: false
+  note: >-
+    Nimble publishes a "What's New" feature-highlight page at
+    https://www.nimble.com/whats-new/ (HTTP 200), but its entries are
+    undated marketing cards for product features and it carries no API
+    change history. There is no dated API changelog and no release-notes
+    feed, so no ChangeLog pointer is emitted.
+  candidate_url: https://www.nimble.com/whats-new/

@@ -1,0 +1,1391 @@
+openapi: 3.0.0
+info:
+  title: Nimble Contacts Fields API
+  description: Nimble CRM Contacts Fields operations. Split by tag from the OpenAPI Nimble publishes at
+    https://www.nimble.com/developers/docs/ (embedded Redoc spec). Base host https://app.nimble.com.
+  version: v1
+servers:
+- url: https://app.nimble.com
+tags:
+- name: Contacts Fields
+  description: "## Legacy contacts metadata\n\nContact\\'s metadata contains information about all basic\
+    \ and custom\nfields created in Nimble for a user. Below is it\\'s typical structure.\nPlease note\
+    \ that this listing doesn\\'t contain all metadata as the full\nlist is very big. The typical records\
+    \ are shown here. All default\ncontact fields are [described here](#tag/Contacts-Fields/Nimble-Default-Fields)\n\
+    \n``` javascript\n\"contacts_meta\": {\n    \"fields\": {\n        \"first name\": [\n           \
+    \ {\n                \"group\": \"Basic Info\",\n                \"name\": \"first name\",\n     \
+    \           \"label\": \"first name\",\n                \"modifier\": \"\",\n                \"presentation\"\
+    : {},\n                \"id\": \"5049f697a694620a07000043\",\n                \"multiples\": false,\n\
+    \                \"read_only\": false\n            }\n        ],\n        \"email\": [\n         \
+    \   {\n                \"group\": \"Contact Info\",\n                \"name\": \"email\",\n      \
+    \          \"label\": \"email\",\n                \"modifier\": \"other\",\n                \"presentation\"\
+    : {},\n                \"id\": \"5049f697a694620a07000065\",\n                \"multiples\": true,\n\
+    \                \"read_only\": false\n            },\n            {\n                \"group\": \"\
+    Contact Info\",\n                \"name\": \"email\",\n                \"label\": \"email\",\n   \
+    \             \"modifier\": \"personal\",\n                \"presentation\": {},\n               \
+    \ \"id\": \"5049f697a694620a07000064\",\n                \"multiples\": true,\n                \"\
+    read_only\": false\n            }\n        ],\n        \"lead status\": [\n            {\n       \
+    \         \"group\": \"Lead Details\",\n                \"name\": \"lead status\",\n             \
+    \   \"label\": \"lead status\",\n                \"modifier\": \"\",\n                \"presentation\"\
+    : {\n                    \"width\": \"1\",\n                    \"next_id\": \"5\",\n            \
+    \        \"values\": [\n                        {\n                            \"id\": \"1\",\n  \
+    \                          \"value\": \"Open\"\n                        },\n                     \
+    \   {\n                            \"id\": \"2\",\n                            \"value\": \"Contacted\"\
+    \n                        },\n                        {\n                            \"id\": \"3\"\
+    ,\n                            \"value\": \"Qualified\"\n                        },\n            \
+    \            {\n                            \"id\": \"4\",\n                            \"value\"\
+    : \"Unqualified\"\n                        }\n                    ],\n                    \"type\"\
+    : \"select-box\"\n                },\n                \"id\": \"5049f697a694620a0700008d\",\n    \
+    \            \"multiples\": false,\n                \"read_only\": false\n            }\n        ]\n\
+    \    },\n    \"groups\": {\n        \"Basic Info\": {\n            \"name\": \"Basic Info\",\n   \
+    \         \"order\": [\n                \"first name\",\n                \"last name\",\n        \
+    \        \"middle name\",\n                \"company name\",\n                \"title\",\n       \
+    \         \"source\",\n                \"last contacted\"\n            ],\n            \"is_standard\"\
+    : true,\n            \"label\": \"Basic Info\",\n            \"type\": \"both\",\n            \"id\"\
+    : \"5049f696a694620a07000031\"\n        }\n    }\n}\n```\n\nHere is a description of the response\
+    \ in detail:\n\n**fields**\n\n:   Information about the fields in Nimble. Represented by dictionary\n\
+    \    where keys are fields names, and values are lists containing details\n    about all possible\
+    \ modifications of this field. If field have no\n    modifiers (like `first name` on example above),\
+    \ this list contains\n    only one element.\n\n    Information stored in dictionaries with following\
+    \ keys:\n\n    :   -   *group* --- unique name of the group containing this field.\n        -   *label*\
+    \ --- unique name representing the field in\n            human-readable form.\n        -   *modifier*\
+    \ --- name of the field\\'s modifier\n        -   *id* --- unique id of the field in BSON format\n\
+    \        -   *multiples* - indicates whether field could have multiple\n            values (under\
+    \ different modifiers).\n        -   *presentation* - dict with the information which should help\n\
+    \            to display this field on client.\n        -   *read_only* - if contacts field values\
+    \ is editable by user\n\n**groups**\n\n:   \n\n    Information about field groups. Represented by\
+    \ dictionary where keys are unique group names and values are dictionaries with more info. Groups\
+    \ info dictionary contains following fields:\n\n    :   -   *id* --- unique id of the group in BSON\
+    \ format.\n        -   *order* --- list containing names of the fields as they\n            appeared\
+    \ in group.\n        -   *name* --- unique name of the group. (Outdated: as we have\n            field\
+    \ name as the key of `groups` dictionary.)\n        -   *label* --- unique name representing the field\
+    \ in\n            human-readable form.\n        -   *is_standard* - whether this group belongs to\
+    \ standard\n            Nimble groups.\n        -   *type* - type (belonging) of group, could be among\
+    \ `person`,\n            `company`, `both`.\n\n\n## Fields metadata\n\nContact\\'s metadata contains\
+    \ information about all basic and custom\nfields created in Nimble for a user. Below is it\\'s typical\
+    \ structure.\nAll default contact fields are [described here](#tag/Contacts-Fields/Nimble-Default-Fields)\n\
+    \n``` javascript\n{\n  \"tabs\": [\n    {\n      \"tab_id\": \"string\",\n      \"tab_name\": \"string\"\
+    ,\n      \"contact_types\": \"person\",\n      \"is_standard\": true,\n      \"members\": [\n    \
+    \    {\n          \"type\": \"group\",\n          \"name\": \"string\",\n          \"group_id\": \"\
+    string\",\n          \"logo_id\": \"string\",\n          \"fields\": [\n            {\n          \
+    \    \"type\": \"field\",\n              \"name\": \"string\",\n              \"field_id\": \"string\"\
+    ,\n              \"modifier\": \"string\",\n              \"multiples\": true,\n              \"read_only\"\
+    : true,\n              \"field_type\": {\n                \"field_kind\": \"string\",\n          \
+    \      \"validation_rule\": {\n                  \"type\": \"email\"\n                }\n        \
+    \      },\n              \"presentation\": {\n                \"number_type\": \"integer\"\n     \
+    \         },\n              \"available_actions\": \"edit_all\"\n            }\n          ]\n    \
+    \    }\n      ],\n      \"available_actions\": \"edit_all\"\n    }\n  ]\n}\n```\n\nHere is a description\
+    \ of the response in detail:\n\n\n### Tabs\n\n- **tab_id** — unique ID of the tab.\n- **tab_name**\
+    \ — name representing the tab in human-readable form.\n- **contact_types** — contact types that could\
+    \ have fields in the tab. Possible values: `person`, `company`.\n- **is_standard** — whether this\
+    \ tab belongs to standard Nimble tabs.\n- **available_actions** — possible actions: `edit_all`, `rearrange_only`,\
+    \ `view_only`.\n- **members** — list of tab members. This could include groups and fields without\
+    \ groups.\n\n### Groups\n\n- **type** — tab member type. It is always \"group\" here.\n- **name**\
+    \ — name representing the group in human-readable form.\n- **group_id** — unique ID of the group.\n\
+    - **logo_id** — ID of the logo to display.\n- **is_standard** — whether this group belongs to standard\
+    \ Nimble groups.\n- **fields** — list of fields contained within the group.\n\n### Fields\n\n- **type**\
+    \ — tab member type. It is always \"field\" here.\n- **name** — name representing the field in human-readable\
+    \ form.\n- **field_id** — unique ID of the field.\n- **modifier** — name of the field's modifier.\n\
+    - **multiples** — indicates whether the field can have multiple values (under different modifiers).\n\
+    - **read_only** — whether the field is available for editing.\n- **field_type** — dictionary describing\
+    \ the field type. More details are [described here](#tag/Contacts-Fields/Nimble-Default-Fields/Nimble-Fields-Type).\n\
+    - **presentation** — dictionary describing how the field should be presented in the Nimble client.\
+    \ More details are [described here](#tag/Contacts-Fields/Nimble-Default-Fields/Nimble-Fields-Presentation).\n\
+    - **available_actions** — possible actions: `edit_all`, `edit_choices_only`, `view_only`.\n\n---\n\
+    \nThe image below shows schema of fields metadata. Blue rectangle - tab,\ngreen rectangle - group,\
+    \ red rectangle - field. As you can see, fields\ncould be a member of a tab or a group. The same metadata\
+    \ schema is used for deals metadata.\n\n![Metadata Schema](https://nimblepublicblob.blob.core.windows.net/nimblestaticassets/fields_metadata.png)\n\
+    \n---\n\n# Nimble Default Fields\n\n\n| Field Name         | Type    | Multiple Field   | Modifiers\
+    \                                                 | Notes                                        \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \          |\n|--------------------|---------|------------------|-----------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n\
+    | first name         | string  | -                | N/A                                          \
+    \             |                                                                                  \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                      |\n| last name          | string\
+    \  | -                | N/A                                                       |              \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                          |\n| company name       | string  | -                |\
+    \ N/A                                                       |                                    \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                    |\n| contact employment | string  | +                | N/A                  \
+    \                                     | All values are represented as a JSON-encoded strings of dictionaries\
+    \ with the following keys: `company_name`, `title`, `start_date`, `end_date`. Where `start_date` and\
+    \ `end_date` are dates indicating the period of employment. These fields are optional; however, at\
+    \ least one of `company_name` or `title` must have a non-null value. This dictionary should be converted\
+    \ to a JSON string, and this string should be used as the field's value. |\n| birthday           |\
+    \ string  | -                | N/A                                                       | Format:\
+    \ MM/DD/YYYY or MM/DD                                                                            \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                |\n| domain             | string  | -           \
+    \     | N/A                                                       | The domain field. Example: `nimble.com`.\
+    \ This field satisfies the following conditions:<br>- **Unique** within the team. Only one company\
+    \ record with a particular value is allowed in the whole account.<br>- **Properly formatted**. No\
+    \ protocol or path is allowed; it can have up to a 3rd-level domain.<br>- It can be assigned to **company\
+    \ records only**.                                                                                \
+    \      |\n| phone              | string  | +                | work, home, mobile, main, home fax,\
+    \ work fax, other       |                                                                        \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                |\n| email      \
+    \        | string  | +                | work, personal, other                                    \
+    \ |                                                                                              \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                          |\n| skype id           | string  | + \
+    \               | N/A                                                       |                    \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                    |\n| twitter            | string  | +                | N/A  \
+    \                                                     |                                          \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \              |\n| facebook           | string  | +                | N/A                        \
+    \                               |                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                        |\n| linkedin\
+    \           | string  | +                | N/A                                                   \
+    \    |                                                                                           \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                             |\n| google plus        | string  |\
+    \ +                | N/A                                                       |                 \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                       |\n| muck rack          | string  | +                | N/A\
+    \                                                       |                                        \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                |\n| threads            | string  | +                | N/A                      \
+    \                                 |                                                              \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                          |\n| instagram\
+    \          | string  | +                | N/A                                                    \
+    \   |                                                                                            \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                            |\n| tiktok             | string  | +\
+    \                | N/A                                                       |                   \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                     |\n| youtube            | string  | +                | N/A \
+    \                                                      |                                         \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \               |\n| foursquare         | string  | +                | N/A                       \
+    \                                |                                                               \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                         |\n| URL\
+    \                | string  | +                | work, personal, blog, other                      \
+    \         |                                                                                      \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                  |\n| address            | address\
+    \ | +                | work, home, other                                         |               \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                         |\n| description        | string  | +                | other,\
+    \ twitter, facebook, linkedin, google+, foursquare   |                                           \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \             |\n| hubspot            | string  | -                | N/A                         \
+    \                              |                                                                 \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                       |\n| annual\
+    \ revenue     | string  | -                | N/A                                                 \
+    \      |                                                                                         \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                               |\n| # of employees     | choice \
+    \ | -                | N/A                                                       |               \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                         |\n| rating             | choice  | -                | N/A\
+    \                                                       |                                        \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                |\n| lead status        | choice  | -                | N/A                      \
+    \                                 |                                                              \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                          |\n| lead\
+    \ source        | choice  | -                | N/A                                               \
+    \        |                                                                                       \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                 |\n| lead type          | choice\
+    \  | -                | N/A                                                       |              \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                                                                                \
+    \                                          |\n\n## Deprecated Fields\n\nThe fields `parent company`\
+    \ and `title` have been deprecated and replaced by the `contact employment` field, which accepts a\
+    \ **JSON-encoded string** to store employment details.\n\nThe `contact employment` field includes\
+    \ the following subfields:\n\n- **company_name** (string): Name of the company.\n- **title** (string):\
+    \ Job title.\n- **start_date** (datetime, optional): Employment start date in MM/YYYY format\n- **end_date**\
+    \ (datetime, optional): Employment end date in MM/YYYY format (must be null or omitted if the employment\
+    \ is ongoing).\n- **is_present** (boolean, optional): Indicates if the contact is currently employed\
+    \ at this company.\n\n### Validation Rules\n\n- **Company Name or Title Required**: At least one of\
+    \ `company_name` or `title` must be provided.\n\n- **Mutual Exclusivity of `end_date` and `is_present`**:\
+    \ If `end_date` is provided, `is_present` cannot be `true`.\n\n- **Date Order**: If both `start_date`\
+    \ and `end_date` are provided, `start_date` must be earlier than `end_date`.\n\n### Examples\n\n\n\
+    #### Original value (before encoding)\n\n```javascript\n{\n  \"company_name\": \"Example Corp\",\n\
+    \  \"title\": \"Senior Developer\",\n  \"start_date\": \"05/2024\"\n}\n```\n\n#### JSON-encoded value\n\
+    \nBefore sending the value to the API, it must be encoded as a JSON string:\n\n```javascript\n\"{\\\
+    \"company_name\\\":\\\"Example Corp\\\",\\\"title\\\":\\\"Senior Developer\\\",\\\"start_date\\\"\
+    :\\\"05/2024\\\"}\"\n```\n\n#### Example request body — full contact employment\n\n```javascript\n\
+    {\n  \"fields\": {\n    \"contact employment\": [\n      {\n        \"value\": \"{\\\"company_name\\\
+    \":\\\"Example Corp\\\",\\\"title\\\":\\\"Senior Developer\\\",\\\"start_date\\\":\\\"05/2024\\\"\
+    }\"\n      }\n    ]\n  }\n}\n```\n\n#### Example request body — company name only\n\nIf you only need\
+    \ to link a person with a company without additional details:\n\n```javascript\n{\n  \"fields\": {\n\
+    \    \"contact employment\": [\n      {\n        \"value\": \"{\\\"company_name\\\":\\\"Example Corp\\\
+    \"}\"\n      }\n    ]\n  }\n}\n```\n\n#### Example request body — current and previous companies\n\
+    \nIf you want to add multiple contact employment values:\n\n```javascript\n{\n  \"fields\": {\n  \
+    \  \"contact employment\": [\n      {\n        \"value\": \"{\\\"company_name\\\":\\\"Old Corp\\\"\
+    ,\\\"title\\\":\\\"Developer\\\",\\\"start_date\\\":\\\"01/2021\\\",\\\"end_date\\\":\\\"04/2024\\\
+    \"}\"\n      },\n      {\n        \"value\": \"{\\\"company_name\\\":\\\"Example Corp\\\",\\\"title\\\
+    \":\\\"Senior Developer\\\",\\\"start_date\\\":\\\"05/2024\\\", \\\"is_present\\\": true}\",\n   \
+    \     \"is_primary\": true\n      }\n    ]\n  }\n}\n```\n\n\n\n## Nimble Default Field Tabs\n\n| Tab\
+    \ Name               | Description                                  | Fields                     \
+    \                                                                                                \
+    \                                           |\n|------------------------|----------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n\
+    | Personal Info          | Personal contact's details                   | - first name,<br>- last\
+    \ name,<br>- middle name,<br>- title,<br>- parent company,<br>- birthday<br>- employment         \
+    \                                               |\n| Company Info           | Extended information\
+    \ about contact's company | - annual revenue,<br>- company name,<br>- domain,<br>- # of employees\
+    \                                                                                                \
+    \ |\n| Contact Info           | How to reach this contact                    | - phone,<br>- email,<br>-\
+    \ skype id,<br>- twitter,<br>- facebook,<br>- linkedin,<br>- google+,<br>- foursquare,<br>- address,<br>-\
+    \ description,<br>- URL,<br>- hubspot |\n| Lead Details           | Information about contact as lead\
+    \            | - rating,<br>- lead stage                                                         \
+    \                                                                                    |\n| Additional\
+    \ Lead Fields | Legacy fields                                | - lead status,<br>- lead source,<br>-\
+    \ lead type                                                                                      \
+    \                                 |\n| Extra Info             | Contact's extended information   \
+    \            | * Files                                                                           \
+    \                                                                                    |\n\n\n## Nimble\
+    \ Fields Type\n\nShow data about field type. You can't change it after creation. It is a dictionary\
+    \ with at least one field - `field_kind`.\n\n- **field_kind** --- represents the type of field in\
+    \ Nimble. It can have one of the following values:\n\n  > - **string** --- simple field with one line\
+    \ of text\n  > - **long_string** --- field containing multiline text\n  > - **choice** --- drop-down\
+    \ list with predefined values, requires additional parameter `values`. Value of the field contains\
+    \ the id of one of the choice values\n  > - **number** --- field with integer or decimal number\n\
+    \  > - **datetime** --- string formatted in ISO 8601\n  > - **boolean** --- field with true/false\
+    \ value\n  > - **address** --- field with address, that allows input of address in Nimble default\
+    \ format\n  > - **user** --- field containing id of the Nimble user\n\nExamples:\n\n``` javascript\n\
+    \"field_type\": {\n    \"field_kind\": \"string\"\n}\n```\n\n``` javascript\n\"field_type\": {\n \
+    \   \"field_kind\": \"choice\",\n    \"values\": {\n        \"ordering_type\": \"ordinal\",\n    \
+    \    \"values\": [{\"id\": \"string\", \"value\": \"string\"}]\n    }\n}\n```\n\n### Choice Type\n\
+    \nFields, showing as drop-down lists in Nimble. In metadata they have\n`field_type` equal `choice`.\
+    \ Also, their metadata contains field\n`values`, representing drop-down content. This field contains\
+    \ list of\ndictionaries, having two keys:\n\n**id**\n\n:   Value, to be stored in field\n\n**value**\n\
+    \n:   String, corresponding to this value\n\nExample:\n\n``` javascript\n{\n\"read_only\": false,\n\
+    \"field_type\": {\n\"values\": {\n  \"ordering_type\": \"ordinal\",\n  \"values\": [\n    {\n    \
+    \  \"id\": \"1\",\n      \"value\": \"Analyst\"\n    },\n    {\n      \"id\": \"2\",\n      \"value\"\
+    : \"Competitor\"\n    },\n    {\n      \"id\": \"3\",\n      \"value\": \"Customer\"\n    },\n   \
+    \ {\n      \"id\": \"4\",\n      \"value\": \"Investor\"\n    },\n    {\n      \"id\": \"5\",\n  \
+    \    \"value\": \"Lead\"\n    },\n    {\n      \"id\": \"6\",\n      \"value\": \"Partner\"\n    },\n\
+    \    {\n      \"id\": \"7\",\n      \"value\": \"Press\"\n    },\n    {\n      \"id\": \"8\",\n  \
+    \    \"value\": \"Prospect\"\n    },\n    {\n      \"id\": \"9\",\n      \"value\": \"Reseller\"\n\
+    \    },\n    {\n      \"id\": \"10\",\n      \"value\": \"Other\"\n    },\n    {\n      \"id\": \"\
+    12\",\n      \"value\": \"7\"\n    }\n  ]\n},\n\"field_kind\": \"choice\"\n},\n\"name\": \"lead type\"\
+    ,\n\"available_actions\": \"edit_choices_only\",\n\"field_id\": \"6023b729ec8d835bb32ee4c9\",\n\"\
+    modifier\": \"\",\n\"type\": \"field\",\n\"multiples\": false\n}\n```\n\n### Address Type\n\nAll values\
+    \ represented as dictionary with following keys: `street`,\n`city`, `state`, `zip`, `country`. This\
+    \ dictionary should be dumped to\nJSON string, and this string should be used as field\\'s value.\n\
+    \nExample:\n\n``` javascript\n{\n    \"type\": \"person\",\n    \"fields\": {\n        \"address\"\
+    : [{\n            \"value\": \"{\\\"street\\\":\\\"Test\\\", \\\"city\\\":\\\"Testing\\\", \\\"country\\\
+    \":\\\"Togo\\\"}\",\n            \"modifier\": \"other\"\n        }]\n    }\n}\n```\n\n### User Type\n\
+    \nField, containing id of the Nimble user. Example of value:\n\n``` javascript\n[\n  {\n    \"is_primary\"\
+    : false,\n    \"modifier\": \"\",\n    \"value\": \"602aaa34f92ea11bb5cebae1\",\n  }\n]\n```\n\n##\
+    \ Nimble Fields Presentation\n\nTo control, how contacts will look in Nimble, special parameter\n\
+    `presentation` included in fields metadata. Usually it is a dictionary\nwith few fields. You can change\
+    \ presentation after field creation. Must\nmatch to corresponding field_type. Date and number fields\
+    \ must have an\nappropriate presentation. There is no presentation for other types\n\n-   Date presentation:\n\
+    \n    > -   date_format --- strftime-like format template as described in\n    >     <https://docs.python.org/2.7/library/datetime.html#strftime-and-strptime-behavior>\n\
+    \    >     or null if client should use date format from user settings\n    > -   ignore_specific_time\
+    \ --- show if time should be presented in\n    >     the field. Applicable only if date_format is\
+    \ None. Must be\n    >     null if date_format specified\n    >\n    > Examples:\n    >\n    > ```\
+    \ javascript\n    > \"presentation\": {\n    >     \"date_format\": null,\n    >     \"ignore_specific_time\"\
+    : false\n    > }\n    > ```\n    >\n    > ``` javascript\n    > \"presentation\": {\n    >     \"\
+    date_format\": \"%Y-%m-%dT%H:%M:%S\",\n    >     \"ignore_specific_time\": null\n    > }\n    > ```\n\
+    \n-   Number presentation:\n\n    > -   number_type --- possible values: \\\"integer\\\", \\\"decimal\\\
+    \",\n    >     \\\"percentage\\\", \\\"financial\\\"\n    > -   fraction_digits --- integer \\>= 1\
+    \ that shows count of digits\n    >     after comma. Applicable for decimal and percentage only.\n\
+    \    >\n    > Examples:\n    >\n    > ``` javascript\n    > \"presentation\": {\n    >     \"number_type\"\
+    : \"integer\",\n    > }\n    > ```\n    >\n    > ``` javascript\n    > \"presentation\": {\n    >\
+    \    \"number_type\": \"decimal\",\n    >    \"fraction_digits\": 2\n    > }\n    > ```\n    >\n \
+    \   > ``` javascript\n    > \"presentation\": {\n    >    \"number_type\": \"percentage\",\n    >\
+    \    \"fraction_digits\": 1\n    > }\n    > ```\n    >\n    > ``` javascript\n    > \"presentation\"\
+    : {\n    >    \"number_type\": \"financial\"\n    > }\n    > ```\n"
+paths:
+  /api/v1/contacts/fields:
+    get:
+      description: Return all available metadata for company's fields
+      operationId: list-company-contacts-fields
+      summary: List all available metadata for company fields
+      tags:
+      - Contacts Fields
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fields.ContactsFieldsMetadata'
+          description: fields metadata
+    post:
+      description: Create new field
+      operationId: post-contact-field
+      summary: Create new field
+      tags:
+      - Contacts Fields
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Fields.CreateFieldRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fields.ContactFieldsTab'
+          description: ''
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: invalid request
+  /api/v1/contacts/fields/{field_id}:
+    parameters:
+    - in: path
+      name: field_id
+      required: true
+      schema:
+        type: string
+    delete:
+      description: Deletes field by id
+      operationId: delete-contact-field
+      summary: Delete contact field by id
+      tags:
+      - Contacts Fields
+      parameters:
+      - in: query
+        name: preflight_checks
+        required: true
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Successful deleted
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: field not found
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.PreflightCheckFailures'
+          description: if preflight_checks is true and field is used in contacts
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: invalid request
+    put:
+      description: Updates existing field
+      operationId: put-contact-field
+      summary: Update existing field by id
+      tags:
+      - Contacts Fields
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                group_id:
+                  description: If not null, move field to specified group. Null if remove field from grooup
+                  nullable: true
+                  type: string
+                insert_after:
+                  description: If not null, move field after another field or group with specified id.
+                    If null, then moved field to be the first one
+                  nullable: true
+                  type: string
+                name:
+                  maxLength: 50
+                  minLength: 1
+                  type: string
+                presentation:
+                  $ref: '#/components/schemas/Fields.FieldPresentation'
+                tab_id:
+                  type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fields.ContactFieldsTab'
+          description: field updated
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: field not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: invalid request
+  /api/v1/contacts/fields/groups:
+    post:
+      description: Create new fields group
+      operationId: create-contacts-fields-group
+      summary: Create new contacts fields group
+      tags:
+      - Contacts Fields
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                insert_after:
+                  description: If not null, inserts a new group after another group or field with specified
+                    id. If null, then tab is inserted as the first one
+                  nullable: true
+                  type: string
+                logo_id:
+                  type: string
+                name:
+                  maxLength: 50
+                  minLength: 1
+                  type: string
+                tab_id:
+                  type: string
+              required:
+              - name
+              - tab_id
+              - logo_id
+              - insert_after
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fields.ContactFieldsTab'
+          description: ''
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: invalid request
+  /api/v1/contacts/fields/groups/{group_id}:
+    parameters:
+    - in: path
+      name: group_id
+      required: true
+      schema:
+        type: string
+    delete:
+      description: Deletes group by id
+      operationId: delete-contacts-fields-group
+      summary: Delete contacts fields group by id
+      tags:
+      - Contacts Fields
+      parameters:
+      - in: query
+        name: preflight_checks
+        required: true
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Successful deleted
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: ''
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.PreflightCheckFailures'
+          description: if preflight_checks is true and any field in group is used
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: invalid request
+    put:
+      description: Updates existing fields group
+      operationId: put-contacts-fields-group
+      summary: Update contacts fields group by id
+      tags:
+      - Contacts Fields
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                insert_after:
+                  description: If not null, move group after another field or group with specified id.
+                    If null, then move group to the first position
+                  nullable: true
+                  type: string
+                logo_id:
+                  type: string
+                name:
+                  maxLength: 50
+                  minLength: 1
+                  type: string
+                tab_id:
+                  type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fields.ContactFieldsTab'
+          description: group updated
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: group not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: invalid request
+  /api/v1/contacts/fields/tabs:
+    post:
+      description: Create new fields tabs
+      operationId: post-contacts-fields-tab
+      summary: Create new contacts fields tab
+      tags:
+      - Contacts Fields
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                contact_types:
+                  items:
+                    $ref: '#/components/schemas/Contacts.ContactType'
+                  type: array
+                insert_after:
+                  description: If not null, inserts a new tab after another tab with specified id. If
+                    null, then tab is inserted as the first one
+                  nullable: true
+                  type: string
+                tab_name:
+                  maxLength: 50
+                  minLength: 1
+                  type: string
+              required:
+              - tab_name
+              - contact_types
+              - insert_after
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fields.ContactFieldsTab'
+          description: ''
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: invalid request
+  /api/v1/contacts/fields/tabs/{tab_id}:
+    parameters:
+    - in: path
+      name: tab_id
+      required: true
+      schema:
+        type: string
+    delete:
+      description: Deletes tab by id
+      operationId: delete-contacts-tab-by-id
+      summary: Delete contacts tab by id
+      tags:
+      - Contacts Fields
+      parameters:
+      - in: query
+        name: preflight_checks
+        required: true
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Successful deleted
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: tab not found
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.PreflightCheckFailures'
+          description: if preflight_checks is true and at least one field in tab used in contacts
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: invalid request
+    put:
+      description: Updates existing fields tab
+      operationId: put-contacts-tab-by-id
+      summary: Update contacts fields tab by id
+      tags:
+      - Contacts Fields
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                contact_types:
+                  $ref: '#/components/schemas/Contacts.ContactType'
+                insert_after:
+                  description: Moves tab after another tab with specified id. If null, then move tab to
+                    the first position
+                  nullable: true
+                  type: string
+                tab_name:
+                  maxLength: 50
+                  minLength: 1
+                  type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fields.ContactFieldsTab'
+          description: tab updated
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: tab not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: invalid request
+  /api/v1/contacts/fields/{field_id}/choices:
+    post:
+      description: Create choice for field
+      operationId: post-contact-choice-field
+      summary: Create choice for field
+      parameters:
+      - in: path
+        name: field_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Contacts Fields
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                id:
+                  type: string
+                insert_after:
+                  description: If not null, inserts a new choice after another choice with specified id.
+                    If null, then inserted choice to be the first one in field
+                  nullable: true
+                  type: string
+                value:
+                  type: string
+              required:
+              - id
+              - value
+              - insert_after
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fields.ContactFieldsTab'
+          description: choice created
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: field not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: invalid request
+  /api/v1/contacts/fields/{field_id}/choices/{id}:
+    parameters:
+    - in: path
+      name: id
+      required: true
+      schema:
+        type: string
+    delete:
+      description: Deletes choice by id
+      operationId: delete-contact-choice-field
+      summary: Delete contact choice by id
+      tags:
+      - Contacts Fields
+      parameters:
+      - in: query
+        name: preflight_checks
+        required: true
+        schema:
+          type: boolean
+      - in: path
+        name: field_id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  tabs:
+                    items:
+                      $ref: '#/components/schemas/Fields.ContactFieldsTab'
+                    type: array
+          description: Successful deleted
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: choice not found
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.PreflightCheckFailures'
+          description: if preflight_checks is true and choise is used in any contacts
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: invalid request
+    put:
+      parameters:
+      - in: path
+        name: field_id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      description: Updates choise
+      operationId: put-contacts-field-choice
+      summary: Update field choice
+      tags:
+      - Contacts Fields
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                id:
+                  type: string
+                insert_after:
+                  description: If not null, move choice after another choice with specified id. If null,
+                    then moved choice to be the first one
+                  nullable: true
+                  type: string
+                value:
+                  type: string
+              required:
+              - id
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  tabs:
+                    items:
+                      $ref: '#/components/schemas/Fields.ContactFieldsTab'
+                    type: array
+          description: choice updated
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: choice or field not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: invalid request
+  /api/v1/contact/{contact_id}/field:
+    delete:
+      parameters:
+      - in: path
+        name: contact_id
+        schema:
+          type: string
+        required: true
+      description: delete is_primary mark from field
+      operationId: delete-primary-mark-from-contact-field
+      summary: Delete is_primary mark from field
+      tags:
+      - Contacts Fields
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Fields.UpdateIsPrimaryRequest'
+        required: true
+      responses:
+        '200':
+          description: success
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: field not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+    put:
+      description: mark field with is_primary flag
+      operationId: put-primary-mark-to-contact-field
+      summary: Mark field with is_primary flag
+      parameters:
+      - in: path
+        name: contact_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Contacts Fields
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Fields.UpdateIsPrimaryRequest'
+        required: true
+      responses:
+        '200':
+          description: success
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: field not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+security:
+- ApiKey: []
+components:
+  schemas:
+    Fields.FieldTypeOnFieldCreation:
+      oneOf:
+      - $ref: '#/components/schemas/Fields.StringFieldValuesType'
+      - $ref: '#/components/schemas/Fields.LongStringFieldValuesType'
+      - $ref: '#/components/schemas/Fields.ChoiceFieldValuesType'
+      - $ref: '#/components/schemas/Fields.NumberFieldValuesType'
+      - $ref: '#/components/schemas/Fields.DateTimeFieldValuesType'
+      - $ref: '#/components/schemas/Fields.BooleanFieldValuesType'
+      - $ref: '#/components/schemas/Fields.AddressFieldValuesType'
+      - $ref: '#/components/schemas/Fields.UserFieldValuesType'
+    Fields.LongStringFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - long_string
+    Fields.BooleanFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - boolean
+    Errors.PreflightCheckFailures:
+      description: action cannot be applied to all specified contacts
+      properties:
+        errors:
+          items:
+            $ref: '#/components/schemas/Errors.PreflightCheckError'
+          type: array
+      required:
+      - errors
+      type: object
+    Fields.ContactFieldsGroup:
+      type: object
+      properties:
+        type:
+          enum:
+          - group
+          type: string
+        name:
+          type: string
+        group_id:
+          type: string
+        logo_id:
+          type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/Fields.ContactField'
+    Fields.ContactFieldsTab:
+      properties:
+        tab_id:
+          type: string
+        tab_name:
+          type: string
+        contact_types:
+          $ref: '#/components/schemas/Contacts.ContactType'
+        is_standard:
+          type: boolean
+        members:
+          description: a member could be a group of fields or separate field
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Fields.ContactFieldsGroup'
+            - $ref: '#/components/schemas/Fields.ContactField'
+        available_actions:
+          description: |
+            edit_all - available all operations with tab
+            rearrange_only - available just moving tab between other tabs
+            view_only - tab can't be changed
+          enum:
+          - edit_all
+          - rearrange_only
+          - view_only
+    Fields.UserFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - user
+    Fields.EmploymentFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - employment
+    Fields.ChoiceFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - choice
+        values:
+          $ref: '#/components/schemas/Commons.PossibleValues'
+    Fields.DateTimeFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - datetime
+    Fields.FieldPresentation:
+      description: |
+        how values of the field should look. Must match to corresponding field_type. Date and number
+        fields must have an appropriate presentation. There is no presentation for other types
+      oneOf:
+      - $ref: '#/components/schemas/Fields.IntegerNumberPresentation'
+      - $ref: '#/components/schemas/Fields.DecimalNumberPresentation'
+      - $ref: '#/components/schemas/Fields.PercentageNumberPresentation'
+      - $ref: '#/components/schemas/Fields.FinancialNumberPresentation'
+      - $ref: '#/components/schemas/Fields.DateTimePresentation'
+    Fields.ContactsFieldsMetadata:
+      type: object
+      properties:
+        tabs:
+          items:
+            $ref: '#/components/schemas/Fields.ContactFieldsTab'
+          type: array
+      required:
+      - tabs
+      description: Contain the structure of contacts tabs, groups, and fields.
+    Fields.AddressFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - address
+    Errors.NotFoundError:
+      example:
+        object_id: 4f2acc3142a053dda595f00b
+        object_type: deal
+      properties:
+        object_id:
+          type: string
+        object_type:
+          type: string
+      required:
+      - object_type
+      - object_id
+      type: object
+    Fields.TextValidationRule:
+      type: object
+      properties:
+        type:
+          enum:
+          - email
+          - url
+    Fields.PercentageNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - percentage
+        fraction_digits:
+          type: integer
+          minimum: 1
+      required:
+      - type
+      - fraction_digits
+    Fields.UpdateIsPrimaryRequest:
+      properties:
+        field_id:
+          type: string
+        position:
+          minimum: 0
+          type: integer
+      required:
+      - field_id
+      - position
+      - is_primary
+      type: object
+    Errors.ValidationError:
+      description: request was malformed
+      example:
+        errors:
+          /:
+            message: 'missing required properties: ["calendar_id", "summary"]'
+          /base_occurrence/start_dtime:
+            message: Can't parse value 20000-01-01T01:01:00 as DATE-TIME
+        message: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]'
+        code: 245
+        human_readable_error: 'Invalid value {} (dict): missing required properties: []"calendar_id",
+          "summary"]"'
+        extra:
+        - {}
+      properties:
+        errors:
+          description: |
+            mapping where keys are paths to problematic request attributes
+            and values are objects with single message attribute
+          type: object
+        message:
+          type: string
+        code:
+          type: integer
+          description: legacy that you <span style='color:red'>SHOULD NOT USE</span>
+        human_readable_error:
+          type: string
+          description: Error message with some changes making it easier to read.
+        extra:
+          type: array
+          items:
+            type: object
+          description: extra data that would be useful to provide
+      required:
+      - message
+      - errors
+      - human_readable_error
+      type: object
+    Fields.DecimalNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - decimal
+        fraction_digits:
+          type: integer
+          minimum: 1
+      required:
+      - type
+      - fraction_digits
+    Contacts.ContactType:
+      enum:
+      - person
+      - company
+      type: string
+    Fields.NumberFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - number
+    Commons.PossibleValues:
+      type: object
+      properties:
+        ordering_type:
+          type: string
+          enum:
+          - ordinal
+          - alphabetic
+        values:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              value:
+                type: string
+    Fields.IntegerNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - integer
+      required:
+      - type
+    Fields.DateTimePresentation:
+      type: object
+      properties:
+        date_format:
+          type: string
+          nullable: true
+          description: |
+            strftime-like format template as described in
+            https://docs.python.org/2.7/library/datetime.html#strftime-and-strptime-behavior
+            or null if client should use date format from user settings
+        ignore_specific_time:
+          type: boolean
+          nullable: true
+          description: |
+            show if time should be presented in the field. Applicable only if date_format is None.
+            Must be null if date_format specified
+      required:
+      - date_format
+      - ignore_specific_time
+    Fields.ContactField:
+      type: object
+      properties:
+        type:
+          enum:
+          - field
+          type: string
+        name:
+          type: string
+        field_id:
+          type: string
+        modifier:
+          type: string
+        multiples:
+          type: boolean
+        read_only:
+          description: if contacts values of this field is editable. It is different from available_actions.read_only
+          type: boolean
+        field_type:
+          $ref: '#/components/schemas/Fields.FieldType'
+        presentation:
+          $ref: '#/components/schemas/Fields.FieldPresentation'
+        available_actions:
+          description: |
+            edit_all - all operations with field available
+            edit_choices_only - just choices of field available for changing
+            view_only - field can't be changed
+          enum:
+          - edit_all
+          - edit_choices_only
+          - view_only
+    Fields.AttachmentFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - attachment
+    Fields.FinancialNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - financial
+        currency:
+          type: string
+          nullable: true
+      required:
+      - type
+      - currency
+    Errors.PreflightCheckError:
+      example:
+        message: Some contacts cannot be updated because of their privacy settings
+        nse_query:
+          and:
+          - is_editable:
+              is: false
+          - _id:
+              in:
+              - 5dfb9c3e84a6b90f0c01c23a
+              - 5dfb9c3e84a6b90f0c01c23b
+        total: 10
+        type: non_editable_contacts
+      properties:
+        message:
+          type: string
+        nse_query:
+          description: problem contacts selection query
+          type: object
+        total:
+          type: integer
+        type:
+          description: unique and stable identifier of error type
+          type: string
+      required:
+      - type
+      - message
+      - total
+      - nse_query
+      type: object
+    Fields.FieldType:
+      oneOf:
+      - $ref: '#/components/schemas/Fields.StringFieldValuesType'
+      - $ref: '#/components/schemas/Fields.LongStringFieldValuesType'
+      - $ref: '#/components/schemas/Fields.ChoiceFieldValuesType'
+      - $ref: '#/components/schemas/Fields.NumberFieldValuesType'
+      - $ref: '#/components/schemas/Fields.DateTimeFieldValuesType'
+      - $ref: '#/components/schemas/Fields.BooleanFieldValuesType'
+      - $ref: '#/components/schemas/Fields.AddressFieldValuesType'
+      - $ref: '#/components/schemas/Fields.AttachmentFieldValuesType'
+      - $ref: '#/components/schemas/Fields.UserFieldValuesType'
+      - $ref: '#/components/schemas/Fields.EmploymentFieldValuesType'
+    Fields.StringFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - string
+        validation_rule:
+          $ref: '#/components/schemas/Fields.TextValidationRule'
+    Fields.CreateFieldRequest:
+      type: object
+      properties:
+        field_type:
+          $ref: '#/components/schemas/Fields.FieldTypeOnFieldCreation'
+        group_id:
+          nullable: true
+          type: string
+        insert_after:
+          description: If not null, inserts a new field after another field or group with specified id.
+            If null, then inserted field to be the first one
+          nullable: true
+          type: string
+        name:
+          maxLength: 50
+          minLength: 1
+          type: string
+        presentation:
+          $ref: '#/components/schemas/Fields.FieldPresentation'
+        tab_id:
+          type: string
+        multiples:
+          type: boolean
+          description: whether this field can hold multiple values (by default, false)
+      required:
+      - name
+      - tab_id
+      - group_id
+      - field_type
+      - presentation
+      - insert_after
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Nimble-Token

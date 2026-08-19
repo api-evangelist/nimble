@@ -1,0 +1,106 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Nimble CRM Contacts Deals API",
+    "version": "v1"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "authorization_code",
+      "authorizationUrl": "https://app.nimble.com/oauth/authorize",
+      "accessTokenUrl": "https://app.nimble.com/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Deals",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List deals",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.nimble.com/api/v1/deals"
+          },
+          "docs": "List deals"
+        },
+        {
+          "info": {
+            "name": "Create a deal",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.nimble.com/api/v1/deal"
+          },
+          "docs": "Create a deal"
+        },
+        {
+          "info": {
+            "name": "Get a deal",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.nimble.com/api/v1/deal/:deal_id",
+            "params": [
+              {
+                "name": "deal_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get a deal"
+        },
+        {
+          "info": {
+            "name": "Update a deal",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://app.nimble.com/api/v1/deal/:deal_id",
+            "params": [
+              {
+                "name": "deal_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Update a deal"
+        },
+        {
+          "info": {
+            "name": "Delete a deal",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://app.nimble.com/api/v1/deal/:deal_id",
+            "params": [
+              {
+                "name": "deal_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete a deal"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

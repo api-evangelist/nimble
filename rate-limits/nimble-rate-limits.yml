@@ -1,0 +1,39 @@
+generated: '2026-08-13'
+method: searched
+source: https://www.nimble.com/developers/docs/
+limit_count: 0
+notes: >-
+  Nimble publishes NO rate limits for its REST API. The full OpenAPI 3.0.0
+  document Nimble embeds in its developer reference (58 paths / 89
+  operations) declares no 429 response on any operation, documents no
+  RateLimit-* / X-RateLimit-* / Retry-After response headers, and its
+  "Handling Errors" reference enumerates only 402 (quota, code 108), 409
+  (validation, code 245), 404 and 500 (code 107) — none of which is a
+  throttling signal. The API-access support article
+  (https://support.nimble.com/en/articles/502755-nimble-api-access) is
+  likewise silent on limits. This is a recorded absence, not an unchecked
+  field — an agent integrating Nimble has no published runtime backpressure
+  contract to honor.
+caution: >-
+  Third-party pages describing "Nimble" QPS/QPM rate limits refer to Nimble
+  Way (docs.nimbleway.com), an unrelated web-data company. They were
+  explicitly excluded and are NOT evidence about Nimble CRM.
+limits: []
+headers:
+  published: false
+  request_limit: null
+  request_remaining: null
+  request_reset: null
+  retry_after: null
+exhaustion:
+  status_code: null
+  note: No throttling status code is documented.
+quota_signals:
+  - status: 402
+    code: 108
+    scope: account subscription
+    meaning: >-
+      Subscription quota exceeded (for example the plan's 25,000 contact
+      record allowance). This is a plan/quota ceiling, not a per-window
+      request rate limit.
+    source: https://www.nimble.com/developers/docs/#tag/Handling-Errors

@@ -1,0 +1,59 @@
+generated: '2026-08-13'
+method: searched
+source: https://www.nimble.com/pricing/
+notes: >-
+  Nimble publishes a single, public, self-serve plan — there is no tiered
+  plan ladder and no enterprise "contact us" tier. Add-ons are billed
+  company-wide rather than per seat. Values read verbatim from the pricing
+  page on 2026-08-13 and corroborated by the provider-published
+  https://www.nimble.com/llms.txt. API access is included in the plan; it is
+  not sold separately and carries no published metered pricing.
+currency: USD
+plan_count: 1
+plans:
+  - name: Nimble Business
+    price: 24.90
+    currency: USD
+    billing_period: month
+    billing_note: per seat / month, billed annually
+    price_monthly: 29.90
+    price_monthly_note: per seat / month, billed monthly
+    annual_discount: up to 17%
+    trial:
+      available: true
+      length_days: 14
+      credit_card_required: false
+      url: https://www.nimble.com/register/business_trial/
+    included:
+      - metric: contact_records
+        quota: 25000
+      - metric: storage
+        quota: 2 GB per seat
+    features:
+      - AI-Powered Email Creation Tools
+      - Microsoft 365 & Google Workspace Integration
+      - Nimble Prospector browser extension
+      - Sales pipelines and deal tracking
+      - Workflows and automations
+      - REST API access
+    overage: not published
+add_ons:
+  - name: Email Marketing
+    price: 15.00
+    currency: USD
+    billing_period: month
+    scope: company-wide
+    source: https://www.nimble.com/llms.txt
+  - name: Web Forms & Web Chat Bundle
+    price: 12.00
+    currency: USD
+    billing_period: month
+    scope: company-wide
+    source: https://www.nimble.com/llms.txt
+api_pricing:
+  metered: false
+  note: >-
+    No separate API plan, per-call pricing, or API quota is published. API
+    access requires an active Nimble account; tokens are issued from the
+    account settings surface described at
+    https://support.nimble.com/en/articles/502755-nimble-api-access

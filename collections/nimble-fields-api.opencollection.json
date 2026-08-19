@@ -1,0 +1,88 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Nimble CRM Contacts Fields API",
+    "version": "v1"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "authorization_code",
+      "authorizationUrl": "https://app.nimble.com/oauth/authorize",
+      "accessTokenUrl": "https://app.nimble.com/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Fields",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List contact field metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.nimble.com/api/v1/contact/fields/metadata"
+          },
+          "docs": "List contact field metadata"
+        },
+        {
+          "info": {
+            "name": "Create a custom contact field",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.nimble.com/api/v1/contact/field"
+          },
+          "docs": "Create a custom contact field"
+        },
+        {
+          "info": {
+            "name": "Update a contact field",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://app.nimble.com/api/v1/contact/field/:field_id",
+            "params": [
+              {
+                "name": "field_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Update a contact field"
+        },
+        {
+          "info": {
+            "name": "Delete a contact field",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://app.nimble.com/api/v1/contact/field/:field_id",
+            "params": [
+              {
+                "name": "field_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete a contact field"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

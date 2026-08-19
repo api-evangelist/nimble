@@ -1,37 +1,752 @@
-openapi: 3.1.0
+openapi: 3.0.0
 info:
-  title: Nimble CRM Contacts API
-  description: 'The Nimble REST API lets developers manage contacts, deals,
-
-    pipelines, notes, custom fields, and messages within a Nimble
-
-    account. Requests are authenticated with an OAuth 2.0 bearer
-
-    token, either via the Authorization header or an access_token
-
-    query parameter.
-
-    '
+  title: Nimble Contacts API
+  description: Nimble CRM Contacts operations. Split by tag from the OpenAPI Nimble publishes at https://www.nimble.com/developers/docs/
+    (embedded Redoc spec). Base host https://app.nimble.com.
   version: v1
 servers:
-- url: https://app.nimble.com/api/v1
-  description: Nimble production API base
-security:
-- bearerAuth: []
+- url: https://app.nimble.com
 tags:
 - name: Contacts
+  description: "# Contacts details\n\nTypical response to this request is a dictionary with 2 keys (unless\n\
+    otherwise specified by the specific API): meta and resources.\n\n## Contact resources\n\nThis field\
+    \ usually contains all data for the contacts you\\'ve requested.\nHere is an example of a Nimble contact\n\
+    \n``` javascript\n\"resources\": [\n    {\n        \"updated\": \"2012-09-07T16:49:56+0300\",\n  \
+    \      \"created\": \"2012-09-07T16:49:56+0300\",\n        \"fields\": {\n            \"description\"\
+    : [\n                {\n                    \"value\": \"description\",\n                    \"label\"\
+    : \"description\",\n                    \"modifier\": \"other\"\n                },\n            \
+    \    {\n                   \"value\": \"description\",\n                   \"label\": \"description\"\
+    ,\n                   \"modifier\": \"linkedin\"\n                }\n            ],\n            \"\
+    last name\": [\n                {\n                    \"modifier\": \"\",\n                    \"\
+    value\": \"Akopyan\",\n                    \"label\": \"last name\"\n                }\n         \
+    \   ],\n            \"phone\": [\n                {\n                    \"modifier\": \"mobile\"\
+    ,\n                    \"value\": \"+7 (917) 202-456-1111\",\n                    \"label\": \"phone\"\
+    \n                },\n                {\n                    \"modifier\": \"home\",\n           \
+    \         \"value\": \"+7 244 231 84 22\",\n                    \"label\": \"phone\"\n           \
+    \     }\n            ],\n            \"URL\": [\n                {\n                    \"modifier\"\
+    : \"other\",\n                    \"value\": \"https://nimble.com\",\n                    \"label\"\
+    : \"URL\"\n                },\n                {\n                    \"modifier\": \"other\",\n \
+    \                   \"value\": \"https://app.nimble.com\",\n                    \"label\": \"URL\"\
+    \n                }\n            ],\n            \"source\": [\n                {\n              \
+    \      \"modifier\": \"\",\n                    \"value\": \"csv\",\n                    \"label\"\
+    : \"source\"\n                }\n            ],\n            \"address\": [\n                {\n \
+    \                   \"modifier\": \"other\",\n                    \"value\": \"{'city': 'Dushanbe',\
+    \ 'street': 'First str. 15', 'zip': '54055', 'country': 'Farganistan'}\",\n                    \"\
+    label\": \"address\"\n                }\n            ],\n            \"email\": [\n              \
+    \  {\n                    \"modifier\": \"other\",\n                    \"value\": \"fake_person@nimble.com\"\
+    ,\n                    \"label\": \"email\"\n                }\n            ],\n            \"first\
+    \ name\": [\n                {\n                    \"modifier\": \"\",\n                    \"value\"\
+    : \"Amayak\",\n                    \"label\": \"first name\"\n                }\n            ]\n \
+    \       },\n        \"object_type\": \"contact\",\n        \"id\": \"5049fb849b85f669e40000dc\",\n\
+    \        \"last_contacted\": {\n            \"user_id\": \"5c459c52ceee1868ee3ab41f\",\n         \
+    \   \"deletion_tstamp\": null,\n            \"type\": \"LCType<message>\",\n            \"object_id\"\
+    : \"ed5afbee-37f5-db6b-7f71-c7d6b8750bbb\",\n            \"tstamp\": \"2019-01-22T21:57:30+0000\"\n\
+    \        },\n        \"avatar_url\": \"https://app.nimble.com/api/contacts/avatars/5049fb849b85f669e40000dc\"\
+    ,\n        \"record_type\": \"person\",\n        \"creator\": \"Emil Kio\",\n        \"children\"\
+    : [],\n        \"tags\": [\n            {\n                \"tag\": \"csv import\",\n            \
+    \    \"id\": \"5049fa0c9b85f62cb4000639\"\n            }\n        ],\n        \"owner_id\": \"5049f696a694620a0700001c\"\
+    \n    }\n]\n```\n\nHere is a description of the response in detail:\n\n**updated**\n\n:   Timestamp\
+    \ of contact\\'s last update time\n\n**created**\n\n:   Timestamp of contact\\'s creation time\n\n\
+    **fields**\n\n:   Dictionary containing contact\\'s fields data. Keys are field names\n    and values\
+    \ are lists of field values. All default contact fields are\n    [described here](#tag/Contacts-Fields/Nimble-Default-Fields)\n\
+    \n**object_type**\n\n:   String specifying document type. For contacts it\\'s `contact`.\n\n**id**\n\
+    \n:   Unique contact id in BSON format.\n\n**last_contacted**\n\n:   \n\n    Information about last\
+    \ outbound message to this contact (if any). Contains following fields.\n\n    :   -   *user_id* ---\
+    \ unique id of owner in BSON format\n        -   *object_id* --- id of object of corresponding type\
+    \ in BSON\n            format\n        -   *type* --- last contacted provider\\'s type\n        -\
+    \   *tstamp* --- timestamp of last outbound message\n        -   *deletion_tstamp* --- timestamp of\
+    \ object deleting\n\n**avatar_url**\n\n:   URL of image that can be used as contact\\'s avatar. Value\
+    \ of null is\n    used to indicate that contact has no avatar associated.\n\n**record_type**\n\n:\
+    \   Type of contact. This can have one of two values: `person` and\n    `company`.\n\n**creator**\n\
+    \n:   Name of the person who created the contact\n\n**children**\n\n:   For `company` contacts this\
+    \ field contains list of `person` contacts\n    associated with the company.\n\n**tags**\n\n:   \n\
+    \n    List of tags associated with the contact. Each tag is represented as a dictionary having following\
+    \ keys.\n\n    :   -   *tag* --- tag\\'s text\n        -   *id* --- unique id of tag in BSON format\n\
+    \n**owner_id**\n\n:   Id of the person owning the contact in BSON format\n\n\n## Contact list\n\n\
+    Contact list request is similar to\n[contact details response](#tag/Contacts/Contacts-details). It\
+    \ has the\nsame key with resources,\n[described here](#tag/Contacts/Contacts-details/Contact-resources).\
+    \ Difference is in `meta` key value. For contact listing it\nreturns pagination details.\n"
 paths:
-  /contacts:
-    get:
-      summary: List contacts
-      operationId: listContacts
+  /api/v1/contacts:
+    delete:
+      description: Deletes a list of contacts by specified advanced search query. Requires bulk delete
+        permission for authenticated user.
+      operationId: delete-contacts-list-2
+      summary: Delete list of contacts
       tags:
       - Contacts
       parameters:
-      - in: query
+      - description: Delete all contacts where fields are containing value from this parameter
+        in: query
+        name: keyword
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Json-encoded advanced search query to find contact for deletion. For more details
+          on query syntax, see <a href=https://www.nimble.com/developers/docs/#tag/Contacts-Fields/Search-contacts/Advanced-search-query-syntax>
+          Advanced search query syntax.</a> If query parameter presented in request — record_type parameter
+          will be ignored.
+        in: query
         name: query
         schema:
           type: string
+      - description: Delete all contacts with provided record_type. This parameter could be combined with
+          keyword parameter in order to delete contacts of specific record_type
+        in: query
+        name: record_type
+        schema:
+          default: all
+          enum:
+          - person
+          - company
+          - all
+          type: string
+      - description: check query's contacts are editable
+        in: query
+        name: preflight_checks
+        schema:
+          default: false
+          type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contacts.ContactsRemovedResponse'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: ''
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.PreflightCheckFailures'
+          description: ''
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+    get:
+      description: Returns list of contacts filtered by specified parameters. Allows filters by advanced
+        search query, tags, keyword. You can receive all fields or specify a list of fields to return.
+      operationId: list-contacts
+      summary: Contact List
+      tags:
+      - Contacts
+      parameters:
+      - description: Specifies a set of simple search criteria for the query. This simple search is performed
+          on any (indexed in our search engine) field of contact
+        in: query
+        name: keyword
+        schema:
+          type: string
+      - description: Specifies a comma separated list of fields to return. If this parameter is excluded,
+          all fields will be returned
+        in: query
+        name: fields
+        schema:
+          type: string
+      - description: Specifies whether tags should be included in the results.
+        in: query
+        name: tags
+        schema:
+          default: true
+          type: boolean
+      - description: True if return last contacted information, False otherwise
+        in: query
+        name: last_contacted  (DEPRECATED; use contexts)
+        schema:
+          default: true
+          type: boolean
+      - description: Identifies the sort field and sort order. Sort order is required when this parameter
+          is used. An single sort field can be specified. Any field can be sorted in either asc or desc
+          order. All searchable fields which aren’t multiple and aren’t custom fields are sortable.
+        in: query
+        name: sort
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Specifies query for contacts advanced search. Please note, that this parameter not
+          compatible with parameters record_type and keyword
+        in: query
+        name: query
+        schema:
+          items:
+            type: string
+          type: array
+      - in: query
+        name: record_type
+        schema:
+          default: all
+          enum:
+          - person
+          - company
+          - all
+          type: string
+      - description: Specifies which page to display
+        in: query
+        name: page
+        schema:
+          default: 1
+          type: integer
+      - description: Specifies the number of items to return per page of results.
+        in: query
+        name: per_page
+        schema:
+          default: 30
+          type: integer
+      - name: files_data (DEPRECATED; use contexts)
+        description: if response should include the contacts files in this listing
+        deprecated: true
+        in: query
+        schema:
+          default: false
+          type: boolean
+      - name: contexts
+        description: |
+          comma-separated additional contexts that should be returned with in this contact
+        in: query
+        schema:
+          $ref: '#/components/schemas/Contacts.ContactViewContextKinds'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contacts.ContactsListing'
+          description: ''
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+  /api/v1/contacts/ids:
+    get:
+      description: Has same parameters as a regular contacts list, but returns only contact ids. Works
+        faster than regular contact list.
+      operationId: list-contacts-ids
+      summary: Contact ids list
+      tags:
+      - Contacts
+      parameters:
+      - description: Specifies a set of simple search criteria for the query. This simple search is performed
+          on any (indexed in our search engine) field of contact
+        in: query
+        name: keyword
+        schema:
+          type: string
+      - description: Specifies a comma separated list of fields to return. If this parameter is excluded,
+          all fields will be returned
+        in: query
+        name: fields
+        schema:
+          type: string
+      - description: Specifies whether tags should be included in the results.
+        in: query
+        name: tags
+        schema:
+          default: true
+          type: boolean
+      - description: True if return last contacted information, False otherwise
+        in: query
+        name: last_contacted
+        schema:
+          default: true
+          type: boolean
+      - description: Identifies the sort field and sort order. Sort order is required when this parameter
+          is used. An single sort field can be specified. Any field can be sorted in either asc or desc
+          order. All searchable fields which aren’t multiple and aren’t custom fields are sortable.
+        in: query
+        name: sort
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Specifies query for contacts advanced search. Please note, that this parameter not
+          compatible with parameters record_type and keyword
+        in: query
+        name: query
+        schema:
+          items:
+            type: string
+          type: array
+      - in: query
+        name: record_type
+        schema:
+          default: all
+          enum:
+          - person
+          - company
+          - all
+          type: string
+      - description: Specifies which page to display
+        in: query
+        name: page
+        schema:
+          default: 1
+          type: integer
+      - description: Specifies the number of items to return per page of results.
+        in: query
+        name: per_page
+        schema:
+          default: 30
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contacts.ContactsIdsListing'
+          description: ''
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+  /api/v1/contact:
+    get:
+      description: Returns a list of contacts for the specified identifiers
+      operationId: list-contacts-for-identifiers
+      summary: Returns standard contact listings
+      tags:
+      - Contacts
+      parameters:
+      - description: A list of contact ids (max 30), separated by a comma
+        in: query
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: Field names to retrieve, otherwise all fields will be retrieved
+        in: query
+        name: fields
+        schema:
+          type: string
+      - description: True if include fields matadata into response, False otherwise
+        in: query
+        name: meta
+        schema:
+          type: boolean
+      - description: True if return tags information, False otherwise
+        in: query
+        name: tags
+        schema:
+          type: boolean
+      - description: True if return last contacted information, False otherwise
+        in: query
+        name: last_contacted (DEPRECATED, use contexts)
+        schema:
+          type: boolean
+      - name: contexts
+        description: |
+          comma-separated additional contexts that should be returned with in this contact
+        in: query
+        schema:
+          $ref: '#/components/schemas/Contacts.ContactViewContextKinds'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  contacts_meta:
+                    $ref: '#/components/schemas/Contacts.FieldsMetadata'
+                  resources:
+                    items:
+                      $ref: '#/components/schemas/Contacts.ContactView'
+                    type: array
+                required:
+                - resources
+                type: object
+          description: ''
+    post:
+      description: Creates contact with data provided. For contact-persons at least first name or last
+        name is required. For contact-companies—company name is required field.
+      operationId: post-contact
+      summary: Create new contact
+      tags:
+      - Contacts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contacts.CreateContactRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contacts.ContactView'
+          description: Contact successfully created
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.PaymentError'
+          description: ''
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+  /api/v1/contact/{contact_id}:
+    parameters:
+    - description: id of a contact to operate on
+      in: path
+      name: contact_id
+      required: true
+      schema:
+        type: string
+    delete:
+      description: Deletes contact
+      operationId: delete-contact
+      summary: Delete contact by id
+      tags:
+      - Contacts
+      parameters:
+      - description: deletion method to use. 'regular' will return error if there are relations that avoid
+          deletion, 'force' will delete contacts with relations (like exit sequence)
+        in: query
+        name: deletion_method
+        schema:
+          type: string
+          enum:
+          - regular
+          - force
+          default: regular
+      - description: when true, remove all email list entries whose email address matches any email of
+          the deleted contact
+        in: query
+        name: cleanup_email_lists
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: Contact successfully deleted
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ForbiddenError'
+          description: Cannot update the contact because of privacy settings violation
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: ''
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+    get:
+      description: Returns contact
+      operationId: get-contact
+      summary: Returns contact data by its id.
+      tags:
+      - Contacts
+      parameters:
+      - description: Field names to retrieve, otherwise all fields will be retrieved
+        in: query
+        name: fields
+        schema:
+          type: string
+      - description: True if include fields matadata into response, False otherwise
+        in: query
+        name: meta
+        schema:
+          type: boolean
+      - description: True if return tags information, False otherwise
+        in: query
+        name: tags
+        schema:
+          type: boolean
+      - description: True if return last contacted information, False otherwise
+        in: query
+        name: last_contacted (DEPRECATED, use contexts)
+        schema:
+          type: boolean
+      - description: True if return leads pipeline info, False otherwise
+        in: query
+        name: leads_data (DEPRECATED, use contexts)
+        schema:
+          default: true
+          type: boolean
+      - name: contexts
+        description: |
+          comma-separated additional contexts that should be returned with in this contact
+        in: query
+        schema:
+          $ref: '#/components/schemas/Contacts.ContactViewContextKinds'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  contacts_meta:
+                    $ref: '#/components/schemas/Contacts.FieldsMetadata'
+                  resources:
+                    items:
+                      $ref: '#/components/schemas/Contacts.ContactView'
+                    type: array
+                required:
+                - resources
+                type: object
+          description: ''
+    put:
+      description: Updates contact
+      operationId: put-contact
+      summary: Updates contact by its id.
+      tags:
+      - Contacts
+      parameters:
+      - description: '`1` if replace fields instead of extending it, otherwise extend'
+        in: query
+        name: type
+        schema:
+          enum:
+          - '0'
+          - '1'
+          type: string
+      - description: True if return leads pipeline info, False otherwise
+        in: query
+        name: leads_data
+        schema:
+          default: true
+          type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contacts.ContactUpdateRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contacts.ContactView'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ForbiddenError'
+          description: the calling user does not have permissions to perform that action
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: ''
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotAcceptableError'
+          description: we can't update contact because it will invisible or not editable after
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+  /api/v1/contacts/metadata:
+    get:
+      description: (DEPRECATED) This method return all available metadata for company's fields/groups.
+      operationId: list-contacts-fields-metadata
+      summary: (D) List contacts fields metadata
+      deprecated: true
+      tags:
+      - Contacts
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contacts.FieldsMetadata'
+          description: Successful execution
+  /api/v1/contacts/notes:
+    post:
+      description: Creates a note on one or more contacts. At least one contact id is required as Nimble
+        currently doesn't support notes without contacts.
+      operationId: post-contact-note
+      summary: Create contacts note
+      tags:
+      - Contacts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contacts.ContactNoteSpec'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contacts.ContactNote'
+          description: Note created successfully.
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+  /api/v1/contacts/notes/{note_id}:
+    parameters:
+    - in: path
+      name: note_id
+      required: true
+      schema:
+        type: string
+    delete:
+      description: delete contact note
+      operationId: delete-contact-note
+      summary: Delte contact note by id
+      tags:
+      - Contacts
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: string
+                required:
+                - id
+                type: object
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: ''
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+    get:
+      description: return single note
+      operationId: get-contact-note
+      summary: Returns note by id.
+      tags:
+      - Contacts
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contacts.ContactNote'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: ''
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+    post:
+      description: create contact note
+      operationId: post-contact-note-with-id
+      summary: Create contact note with id
+      tags:
+      - Contacts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contacts.ContactNoteSpec'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contacts.ContactNote'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: ''
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+    put:
+      description: update contact note
+      operationId: put-contact-note
+      summary: Update contact note by id
+      tags:
+      - Contacts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contacts.ContactNoteSpec'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contacts.ContactNote'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: ''
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+  /api/v1/contacts/{contact_id}/notes:
+    parameters:
+    - in: path
+      name: contact_id
+      required: true
+      schema:
+        type: string
+    get:
+      description: Returns a list of notes for the specified contact
+      operationId: list-contacts-contact-notes
+      summary: List contact notes
+      tags:
+      - Contacts
+      parameters:
       - in: query
         name: page
         schema:
@@ -42,103 +757,1674 @@ paths:
           type: integer
       responses:
         '200':
-          description: Contacts collection
-    delete:
-      summary: Delete multiple contacts by query
-      operationId: deleteContactsByQuery
-      tags:
-      - Contacts
-      responses:
-        '204':
-          description: Contacts deleted
-  /contacts/ids:
-    get:
-      summary: List contact IDs only
-      operationId: listContactIds
-      tags:
-      - Contacts
-      responses:
-        '200':
-          description: Contact IDs
-  /contact:
-    get:
-      summary: Retrieve specific contacts by IDs
-      operationId: getContactsByIds
-      tags:
-      - Contacts
-      parameters:
-      - in: query
-        name: ids
-        required: true
-        schema:
-          type: string
-      responses:
-        '200':
-          description: Requested contacts
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    properties:
+                      has_more:
+                        type: boolean
+                      page:
+                        type: integer
+                      pages:
+                        type: integer
+                      per_page:
+                        type: integer
+                      total:
+                        type: integer
+                    required:
+                    - per_page
+                    - total
+                    - pages
+                    - page
+                    - has_more
+                    type: object
+                  resources:
+                    items:
+                      $ref: '#/components/schemas/Contacts.ContactNote'
+                    type: array
+                required:
+                - meta
+                - resources
+                type: object
+          description: ''
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
     post:
-      summary: Create a new contact
-      operationId: createContact
+      description: Creates a note attached to the contact specified in the URL.
+      operationId: post-contact-note-for-contact
+      summary: Create a contact note
       tags:
       - Contacts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contacts.SingleContactNoteSpec'
+        required: true
       responses:
         '201':
-          description: Contact created
-  /contact/{contact_id}:
-    get:
-      summary: Get an individual contact
-      operationId: getContact
-      tags:
-      - Contacts
-      parameters:
-      - in: path
-        name: contact_id
-        required: true
-        schema:
-          type: string
-      responses:
-        '200':
-          description: Contact details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contacts.ContactNote'
+          description: Note created successfully.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: Contact not found.
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: Invalid request.
+  /api/v1/contacts/{contact_id}/tags:
+    parameters:
+    - in: path
+      name: contact_id
+      required: true
+      schema:
+        type: string
     put:
-      summary: Update a contact
-      operationId: updateContact
+      description: sets tags for a specified contact to a given set
+      operationId: put-contact-tags
+      summary: Assign tags to contact
+      tags:
+      - Contacts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                tags:
+                  items:
+                    type: string
+                  type: array
+              required:
+              - tags
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contacts.ContactView'
+          description: tags were set successfully
+        '403':
+          description: contact is not editable by the privacy setting
+        '404':
+          description: contact not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+  /api/v1/contacts/proceedings_providers:
+    get:
+      description: Returns a list of user-available, contact proceeding types. Proceeding is a business
+        activity, for example,  a new deal closed, task assigned, or a note added to a contact
+      operationId: list-contacts-proceeding-providers
+      summary: List contacts proceeding providers
+      tags:
+      - Contacts
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  providers:
+                    items:
+                      $ref: '#/components/schemas/Proceedings.ProceedingProvider'
+                    type: array
+                required:
+                - providers
+                type: object
+          description: ''
+  /api/v1/contacts/{contact_id}/proceedings:
+    parameters:
+    - in: path
+      name: contact_id
+      required: true
+      schema:
+        type: string
+    get:
+      description: Get all proceedings that match query parameters.
+      operationId: list-contact-proceedings
+      summary: List contact proceedings
       tags:
       - Contacts
       parameters:
-      - in: path
-        name: contact_id
+      - description: |
+          Indicates a direction of the query. `pending` -- to get future proceedings, `past` -- to get old proceedings.
+        in: query
+        name: direction
         required: true
+        schema:
+          enum:
+          - pending
+          - past
+          type: string
+      - description: Indicates how many proceedings show per page
+        in: query
+        name: limit
+        required: true
+        schema:
+          type: integer
+      - description: List of proceedings types to return. `Default:` return proceedings of all types.
+          You can obtain available types by requesting `Contacts proceeding providers` route
+        in: query
+        name: types
+        schema:
+          items:
+            type: string
+            enum:
+            - contact_note
+            - contact_attachment
+            - message
+            - webform_response
+            - task
+            - call
+            - event
+            - deal
+            - new_deal
+          type: array
+      - description: Show proceedings before or after that timestamp (depending on the `direction`).
+        in: query
+        name: next_tstamp
+        schema:
+          type: string
+      - description: 'Show proceedings before or after that proceeding id, eg: `new_deal|777f4444444d4fc4ef44ea44`
+          (depending on the `direction` param).'
+        in: query
+        name: next_id
+        schema:
+          type: string
+      - description: Will fetch completed proceedings for true, false for uncompleted, for example completed
+          deals.
+        in: query
+        name: completed
+        schema:
+          type: boolean
+      - description: Search query to filter among contacts notes
+        in: query
+        name: notes__search_query
         schema:
           type: string
       responses:
         '200':
-          description: Contact updated
-    delete:
-      summary: Delete a contact
-      operationId: deleteContact
-      tags:
-      - Contacts
-      parameters:
-      - in: path
-        name: contact_id
-        required: true
-        schema:
-          type: string
-      responses:
-        '204':
-          description: Contact deleted
+          content:
+            application/json:
+              schema:
+                properties:
+                  next_page:
+                    description: Url-encode these arguments and add them to the next request to retrieve
+                      the next page.
+                    nullable: true
+                    type: object
+                  proceedings:
+                    description: List of proceedings that match query parameters.
+                    items:
+                      $ref: '#/components/schemas/Proceedings.Proceeding'
+                    type: array
+                required:
+                - proceedings
+                - next_page
+                type: object
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: contact not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+security:
+- ApiKey: []
 components:
+  schemas:
+    Proceedings.ProceedingTypeDef:
+      properties:
+        type_id:
+          description: Unique and stable id for an proceeding type
+          type: string
+          enum:
+          - contact_note
+          - contact_attachment
+          - message
+          - webform_response
+          - task
+          - call
+          - event
+          - deal
+          - new_deal
+        type_name:
+          description: human-readable name for an proceeding type
+          type: string
+    Messages.MessagingAccountIdentifier:
+      properties:
+        account_type:
+          enum:
+          - email
+          - mass_mail
+          type: string
+        identifier:
+          description: 'Account identifier specific to account_type. For account_type: email it should
+            be email address. '
+          type: string
+      required:
+      - account_type
+      - identifier
+      type: object
+    Attachments.AttachmentData:
+      discriminator:
+        propertyName: type
+      properties:
+        attachment_bytes:
+          type: integer
+        attachment_type:
+          type: string
+        icon:
+          type: string
+        link:
+          description: URL that can be used to download an attachment
+          type: string
+        mime_type:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        updated:
+          type: string
+        updated_by:
+          type: string
+      required:
+      - attachment_type
+      - name
+      - link
+      - attachment_bytes
+      - icon
+      - type
+      - mime_type
+      - updated
+      - updated_by
+      type: object
+    Contacts.ContactPrivacy:
+      description: "Defines scopes of object visibility and editability.<br>\nEdit permission means that\
+        \ group or user also is able to read an object.<br>\n***No duplication***, if `id` in edit Principal\
+        \ it must not be in view Principal.<br>\nIf property is `None` - everyone have an action right\
+        \ (Permitted to everyone).<br>\nIf Principal is set, but has empty properies - only owner is allowed\
+        \ to act. <br>\nIf not specified - default privacy from company settings will be applied "
+      properties:
+        edit:
+          description: None means permitted to everyone. Prinipals object define permission explicitly
+          nullable: true
+          type: object
+          oneOf:
+          - $ref: '#/components/schemas/Contacts.Principals'
+        read:
+          description: None means permitted to everyone. Prinipals object define permission explicitly
+          nullable: true
+          type: object
+          oneOf:
+          - $ref: '#/components/schemas/Contacts.Principals'
+      required:
+      - read
+      - edit
+      type: object
+    Contacts.FieldGroupType:
+      enum:
+      - person
+      - company
+      - both
+      type: string
+    Contacts.SimpleFieldPresentation:
+      properties:
+        type:
+          $ref: '#/components/schemas/Contacts.FieldPresentationType'
+        width:
+          $ref: '#/components/schemas/Contacts.FieldPresentationWidth'
+      required:
+      - type
+      - width
+      type: object
+    Contacts.ContactNoteSpec:
+      properties:
+        contact_ids:
+          description: List of contacts’ IDs in BSON format to which the note will be attached. Contacts
+            count should be between 1 and 10.
+          items:
+            type: string
+          type: array
+        note:
+          type: string
+        note_preview:
+          description: Short version of note, that will be used for preview purposes
+          type: string
+      required:
+      - contact_ids
+      - note
+      - note_preview
+      type: object
+    Contacts.ContactView:
+      description: user perspective on a specific contact
+      properties:
+        avatar_url:
+          type: string
+        children:
+          items:
+            type: string
+          type: array
+        employers_info:
+          description: DEPRECATED, use  values in `contexts`
+          items:
+            properties:
+              company_name:
+                type: string
+              contact_id:
+                type: string
+            required:
+            - company_name
+            - contact_id
+            type: object
+          type: array
+        company_last_contacted:
+          description: DEPRECATED, use  values in `contexts`
+          properties:
+            in:
+              $ref: '#/components/schemas/Contacts.LastContacted'
+            out:
+              $ref: '#/components/schemas/Contacts.LastContacted'
+          required:
+          - in
+          - out
+          type: object
+        lc:
+          description: DEPRECATED, use values in `contexts`
+          $ref: '#/components/schemas/Contacts.UserLastContactedView'
+        created:
+          type: string
+        creator:
+          type: string
+        fields:
+          additionalProperties:
+            items:
+              properties:
+                field_id:
+                  type: string
+                modifier:
+                  type: string
+                value:
+                  type: string
+              required:
+              - field_id
+              - value
+              - modifier
+              type: object
+            type: array
+          type: object
+        id:
+          type: string
+        is_important:
+          type: object
+        last_contacted:
+          description: DEPRECATED, use values in `contexts`
+          nullable: true
+          $ref: '#/components/schemas/Contacts.LastContacted'
+        object_type:
+          enum:
+          - contact
+          type: string
+        last_contacted_user:
+          description: email of user that contacted for the last time (DEPRECATED, use values in `contexts`)
+          type: string
+        owner_id:
+          type: string
+        privacy:
+          $ref: '#/components/schemas/Contacts.ContactPrivacy'
+        record_type:
+          $ref: '#/components/schemas/Contacts.ContactType'
+        reminder:
+          nullable: true
+          $ref: '#/components/schemas/Contacts.Reminder'
+        tags:
+          items:
+            type: string
+          type: array
+        updated:
+          type: string
+        updater:
+          type: string
+        stages_info:
+          description: DEPRECATED. use `contexts`
+          type: array
+          items:
+            $ref: '#/components/schemas/Contacts.LeadInStageInfo'
+        notice:
+          $ref: '#/components/schemas/Contacts.ContactNotice'
+        contexts:
+          description: additional requested contexts (usually passed in the `contexts` request parameter)
+          type: array
+          items:
+            $ref: '#/components/schemas/Contacts.ContactViewContext'
+      required:
+      - id
+      - record_type
+      - object_type
+      - fields
+      - owner_id
+      - privacy
+      - children
+      - updated
+      - created
+      - updater
+      - creator
+      - avatar_url
+      - tags
+      - last_contacted
+      - company_last_contacted
+      - is_important
+      - reminder
+      - notice
+      type: object
+    Contacts.UploadedContactFile:
+      type: object
+      properties:
+        file_id:
+          type: string
+        contact_id:
+          type: string
+        file_name:
+          type: string
+        file_size:
+          type: number
+        mime_type:
+          type: string
+        uploader:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        uploaded_at:
+          type: string
+        pipeline_ids:
+          type: array
+          items:
+            type: string
+    Contacts.EmployersDataContext:
+      type: object
+      properties:
+        context_key:
+          type: object
+        context:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contacts.EmployerInfo'
+    Errors.NotAcceptableError:
+      example:
+        message: You can not reopen already active deal
+        type: lost_contact_access
+      properties:
+        message:
+          type: string
+        type:
+          type: string
+      required:
+      - message
+      - type
+      type: object
+    Contacts.CreateContactRequest:
+      properties:
+        avatar_url:
+          type: string
+        fields:
+          description: |
+            Describes a dictionary organized in the same structure as a contact listing response.
+            In this structure, each key is field name. Values are lists of dictionaries, having two fields:
+            value - actual value to store in contact field, modifier - field modifier to use, if field can have one.
+            At a minimum, contacts require a name (first or last for a person, company name for a company).
+          type: object
+        owner_id:
+          $ref: '#/components/schemas/Contacts.OwnerId'
+        privacy:
+          $ref: '#/components/schemas/Contacts.ContactPrivacy'
+        record_type:
+          $ref: '#/components/schemas/Contacts.ContactType'
+        tags:
+          description: |
+            Comma separated list of tags to assign to contacts. If you need to create tags,
+            containing comma sign — escape it with backslash.
+            E.g. `our customers,best\,premium` will create tags `our customers` and `best,premium`.
+            Note Maximum 5 tags are allowed in this list during contact creation.
+          type: string
+        type:
+          $ref: '#/components/schemas/Contacts.ContactType'
+        file_ids:
+          description: List of already uploaded file ids to attach to the contact
+          items:
+            type: string
+      required:
+      - fields
+      type: object
+    Contacts.OwnerId:
+      description: |-
+        Describes id of user who is owning this contact. Keep in mind that the creator and owner may be different.<br>
+        If null - owner will be unassigned.<br>
+        If not specified - default owner from company settings will be applied.<br>
+      nullable: true
+      type: string
+    Settings.MessagingAccountIdentifier:
+      properties:
+        account_type:
+          type: string
+        identifier:
+          type: string
+      required:
+      - account_type
+      - identifier
+      type: object
+    Contacts.FieldsMetadata:
+      example:
+        fields:
+          instagram:
+          - group: Contact Info
+            id: 58e212d729e8e95e88606be5
+            label: instagram
+            modifier: ''
+            multiples: true
+            name: instagram
+            presentation:
+              type: single-line-text-box
+              width: '1'
+            read_only: false
+        groups:
+          Contact Info:
+            id: 58e212d729e8e95e88606bc7
+            is_standard: true
+            label: Contact Info
+            name: Contact Info
+            order:
+            - instagram
+            type: both
+      properties:
+        fields:
+          additionalProperties:
+            description: The name of field
+            items:
+              $ref: '#/components/schemas/Contacts.ContactField'
+            type: array
+          type: object
+        groups:
+          additionalProperties:
+            oneOf:
+            - $ref: '#/components/schemas/Contacts.ContactFieldsGroup'
+            description: The name of group
+          type: object
+      required:
+      - groups
+      - fields
+      type: object
+    Sequences.SequenceProgressionOutcomes:
+      enum:
+      - successful
+      - unsuccessful
+      - error
+      - removed
+    Contacts.SingleContactNoteSpec:
+      properties:
+        note:
+          type: string
+        note_preview:
+          description: Optional short version used for previews. Defaults to the full note.
+          type: string
+      required:
+      - note
+      type: object
+    Errors.PreflightCheckFailures:
+      description: action cannot be applied to all specified contacts
+      properties:
+        errors:
+          items:
+            $ref: '#/components/schemas/Errors.PreflightCheckError'
+          type: array
+      required:
+      - errors
+      type: object
+    Messages.MessageTemplateContentMode:
+      type: string
+      enum:
+      - standard
+      - builder
+      - custom_html
+    Contacts.ContactsRemovedResponse:
+      properties:
+        data:
+          properties:
+            ids:
+              items:
+                type: string
+              type: array
+            push_data:
+              $ref: '#/components/schemas/Commons.PushData'
+          required:
+          - ids
+          - push_data
+          type: object
+        status:
+          type: string
+      required:
+      - data
+      - status
+      type: object
+    Contacts.ContactFilesContext:
+      type: object
+      properties:
+        context_key:
+          type: object
+        context:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contacts.ContactFile'
+    Contacts.FieldPresentationWidth:
+      enum:
+      - '1'
+      - '2'
+      type: string
+    Commons.PaginationMeta:
+      properties:
+        page:
+          type: integer
+        pages:
+          type: integer
+        per_page:
+          type: integer
+        total:
+          type: integer
+      required:
+      - page
+      - pages
+      - per_page
+      - total
+      type: object
+    Contacts.ContactsListing:
+      properties:
+        meta:
+          $ref: '#/components/schemas/Commons.PaginationMeta'
+        resources:
+          items:
+            $ref: '#/components/schemas/Contacts.ContactView'
+          type: array
+      required:
+      - meta
+      - resources
+      type: object
+    Messages.EmailList:
+      type: object
+      properties:
+        list_id:
+          type: string
+          format: objectid
+          description: Unique identifier for the email list
+        name:
+          type: string
+          description: The name of the email list
+        description:
+          type: string
+          nullable: true
+          description: Description of the email list
+        opt_in_settings:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: whether to enable mandatory opt-in (i.e. confirmation of recipient via email)
+            confirmation_message_request:
+              $ref: '#/components/schemas/Messages.EmailListConfirmationMessageRequest'
+        owner_id:
+          type: string
+          format: objectid
+          description: User id of owner
+        is_private:
+          type: boolean
+          description: whether this mailing list is shared across company or not
+        archived_at:
+          type: string
+          format: date-time
+          description: Timestamp when the list was archived
+        is_archived:
+          type: boolean
+          description: whether this mailing list is archived already
+        total_entries:
+          type: integer
+          description: Total number of recipients in this mailing list
+    Contacts.LeadsDataContext:
+      type: object
+      properties:
+        context_key:
+          type: object
+        context:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contacts.LeadInStageInfo'
+    Errors.NotFoundError:
+      example:
+        object_id: 4f2acc3142a053dda595f00b
+        object_type: deal
+      properties:
+        object_id:
+          type: string
+        object_type:
+          type: string
+      required:
+      - object_type
+      - object_id
+      type: object
+    Contacts.ContactUpdateRequest:
+      properties:
+        avatar_url:
+          type: string
+        fields:
+          description: |
+            Describes a dictionary organized in the same structure as a contact listing response.
+            In this structure, each key is field name. Values are lists of dictionaries, having two fields:
+            value - actual value to store in contact field, modifier - field modifier to use, if field can have one.
+            At a minimum, contacts require a name (first or last for a person, company name for a company).
+          type: object
+        is_important:
+          type: boolean
+      type: object
+    Contacts.LastContactedDataContext:
+      type: object
+      properties:
+        context_key:
+          type: object
+        context:
+          $ref: '#/components/schemas/Contacts.UserLastContactedView'
+    Proceedings.Proceeding:
+      properties:
+        description:
+          type: string
+        details:
+          description: Proceeding-specific data that only relevant for certain implementation
+          type: object
+        feed_tstamp:
+          type: string
+        name:
+          type: string
+        proceeding_id:
+          type: string
+        proceeding_type:
+          $ref: '#/components/schemas/Proceedings.ProceedingTypeDef'
+      required:
+      - details
+      - proceeding_type
+      - proceeding_id
+      - name
+      - description
+      - feed_tstamp
+      type: object
+    Contacts.LastContacted:
+      properties:
+        deletion_tstamp:
+          type: object
+        object_id:
+          type: object
+        tstamp:
+          type: object
+        type:
+          type: object
+        user_id:
+          type: object
+        direction:
+          enum:
+          - inbound
+          - outbound
+      required:
+      - tstamp
+      - type
+      - object_id
+      - user_id
+      - deletion_tstamp
+      type: object
+    Contacts.ShortContact:
+      properties:
+        avatar_url:
+          type: string
+        contact_type:
+          $ref: '#/components/schemas/Contacts.ContactType'
+        email:
+          items:
+            type: string
+          type: array
+        id:
+          type: string
+        is_viewable:
+          description: if this contact can be viewed in details by a calling user
+          type: boolean
+        name:
+          type: string
+        employment:
+          nullable: true
+          description: the most relevant contact employment (e.g., primary or present)
+          type: object
+          properties:
+            company_name:
+              type: string
+              nullable: true
+            title:
+              type: string
+              nullable: true
+        phones:
+          properties:
+            label:
+              description: phone label like "home", "work", etc
+              type: string
+            value:
+              type: string
+          required:
+          - label
+          - value
+          type: object
+      required:
+      - avatar_url
+      - contact_type
+      - id
+      - name
+      - email
+      - is_viewable
+      - phones
+      type: object
+    Errors.ValidationError:
+      description: request was malformed
+      example:
+        errors:
+          /:
+            message: 'missing required properties: ["calendar_id", "summary"]'
+          /base_occurrence/start_dtime:
+            message: Can't parse value 20000-01-01T01:01:00 as DATE-TIME
+        message: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]'
+        code: 245
+        human_readable_error: 'Invalid value {} (dict): missing required properties: []"calendar_id",
+          "summary"]"'
+        extra:
+        - {}
+      properties:
+        errors:
+          description: |
+            mapping where keys are paths to problematic request attributes
+            and values are objects with single message attribute
+          type: object
+        message:
+          type: string
+        code:
+          type: integer
+          description: legacy that you <span style='color:red'>SHOULD NOT USE</span>
+        human_readable_error:
+          type: string
+          description: Error message with some changes making it easier to read.
+        extra:
+          type: array
+          items:
+            type: object
+          description: extra data that would be useful to provide
+      required:
+      - message
+      - errors
+      - human_readable_error
+      type: object
+    Contacts.ContactType:
+      enum:
+      - person
+      - company
+      type: string
+    Attachments.DropboxAttachmentData:
+      allOf:
+      - $ref: '#/components/schemas/Attachments.AttachmentData'
+      - description: Dropbox
+    Contacts.Reminder:
+      properties:
+        active:
+          type: boolean
+        contact_id:
+          type: string
+        days_till_triggered:
+          type: integer
+        period:
+          type: integer
+        triggered:
+          type: boolean
+      required:
+      - contact_id
+      - period
+      - days_till_triggered
+      - active
+      - triggered
+      type: object
+    Contacts.ContactNote:
+      properties:
+        author_name:
+          description: Readable name of company user who created this note
+          type: string
+        contacts:
+          items:
+            $ref: '#/components/schemas/Contacts.ShortContact'
+          type: array
+        created:
+          description: Date and time when the note was created encoded in ISO 8601
+          type: string
+        id:
+          type: string
+        note:
+          type: string
+        note_preview:
+          type: string
+        owner_id:
+          type: string
+        owner:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        updated:
+          description: Date and time when the note was updated encoded in ISO 8601
+          type: string
+      required:
+      - id
+      - owner_id
+      - author_name
+      - created
+      - updated
+      - contacts
+      - note_preview
+      - note
+      - owner
+      type: object
+    Contacts.ContactViewContextKinds:
+      enum:
+      - last_contacted_data
+      - employers_data
+      - leads_data
+      - sequences_data
+      - contact_files
+    Contacts.LastContactedDirectedContainer:
+      properties:
+        in:
+          $ref: '#/components/schemas/Contacts.LastContacted'
+        out:
+          $ref: '#/components/schemas/Contacts.LastContacted'
+        last:
+          $ref: '#/components/schemas/Contacts.LastContacted'
+    Contacts.FieldPresentationType:
+      enum:
+      - single-line-text-box
+      - phone
+      - email
+      - url
+      - multi-line-text-box
+      - select-box
+      - address
+      - separator
+      - numeric-general
+      - numeric-scientific
+      - date
+      - date-wo-year
+      - boolean
+      - objectid
+      - attachment
+      type: string
+    Contacts.ContactNotice:
+      properties:
+        created:
+          description: Date and time when the notice was created encoded in ISO 8601
+          type: string
+        updated:
+          description: Date and time when the notice was updated encoded in ISO 8601
+          type: string
+        creator:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        updated_by:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        text:
+          type: string
+        color:
+          type: string
+      required:
+      - created
+      - updated
+      - creator
+      - updated_by
+      - text
+      - color
+      type: object
+    Attachments.OneDriveAttachmentData:
+      allOf:
+      - $ref: '#/components/schemas/Attachments.AttachmentData'
+      - description: OneDrive
+    Contacts.ContactViewContext:
+      oneOf:
+      - $ref: '#/components/schemas/Contacts.ContactFilesContext'
+      - $ref: '#/components/schemas/Contacts.EmployersDataContext'
+      - $ref: '#/components/schemas/Contacts.LastContactedDataContext'
+      - $ref: '#/components/schemas/Contacts.LeadsDataContext'
+      - $ref: '#/components/schemas/Contacts.InSequenceContactInfoContext'
+      - $ref: '#/components/schemas/Contacts.EmailListsContext'
+      discriminator:
+        propertyName: context_key
+        mapping:
+          last_contacted_data: '#/components/schemas/Contacts.LastContactedDataContext'
+          employers_data: '#/components/schemas/Contacts.EmployersDataContext'
+          leads_data: '#/components/schemas/Contacts.LeadsDataContext'
+          contact_files: '#/components/schemas/Contacts.ContactFilesContext'
+          sequences_data: '#/components/schemas/Contacts.InSequenceContactInfoContext'
+          email_lists: '#/components/schemas/Contacts.EmailListsContext'
+    Contacts.ContactField:
+      example:
+        group: Company Info
+        id: 58e212d729e8e95e88606bf6
+        label: domain
+        modifier: ''
+        multiples: false
+        name: domain
+        presentation:
+          type: single-line-text-box
+          width: '1'
+        read_only: false
+      properties:
+        group:
+          type: string
+        id:
+          type: string
+        label:
+          type: string
+        modifier:
+          type: string
+        multiples:
+          type: boolean
+        name:
+          type: string
+        presentation:
+          oneOf:
+          - $ref: '#/components/schemas/Contacts.SimpleFieldPresentation'
+          - $ref: '#/components/schemas/Contacts.SelectBoxFieldPresentation'
+        read_only:
+          type: boolean
+      required:
+      - id
+      - name
+      - label
+      - modifier
+      - group
+      - presentation
+      - multiples
+      - read_only
+      type: object
+    Contacts.ContactFile:
+      type: object
+      properties:
+        source:
+          type: string
+          enum:
+          - device
+          - google_drive
+          - one_drive
+          - dropbox
+        metadata:
+          oneOf:
+          - $ref: '#/components/schemas/Contacts.UploadedContactFile'
+          - $ref: '#/components/schemas/Attachments.DropboxAttachmentData'
+          - $ref: '#/components/schemas/Attachments.GoogleDriveAttachmentData'
+          - $ref: '#/components/schemas/Attachments.OneDriveAttachmentData'
+    Contacts.SelectBoxFieldPresentation:
+      properties:
+        next_id:
+          type: string
+        type:
+          enum:
+          - select-box
+          type: string
+        values:
+          items:
+            properties:
+              id:
+                type: string
+              value:
+                type: string
+            required:
+            - id
+            - value
+            type: object
+          type: array
+        width:
+          $ref: '#/components/schemas/Contacts.FieldPresentationWidth'
+      required:
+      - type
+      - width
+      - next_id
+      - values
+      type: object
+    Errors.ForbiddenError:
+      example:
+        message: You don't have access to this deal
+      properties:
+        message:
+          type: string
+          description: |
+            indicates that we can't authenticate the request. Message can be an arbitrary string, however there are
+            few special cases:<br/>
+            "Can't authenticate request" – something is wrong with the auth token<br/>
+            "email_verification_required" - if the user needs to verify their email address to continue having
+            access to Nimble<br/>
+      required:
+      - message
+      type: object
+    Sequences.CompletedSequenceStepRecord:
+      type: object
+      properties:
+        step_id:
+          type: string
+          description: ID (name) of the completed sequence step
+        step_type:
+          description: the type of the completed sequence step
+          enum:
+          - delay
+          - send_message
+          - condition
+        when:
+          type: string
+          description: iso8601 timestamp of when the step was completed
+        step_name:
+          type: string
+          description: the name of a step this contact completed
+    Sequences.InSequenceContactExitDetails:
+      type: object
+      properties:
+        when:
+          type: string
+        exit_method:
+          type: string
+          description: |
+            "how" the contact exited the sequence (e.g. by an exit rule or certain message condition)
+        outcome:
+          $ref: '#/components/schemas/Sequences.SequenceProgressionOutcomes'
+    Messages.MessageTemplateContentSpecification:
+      properties:
+        attachments:
+          items:
+            $ref: '#/components/schemas/Messages.Attachment'
+          type: array
+        bcc:
+          items:
+            $ref: '#/components/schemas/Messages.MessagingAccount'
+          type: array
+        body:
+          description: |
+            Can include template variable references in for of *|VARIABLE|*. Recognized template variables are 'FName',
+            'LName', 'Title', 'CompanyName' and 'Unsubscribe'.
+            Template variables are surrounded with *| |* symbols. Unknown template variable references are not allowed
+            and will result in error.
+          type: string
+        cc:
+          items:
+            $ref: '#/components/schemas/Messages.MessagingAccount'
+          type: array
+        subject:
+          type: string
+        builder_data:
+          type: object
+          description: client Email builder data
+          nullable: true
+        content_mode:
+          $ref: '#/components/schemas/Messages.MessageTemplateContentMode'
+        unsubscribe_category_ids:
+          type: array
+          items:
+            type: string
+          description: ids of unsubscribe categories to which this message belongs. If null -- will unsubscribe
+            from all categories
+          nullable: true
+      required:
+      - subject
+      - body
+      type: object
+    Contacts.Principals:
+      description: |
+        Explicitly defines users and groups that have an action permission. If any set - no one can.
+      properties:
+        group_ids:
+          description: ids of permitted groups. if empty - no group has permission
+          items:
+            type: string
+          type: array
+        user_ids:
+          description: ids of permitted users. If empty - no user has permission
+          items:
+            type: string
+          type: array
+      required:
+      - user_ids
+      - group_ids
+      type: object
+    Commons.PushData:
+      description: an object containing the push data from the server to the client
+      properties:
+        action:
+          description: the action this notification is for
+          example: single_message_sent
+          type: string
+        created:
+          description: datetime formatted in iso8601
+          format: date-time
+          type: string
+        id:
+          type: string
+        is_new:
+          type: boolean
+        object:
+          description: some structure which varies, depending on object_type and action
+          type: object
+        object_type:
+          description: the type of object this push data is for
+          example: notification
+          type: string
+      required:
+      - action
+      - object_type
+      - created
+      - is_new
+      - id
+      - object
+      type: object
+    Proceedings.ProceedingProvider:
+      properties:
+        name:
+          type: string
+        provider_id:
+          type: string
+        types:
+          items:
+            $ref: '#/components/schemas/Proceedings.ProceedingTypeDef'
+          type: array
+      required:
+      - provider_id
+      - name
+      - types
+      type: object
+    Contacts.LeadInStageInfo:
+      description: info about stage where lead is
+      properties:
+        pipeline_id:
+          type: string
+          format: ObjectId
+        pipeline_name:
+          type: string
+        stage_name:
+          type: string
+        entered_data:
+          type: string
+          format: datetime
+        is_final:
+          type: boolean
+        days_limit:
+          type: integer
+          nullable: true
+    Accounts.ShortUserInfo:
+      properties:
+        avatar_url:
+          type: string
+        email:
+          type: string
+        is_active:
+          type: boolean
+        name:
+          type: string
+        user_id:
+          type: string
+      required:
+      - user_id
+      - name
+      - email
+      - avatar_url
+      - is_active
+      type: object
+    Sequences.InSequenceContactInfo:
+      type: object
+      properties:
+        sequence_id:
+          description: id of a sequence this contact is in
+          type: string
+        seq_contact_id:
+          description: a unique identifier of a the contact in the sequence
+          type: string
+        sequence_name:
+          description: the name of a sequence this contact belongs to
+          type: string
+        sequence_color:
+          description: the color of a sequence this contact belongs to
+          type: string
+        completed_steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sequences.CompletedSequenceStepRecord'
+        current_step:
+          type: string
+          description: current sequence's step name
+        current_step_id:
+          type: string
+          description: current sequence's step id
+        last_completed_action:
+          type: string
+          description: last completed sequence action name
+        last_completed_action_dao:
+          type: string
+          description: last completed sequence action date
+        has_waited_in_current_step:
+          type: number
+          description: for how many seconds the contact has waited in it's current step
+        email:
+          description: an email address the contact was entered the sequence with
+          type: string
+        exit_details:
+          description: exit details if contact completed the sequence
+          nullable: true
+          type: object
+          oneOf:
+          - $ref: '#/components/schemas/Sequences.InSequenceContactExitDetails'
+        owner:
+          description: user who entered this contact to a sequence
+          oneOf:
+          - $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        next_step_scheduled_at:
+          description: |
+            the timestamp of the next scheduled sequence step (can be use to approximate the next send_message step)
+          type: string
+    Messages.MessagingAccount:
+      allOf:
+      - $ref: '#/components/schemas/Messages.MessagingAccountIdentifier'
+      properties:
+        avatar_url:
+          nullable: true
+          type: string
+        comment:
+          description: |
+            Field comment holds some short freeform text that shows a role of this messaging account to user.
+            Examples are 'home', 'work', 'assistant', etc.
+          type: string
+        company:
+          description: Name of account's company, might be null.
+          type: object
+        company_id:
+          description: ID of account's company in Nimble db, might be null.
+          nullable: true
+          type: object
+        contact_id:
+          description: Nimble contact id associated with this account
+          nullable: true
+          type: string
+          format: ObjectId
+        user_id:
+          description: Nimble user id (user themself or team member) associated with this account
+          nullable: true
+          type: string
+          format: ObjectId
+        name:
+          description: Field name is for readable name of a user. Sometimes identifier value is not suitable
+            to be shown to user, for example when it's numerical user id (as for Facebook). Can be null
+            if full name is unknown.
+          oneOf:
+          - type: number
+          - type: string
+      type: object
+    Contacts.ContactsIdsListing:
+      properties:
+        meta:
+          $ref: '#/components/schemas/Commons.PaginationMeta'
+        resources:
+          description: List of contacts’ IDs in BSON format
+          items:
+            type: string
+          type: array
+      required:
+      - meta
+      - resources
+      type: object
+    Errors.PaymentError:
+      example:
+        extra_usage:
+          features: []
+          resources:
+          - amount: 1
+            resource:
+              description: Total number of contacts in a company
+              per_user: false
+              persistent: true
+              resource_id: number_of_contacts
+        payment_type: Resources/features usage exceeded
+        required_spec:
+          plan:
+            available_upgrades:
+            - amount: 10737418240
+              name: Messages total storage add on
+              price: $10.00
+              resource: total_message_size
+              upgrade_id: storage_upgrade
+            - amount: 10000
+              name: Contacts add on
+              price: $10.00
+              resource: number_of_contacts
+              upgrade_id: contacts_upgrade
+            limits:
+              features: []
+              resources_limits:
+              - limit:
+                  per_user: 2147483648
+                  type: team_size_proportional_plan_limit
+                resource:
+                  description: How many size used for message storage for a user
+                  per_user: false
+                  persistent: true
+                  resource_id: total_message_size
+              - limit:
+                  type: no_limit
+                resource:
+                  description: Total number of users in a company
+                  per_user: false
+                  persistent: true
+                  resource_id: number_of_users
+              - limit:
+                  amount: 25000
+                  type: fixed_plan_limit
+                resource:
+                  description: Total number of contacts in a company
+                  per_user: false
+                  persistent: true
+                  resource_id: number_of_contacts
+              - limit:
+                  type: no_limit
+                resource:
+                  description: How many group message templates are allowed for a user
+                  per_user: true
+                  persistent: true
+                  resource_id: number_of_message_templates
+              - limit:
+                  type: no_limit
+                resource:
+                  description: Total number of allowed custom fields for contacts
+                  per_user: false
+                  persistent: true
+                  resource_id: custom_fields
+              - limit:
+                  amount: 100
+                  type: fixed_plan_limit
+                resource:
+                  description: How many group messages can be sent per day
+                  per_user: true
+                  persistent: false
+                  resource_id: bulk_messages_per_day
+            name: Nimble Business
+            period: monthly
+            plan_id: plan_1
+            price:
+              per_user_price: $25.00
+              type: team_size_proportional_plan_price
+          upgrades: []
+      properties:
+        extra_usage:
+          description: Exceeded nimble usage. here you can findout what resource or feature wasn't enough
+          type: object
+        payment_type:
+          type: string
+        required_spec:
+          description: Subscription spec that will allow user to continue use nimble with all extra resources/features
+          type: object
+      required:
+      - payment_type
+      - required_spec
+      - extra_usage
+      type: object
+    Contacts.EmailListsContext:
+      type: object
+      properties:
+        context_key:
+          type: object
+        context:
+          type: array
+          items:
+            $ref: '#/components/schemas/Messages.EmailList'
+    Contacts.ContactFieldsGroup:
+      properties:
+        id:
+          type: string
+        is_standard:
+          type: boolean
+        label:
+          type: string
+        name:
+          type: string
+        order:
+          items:
+            type: string
+          type: array
+        type:
+          $ref: '#/components/schemas/Contacts.FieldGroupType'
+      required:
+      - id
+      - name
+      - label
+      - order
+      - is_standard
+      - type
+      type: object
+    Contacts.InSequenceContactInfoContext:
+      type: object
+      properties:
+        context_key:
+          type: object
+        context:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sequences.InSequenceContactInfo'
+    Messages.EmailListConfirmationMessageRequest:
+      properties:
+        message:
+          $ref: '#/components/schemas/Messages.MessageTemplateContentSpecification'
+        sender_account:
+          $ref: '#/components/schemas/Settings.MessagingAccountIdentifier'
+        sender_credential_id:
+          type: string
+          format: objectid
+          description: Unique identifier of sender's credential to send emails on behalf of
+      required:
+      - sender_account
+      - message
+      - sender_credential_id
+      type: object
+    Contacts.EmployerInfo:
+      description: employer's info
+      type: object
+      properties:
+        contact_id:
+          type: string
+        company_name:
+          type: string
+        avatar_url:
+          type: string
+    Messages.Attachment:
+      properties:
+        content_type:
+          description: MIME type of attachment
+          type: string
+        data_id:
+          description: Field data_id must be first retrieved using any sort of Uploads API.
+          type: string
+        file_size:
+          description: Field file_size is given in bytes.
+          type: integer
+        name:
+          type: string
+        url:
+          description: URL that can be used by a user to download attachment's content
+          type: string
+      required:
+      - data_id
+      - file_size
+      - content_type
+      - name
+      - url
+      type: object
+    Contacts.UserLastContactedView:
+      properties:
+        company_lc:
+          $ref: '#/components/schemas/Contacts.LastContactedDirectedContainer'
+        user_lc:
+          $ref: '#/components/schemas/Contacts.LastContactedDirectedContainer'
+        last_user:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+    Errors.PreflightCheckError:
+      example:
+        message: Some contacts cannot be updated because of their privacy settings
+        nse_query:
+          and:
+          - is_editable:
+              is: false
+          - _id:
+              in:
+              - 5dfb9c3e84a6b90f0c01c23a
+              - 5dfb9c3e84a6b90f0c01c23b
+        total: 10
+        type: non_editable_contacts
+      properties:
+        message:
+          type: string
+        nse_query:
+          description: problem contacts selection query
+          type: object
+        total:
+          type: integer
+        type:
+          description: unique and stable identifier of error type
+          type: string
+      required:
+      - type
+      - message
+      - total
+      - nse_query
+      type: object
+    Attachments.GoogleDriveAttachmentData:
+      allOf:
+      - $ref: '#/components/schemas/Attachments.AttachmentData'
+      - description: GoogleDrive
   securitySchemes:
-    bearerAuth:
-      type: oauth2
-      description: 'OAuth 2.0 bearer token. Provide the token via either the
-
-        `Authorization: Bearer <token>` header or the
-
-        `access_token=<token>` query parameter.
-
-        '
-      flows:
-        authorizationCode:
-          authorizationUrl: https://app.nimble.com/oauth/authorize
-          tokenUrl: https://app.nimble.com/oauth/token
-          scopes: {}
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Nimble-Token

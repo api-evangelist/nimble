@@ -1,0 +1,42 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Nimble Deals Pipelines API
+  version: 1.0.0
+extends: openapi/nimble-deals-pipelines-api-openapi.yml
+x-generated: '2026-08-13'
+x-method: generated
+x-source: openapi/_original/nimble-openapi-original.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: nimble
+    x-apievangelist-tag: Deals Pipelines
+    x-apievangelist-operation-count: 13
+    x-apievangelist-spec-source: https://www.nimble.com/developers/docs/ (OpenAPI 3.0.0 embedded as Redoc
+      state)
+    x-apievangelist-artifacts:
+      authentication: authentication/nimble-authentication.yml
+      scopes: scopes/nimble-scopes.yml
+      conventions: conventions/nimble-conventions.yml
+      errors: errors/nimble-problem-types.yml
+      lifecycle: lifecycle/nimble-lifecycle.yml
+      rate_limits: rate-limits/nimble-rate-limits.yml
+      data_model: data-model/nimble-data-model.yml
+- target: $.info
+  description: Record the runtime semantics Nimble documents in prose but does not encode in the contract.
+  update:
+    x-apievangelist-runtime:
+      idempotency: none-published
+      rate-limits: none-published
+      pagination: page/per_page (limit on some list operations); response envelope {meta, resources}
+      error-envelope: '{message, code} — vendor JSON, not RFC 9457'
+      auth-accepted: 'X-Nimble-Token header, Authorization: Bearer <API-KEY>, or OAuth 2.0 authorization_code'
+      oauth-access-token-ttl-seconds: 599
+      stability: Nimble states some aspects of the API are subject to change
+- target: $.components.securitySchemes
+  description: The published spec declares only the apiKey scheme; Nimble also accepts Bearer API keys
+    and OAuth 2.0. Documented here rather than mutating the harvested contract.
+  update:
+    x-apievangelist-undeclared-schemes:
+    - 'Authorization: Bearer <API-KEY>'
+    - 'OAuth 2.0 authorization_code (scopes: basic, contacts, deals)'

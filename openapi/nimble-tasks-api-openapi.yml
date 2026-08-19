@@ -1,0 +1,538 @@
+openapi: 3.0.0
+info:
+  title: Nimble Tasks API
+  description: Nimble CRM Tasks operations. Split by tag from the OpenAPI Nimble publishes at https://www.nimble.com/developers/docs/
+    (embedded Redoc spec). Base host https://app.nimble.com.
+  version: v1
+servers:
+- url: https://app.nimble.com
+tags:
+- name: Tasks
+  description: Tasks management
+paths:
+  /api/v1/tasks:
+    post:
+      description: Creates a task. Associate contacts through `related.contacts`; `related_to` is a legacy
+        response field and is not accepted by this endpoint.
+      operationId: post-task
+      summary: Create new task
+      tags:
+      - Tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tasks.NewTaskSpecification'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tasks.Task'
+          description: Returns task after successful execution.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+          description: Raising in case the contact does not exist
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+          description: ''
+security:
+- ApiKey: []
+components:
+  schemas:
+    Accounts.ShortUserInfo:
+      properties:
+        avatar_url:
+          type: string
+        email:
+          type: string
+        is_active:
+          type: boolean
+        name:
+          type: string
+        user_id:
+          type: string
+      required:
+      - user_id
+      - name
+      - email
+      - avatar_url
+      - is_active
+      type: object
+    Contacts.ShortContact:
+      properties:
+        avatar_url:
+          type: string
+        contact_type:
+          $ref: '#/components/schemas/Contacts.ContactType'
+        email:
+          items:
+            type: string
+          type: array
+        id:
+          type: string
+        is_viewable:
+          description: if this contact can be viewed in details by a calling user
+          type: boolean
+        name:
+          type: string
+        employment:
+          nullable: true
+          description: the most relevant contact employment (e.g., primary or present)
+          type: object
+          properties:
+            company_name:
+              type: string
+              nullable: true
+            title:
+              type: string
+              nullable: true
+        phones:
+          properties:
+            label:
+              description: phone label like "home", "work", etc
+              type: string
+            value:
+              type: string
+          required:
+          - label
+          - value
+          type: object
+      required:
+      - avatar_url
+      - contact_type
+      - id
+      - name
+      - email
+      - is_viewable
+      - phones
+      type: object
+    Errors.ValidationError:
+      description: request was malformed
+      example:
+        errors:
+          /:
+            message: 'missing required properties: ["calendar_id", "summary"]'
+          /base_occurrence/start_dtime:
+            message: Can't parse value 20000-01-01T01:01:00 as DATE-TIME
+        message: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]'
+        code: 245
+        human_readable_error: 'Invalid value {} (dict): missing required properties: []"calendar_id",
+          "summary"]"'
+        extra:
+        - {}
+      properties:
+        errors:
+          description: |
+            mapping where keys are paths to problematic request attributes
+            and values are objects with single message attribute
+          type: object
+        message:
+          type: string
+        code:
+          type: integer
+          description: legacy that you <span style='color:red'>SHOULD NOT USE</span>
+        human_readable_error:
+          type: string
+          description: Error message with some changes making it easier to read.
+        extra:
+          type: array
+          items:
+            type: object
+          description: extra data that would be useful to provide
+      required:
+      - message
+      - errors
+      - human_readable_error
+      type: object
+    Contacts.ContactType:
+      enum:
+      - person
+      - company
+      type: string
+    Tasks.Task:
+      properties:
+        assigned_to:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+          nullable: true
+        comments:
+          items:
+            $ref: '#/components/schemas/Commons.Comment'
+          type: array
+        company_id:
+          type: string
+        completed:
+          type: boolean
+        completed_time:
+          nullable: true
+          type: string
+        created:
+          type: string
+        due_date:
+          nullable: true
+          type: string
+        due_date_text:
+          nullable: true
+          type: string
+        id:
+          type: string
+        is_important:
+          type: boolean
+        notes:
+          nullable: true
+          type: string
+        owner:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        owner_id:
+          type: string
+        related:
+          $ref: '#/components/schemas/Tasks.TaskRelatedObjects'
+        related_to:
+          description: Legacy response field. To associate contacts when creating a task, use `related.contacts`.
+          items:
+            type: string
+          type: array
+        starred:
+          type: boolean
+        subject:
+          type: string
+        tags:
+          items:
+            type: string
+          type: array
+        updated:
+          type: string
+        version:
+          default: 2
+          type: integer
+      required:
+      - version
+      - assigned_to
+      - comments
+      - company_id
+      - completed
+      - completed_time
+      - created
+      - due_date
+      - due_date_text
+      - id
+      - is_important
+      - starred
+      - notes
+      - owner_id
+      - related_to
+      - related
+      - subject
+      - tags
+      - updated
+      - owner
+      type: object
+    Tasks.TaskRelatedObjects:
+      properties:
+        contacts:
+          description: Contacts associated with the task.
+          items:
+            $ref: '#/components/schemas/Contacts.ShortContact'
+          type: array
+        deals:
+          description: legacy deal ids (always empty, kept for backwards compatibility)
+          items:
+            type: string
+          type: array
+        new_deals:
+          description: Deals associated with the task.
+          items:
+            $ref: '#/components/schemas/Deals.ShortSavedDeal'
+          type: array
+        sequence:
+          $ref: '#/components/schemas/Sequences.SequenceBriefInfo'
+          nullable: true
+          description: sequence that created this task, if applicable
+      required:
+      - contacts
+      - deals
+      - new_deals
+      - sequence
+      type: object
+    Deals.ShortSavedDeal:
+      properties:
+        deal_id:
+          description: unique id of a deal
+          type: string
+        is_editable:
+          description: Is this deal is editable to a user who retrieved it
+          type: boolean
+        is_viewable:
+          description: Is this deal is viewable to a user who retrieved it (True for private deals
+          type: boolean
+        name:
+          type: string
+        amount:
+          type: integer
+          nullable: true
+    Tasks.TaskRelatedObjectsSpec:
+      description: Objects to associate with a task. Use `related.contacts` rather than the legacy `related_to`
+        field.
+      properties:
+        contacts:
+          description: Contact IDs to associate with the task.
+          items:
+            type: string
+          type: array
+        deals:
+          description: Deal IDs to associate with the task.
+          items:
+            type: string
+          type: array
+      type: object
+    Tasks.NewTaskSpecification:
+      properties:
+        assigned_to:
+          type: string
+        completed_time:
+          type: string
+        due_date:
+          type: string
+        is_important:
+          type: boolean
+        notes:
+          type: string
+        related:
+          $ref: '#/components/schemas/Tasks.TaskRelatedObjectsSpec'
+        subject:
+          type: string
+        tags:
+          items:
+            type: string
+          type: array
+      required:
+      - subject
+      type: object
+    Commons.Comment:
+      properties:
+        author:
+          $ref: '#/components/schemas/Accounts.User'
+        comment_id:
+          type: string
+        created:
+          type: string
+        text:
+          type: string
+        updated:
+          type: string
+      required:
+      - comment_id
+      - author
+      - text
+      - created
+      - updated
+      type: object
+    Settings.UserPermissions:
+      additionalProperties:
+        type: number
+      description: users permission
+      example:
+        api use: 1
+        manage deals pipelines: 1
+        mass delete: 1
+        mass export: 1
+        private deals edit: 1
+        private deals view: 1
+      type: object
+    Errors.NotFoundError:
+      example:
+        object_id: 4f2acc3142a053dda595f00b
+        object_type: deal
+      properties:
+        object_id:
+          type: string
+        object_type:
+          type: string
+      required:
+      - object_type
+      - object_id
+      type: object
+    Legacy.UserMetadata:
+      properties:
+        city:
+          nullable: true
+          type: string
+          description: (deprecated)
+        company_name:
+          type: string
+          description: (deprecated)
+        country:
+          nullable: true
+          description: (deprecated)
+          type: string
+        employees_count:
+          nullable: true
+          description: (deprecated)
+          type: integer
+        help_tour_data:
+          description: (deprecated)
+          properties:
+            app/activities/list:
+              type: integer
+            app/b/homepage:
+              type: integer
+            app/contacts/list:
+              type: integer
+            app/contacts/view:
+              type: integer
+            app/deals/list:
+              type: integer
+            app/deals/view:
+              type: integer
+            app/groupmessages/create:
+              type: integer
+            app/messages/list:
+              type: integer
+            app/messages/view:
+              type: integer
+            app/settings/:
+              type: integer
+            app/social/list:
+              type: integer
+            contact_list_group_message:
+              type: integer
+            disabled:
+              type: integer
+            nimble_widget:
+              type: integer
+          type: object
+        industry:
+          description: (deprecated)
+          nullable: true
+          type: string
+        phone:
+          nullable: true
+          type: string
+        state:
+          description: (deprecated)
+          nullable: true
+          type: string
+        street:
+          description: (deprecated)
+          nullable: true
+          type: string
+        title:
+          nullable: true
+          type: string
+        zip:
+          description: (deprecated)
+          nullable: true
+          type: string
+      required:
+      - title
+      - company_name
+      - industry
+      - phone
+      - street
+      - city
+      - state
+      - zip
+      - country
+      - employees_count
+      - help_tour_data
+      type: object
+    Accounts.User:
+      properties:
+        account_type:
+          type: string
+        avatar_url:
+          nullable: true
+          type: string
+        company_id:
+          type: string
+        company_name:
+          type: string
+        created:
+          format: date-time
+          type: string
+        disabled:
+          type: boolean
+        email:
+          type: string
+        first_name:
+          type: object
+        is_company_owner:
+          type: boolean
+        is_pending:
+          description: true if that user has a pending invite
+          type: boolean
+        last_active:
+          description: timestamp when a user made his last API request to the platform
+          format: date-time
+          type: string
+        last_name:
+          type: object
+        name:
+          type: string
+        permissions:
+          $ref: '#/components/schemas/Settings.UserPermissions'
+        receive_newsletter:
+          type: boolean
+        has_password:
+          type: boolean
+          description: |
+            if this user has a password set (for some account types, like google accounts, the password is optional)
+        timezone:
+          type: string
+        under_gdpr:
+          type: boolean
+        user_id:
+          type: string
+        metadata:
+          $ref: '#/components/schemas/Legacy.UserMetadata'
+        email_verification_due:
+          type: boolean
+          description: |
+            A flag indicating whether the email verification is due. Almost all API call will result in 403 response
+            for users with unverified email.
+      required:
+      - under_gdpr
+      - user_id
+      - company_id
+      - company_name
+      - email
+      - name
+      - first_name
+      - last_name
+      - timezone
+      - disabled
+      - avatar_url
+      - created
+      - account_type
+      - is_company_owner
+      - receive_newsletter
+      - permissions
+      - last_active
+      - is_pending
+      - metadata
+      - has_password
+      type: object
+    Sequences.SequenceBriefInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: unique id of the sequence
+        name:
+          type: string
+          description: name of the sequence
+      required:
+      - id
+      - name
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Nimble-Token

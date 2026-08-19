@@ -1,0 +1,817 @@
+openapi: 3.0.0
+info:
+  title: Nimble Deals Pipelines Fields API
+  description: Nimble CRM Deals Pipelines Fields operations. Split by tag from the OpenAPI Nimble publishes
+    at https://www.nimble.com/developers/docs/ (embedded Redoc spec). Base host https://app.nimble.com.
+  version: v1
+servers:
+- url: https://app.nimble.com
+tags:
+- name: Deals Pipelines Fields
+  description: Pipelines fields management
+paths:
+  /api/v2/deals/pipelines/{pipeline_id}/fields:
+    parameters:
+    - description: <code>id</code> of a pipeline to operate on
+      in: path
+      name: pipeline_id
+      required: true
+      schema:
+        type: string
+    post:
+      description: Creates custom field in pipeline
+      operationId: post-deals-pipeline-field
+      summary: Add new custom field to deals pipeline
+      tags:
+      - Deals Pipelines Fields
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pipeline.CreateDealsPipelineFieldRequest'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deals.DealFieldsMetadata'
+        '406':
+          description: Field not acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotAcceptableError'
+        '409':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+  /api/v2/deals/pipelines/{pipeline_id}/fields/{field_id}:
+    parameters:
+    - description: <code>id</code> of a pipeline to operate on
+      in: path
+      name: pipeline_id
+      required: true
+      schema:
+        type: string
+    - description: <code>id</code> of custom field in pipeline to operate on
+      in: path
+      name: field_id
+      required: true
+      schema:
+        type: string
+    put:
+      description: Updates custom field in pipeline
+      operationId: put-deals-pipeline-field
+      summary: Update custom field in deals pipeline
+      tags:
+      - Deals Pipelines Fields
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pipeline.UpdateDealsPipelineFieldRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deals.DealFieldsMetadata'
+        '404':
+          description: Field not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+        '406':
+          description: Field not acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotAcceptableError'
+        '409':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+    delete:
+      description: Deletes custom field from pipeline
+      operationId: delete-deals-pipeline-field
+      summary: Delete custom field from deals pipeline
+      tags:
+      - Deals Pipelines Fields
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                preflight_checks:
+                  type: boolean
+                  description: |
+                    if true and there are deals using this field - will return an error;
+                    if false - will delete the field and its possible values in deals
+      responses:
+        '200':
+          description: Deleted
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ForbiddenError'
+          description: Access forbidden
+        '404':
+          description: Field not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+  /api/v2/deals/pipelines/{pipeline_id}/fields/{field_id}/choices:
+    post:
+      description: Creates choice in specified pipeline field
+      operationId: post-deals-pipeline-field-choice
+      summary: Create choice in deals pipeline field
+      tags:
+      - Deals Pipelines Fields
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pipeline.CreateDealsPipelineFieldChoiceRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deals.DealFieldsMetadata'
+        '404':
+          description: Pipeline/Field not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+        '409':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+      parameters:
+      - description: <code>id</code> of a pipeline where custom field is
+        in: path
+        name: pipeline_id
+        required: true
+        schema:
+          type: string
+      - description: <code>id</code> of custom field where choice will be created
+        in: path
+        name: field_id
+        required: true
+        schema:
+          type: string
+  /api/v2/deals/pipelines/{pipeline_id}/fields/{field_id}/choices/{choice_id}:
+    parameters:
+    - description: <code>id</code> of a pipeline where custom field is
+      in: path
+      name: pipeline_id
+      required: true
+      schema:
+        type: string
+    - description: <code>id</code> of custom field where choice is
+      in: path
+      name: field_id
+      required: true
+      schema:
+        type: string
+    - description: <code>id</code> of choice to operate on
+      in: path
+      name: choice_id
+      required: true
+      schema:
+        type: string
+    put:
+      description: Updates choice in custom field in pipeline
+      operationId: put-deals-pipeline-field-choice
+      summary: Update choice in custom deals pipeline field
+      tags:
+      - Deals Pipelines Fields
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pipeline.UpdateDealsPipelineFieldChoiceRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deals.DealFieldsMetadata'
+        '404':
+          description: Pipeline/Field/Choice not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+        '406':
+          description: Choice is not acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotAcceptableError'
+        '409':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+    delete:
+      description: Deletes choice from custom field
+      operationId: delete-deals-pipeline-field-choice
+      summary: Delete choice from deals pipeline custom field
+      tags:
+      - Deals Pipelines Fields
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                preflight_checks:
+                  type: boolean
+                  description: |
+                    if true and there are deals using this particular choice - will return an error;
+                    if false - will delete the choice and the value of this choice in all deals
+      responses:
+        '200':
+          description: Deleted
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ForbiddenError'
+          description: Access forbidden
+        '404':
+          description: Pipeline/Field/Choice not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+  /api/v2/deals/pipelines/{pipeline_id}/groups:
+    parameters:
+    - name: pipeline_id
+      description: id of pipeline to manipulate with
+      in: path
+      required: true
+      schema:
+        type: string
+        format: ObjectId
+    post:
+      description: Create pipeline deal group
+      operationId: post-deals-pipeline-group
+      summary: Create deals pipeline fields group
+      tags:
+      - Deals Pipelines Fields
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pipeline.CreateDealsPipelineGroupRequest'
+      responses:
+        '201':
+          description: Group created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deals.DealFieldsMetadata'
+        '403':
+          description: User has no permission to update pipeline
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ForbiddenError'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+        '409':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+  /api/v2/deals/pipelines/{pipeline_id}/groups/{group_id}:
+    parameters:
+    - in: path
+      name: pipeline_id
+      description: id of pipeline to delete group from
+      schema:
+        type: string
+      required: true
+    - in: path
+      name: group_id
+      description: id of group to delete
+      schema:
+        type: string
+      required: true
+    put:
+      description: Update pipeline deal group
+      operationId: put-deals-pipeline-fields-group
+      summary: Update deals pipeline fields group
+      parameters:
+      - in: path
+        name: pipeline_id
+        description: id of group to manipulate with
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: group_id
+        description: id of group to update
+        schema:
+          type: string
+        required: true
+      tags:
+      - Deals Pipelines Fields
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                group_name:
+                  type: string
+                logo_id:
+                  type: string
+                insert_after:
+                  description: move group after another group or field with specified id
+                  type: string
+      responses:
+        '200':
+          description: Group updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deals.DealFieldsMetadata'
+        '403':
+          description: User has no permission to update pipeline
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ForbiddenError'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+        '409':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ValidationError'
+    delete:
+      description: Delete pipeline deal group
+      operationId: delete-deals-pipeline-fields-group
+      summary: Delete deals pipeline fields group
+      tags:
+      - Deals Pipelines Fields
+      responses:
+        '200':
+          description: Group deleted
+        '403':
+          description: User has no permission to update pipeline
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.ForbiddenError'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.NotFoundError'
+security:
+- ApiKey: []
+components:
+  schemas:
+    Deals.DealPipelineFieldsTab:
+      type: object
+      properties:
+        tab_id:
+          description: The id of a tab in the database
+          type: string
+        tab_name:
+          description: The name of a tab
+          type: string
+        pipeline_id:
+          type: string
+        members:
+          $ref: '#/components/schemas/Deals.DealPipelineFieldsTabMember'
+    Pipeline.NumberFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - number
+    Deals.DealFieldsMetadata:
+      type: object
+      properties:
+        pipelines_tabs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deals.DealPipelineFieldsTab'
+        standard_fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deals.IDealField'
+    Deals.DealPipelineFieldsTabMember:
+      oneOf:
+      - $ref: '#/components/schemas/Deals.DealPipelineField'
+      - $ref: '#/components/schemas/Deals.DealPipelineFieldsGroup'
+      discriminator:
+        propertyName: type
+        mapping:
+          field: '#/components/schemas/Deals.DealPipelineField'
+          group: '#/components/schemas/Deals.DealPipelineFieldsGroup'
+    Pipeline.BooleanFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - boolean
+    Pipeline.UpdateDealsPipelineFieldChoiceRequest:
+      type: object
+      properties:
+        value:
+          description: New choice value
+          type: string
+          nullable: true
+        insert_after:
+          description: Move choice after choice with specified id. If <code>null</code>, then choice will
+            be the first one in field
+          type: string
+          nullable: true
+    Pipeline.CreateDealsPipelineFieldChoiceRequest:
+      type: object
+      properties:
+        choice:
+          type: object
+          description: New choice
+          properties:
+            id:
+              type: string
+            value:
+              type: string
+        insert_after:
+          description: Move choice after choice with specified id. If <code>null</code>, then choice will
+            be the first one in field
+          type: string
+          nullable: true
+      required:
+      - choice
+    Errors.NotAcceptableError:
+      example:
+        message: You can not reopen already active deal
+        type: lost_contact_access
+      properties:
+        message:
+          type: string
+        type:
+          type: string
+      required:
+      - message
+      - type
+      type: object
+    Pipeline.UpdateDealsPipelineFieldRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the new field
+        presentation:
+          $ref: '#/components/schemas/Fields.FieldPresentation'
+          nullable: true
+        insert_after:
+          type: string
+          description: Inserts a new field after field or group with specified <code>id</code>. If null,
+            then field is inserted as the first one
+          nullable: true
+        group_id:
+          type: string
+          format: ObjectId
+          description: id of group where field will be located or <code>null</code> if field will not
+            be in group
+          nullable: true
+    Pipeline.DateTimeFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - datetime
+    Fields.FieldPresentation:
+      description: |
+        how values of the field should look. Must match to corresponding field_type. Date and number
+        fields must have an appropriate presentation. There is no presentation for other types
+      oneOf:
+      - $ref: '#/components/schemas/Fields.IntegerNumberPresentation'
+      - $ref: '#/components/schemas/Fields.DecimalNumberPresentation'
+      - $ref: '#/components/schemas/Fields.PercentageNumberPresentation'
+      - $ref: '#/components/schemas/Fields.FinancialNumberPresentation'
+      - $ref: '#/components/schemas/Fields.DateTimePresentation'
+    Errors.NotFoundError:
+      example:
+        object_id: 4f2acc3142a053dda595f00b
+        object_type: deal
+      properties:
+        object_id:
+          type: string
+        object_type:
+          type: string
+      required:
+      - object_type
+      - object_id
+      type: object
+    Deals.DealPipelineFieldsGroup:
+      allOf:
+      - $ref: '#/components/schemas/Deals.BaseDealPipelineFieldsTabMember'
+      - properties:
+          group_name:
+            type: string
+          group_id:
+            type: string
+          logo_id:
+            type: string
+          fields:
+            type: array
+            items:
+              $ref: '#/components/schemas/Deals.DealPipelineField'
+      type: object
+    Pipeline.LongStringFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - long_string
+    Fields.PercentageNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - percentage
+        fraction_digits:
+          type: integer
+          minimum: 1
+      required:
+      - type
+      - fraction_digits
+    Pipeline.UserFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - user
+    Deals.BaseDealPipelineFieldsTabMember:
+      properties:
+        type:
+          type: string
+      type: object
+    Errors.ValidationError:
+      description: request was malformed
+      example:
+        errors:
+          /:
+            message: 'missing required properties: ["calendar_id", "summary"]'
+          /base_occurrence/start_dtime:
+            message: Can't parse value 20000-01-01T01:01:00 as DATE-TIME
+        message: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]'
+        code: 245
+        human_readable_error: 'Invalid value {} (dict): missing required properties: []"calendar_id",
+          "summary"]"'
+        extra:
+        - {}
+      properties:
+        errors:
+          description: |
+            mapping where keys are paths to problematic request attributes
+            and values are objects with single message attribute
+          type: object
+        message:
+          type: string
+        code:
+          type: integer
+          description: legacy that you <span style='color:red'>SHOULD NOT USE</span>
+        human_readable_error:
+          type: string
+          description: Error message with some changes making it easier to read.
+        extra:
+          type: array
+          items:
+            type: object
+          description: extra data that would be useful to provide
+      required:
+      - message
+      - errors
+      - human_readable_error
+      type: object
+    Fields.DecimalNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - decimal
+        fraction_digits:
+          type: integer
+          minimum: 1
+      required:
+      - type
+      - fraction_digits
+    Pipeline.AddressFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - address
+    Pipeline.StringFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - string
+        validation_rule:
+          enum:
+          - email
+          - url
+    Commons.PossibleValues:
+      type: object
+      properties:
+        ordering_type:
+          type: string
+          enum:
+          - ordinal
+          - alphabetic
+        values:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              value:
+                type: string
+    Errors.ForbiddenError:
+      example:
+        message: You don't have access to this deal
+      properties:
+        message:
+          type: string
+          description: |
+            indicates that we can't authenticate the request. Message can be an arbitrary string, however there are
+            few special cases:<br/>
+            "Can't authenticate request" – something is wrong with the auth token<br/>
+            "email_verification_required" - if the user needs to verify their email address to continue having
+            access to Nimble<br/>
+      required:
+      - message
+      type: object
+    Fields.IntegerNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - integer
+      required:
+      - type
+    Fields.DateTimePresentation:
+      type: object
+      properties:
+        date_format:
+          type: string
+          nullable: true
+          description: |
+            strftime-like format template as described in
+            https://docs.python.org/2.7/library/datetime.html#strftime-and-strptime-behavior
+            or null if client should use date format from user settings
+        ignore_specific_time:
+          type: boolean
+          nullable: true
+          description: |
+            show if time should be presented in the field. Applicable only if date_format is None.
+            Must be null if date_format specified
+      required:
+      - date_format
+      - ignore_specific_time
+    Deals.IDealField:
+      type: object
+      properties:
+        field_id:
+          description: The id of a field in the database
+          type: string
+        modifier:
+          type: string
+        multiples:
+          type: boolean
+        available_actions:
+          description: Shows available for user actions
+          type: string
+        field_type:
+          type: string
+        field_name:
+          description: The name of a field
+          type: string
+    Deals.DealPipelineField:
+      description: Fields of DealsPipeline
+      allOf:
+      - $ref: '#/components/schemas/Deals.BaseDealPipelineFieldsTabMember'
+      - properties:
+          field:
+            $ref: '#/components/schemas/Deals.IDealField'
+          pipeline_id:
+            type: string
+      type: object
+    Pipeline.FieldTypeOnFieldCreation:
+      oneOf:
+      - $ref: '#/components/schemas/Pipeline.StringFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.LongStringFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.ChoiceFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.NumberFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.DateTimeFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.BooleanFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.AddressFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.UserFieldValuesType'
+    Fields.FinancialNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - financial
+        currency:
+          type: string
+          nullable: true
+      required:
+      - type
+      - currency
+    Pipeline.ChoiceFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - choice
+        values:
+          $ref: '#/components/schemas/Commons.PossibleValues'
+    Pipeline.CreateDealsPipelineFieldRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the new field
+        field_type:
+          $ref: '#/components/schemas/Pipeline.FieldTypeOnFieldCreation'
+        presentation:
+          $ref: '#/components/schemas/Fields.FieldPresentation'
+          nullable: true
+        pipeline_id:
+          type: string
+          description: <code>id</code> of pipeline this field is being created for (if known)
+          nullable: true
+        insert_after:
+          type: string
+          description: Inserts a new field after field or group with specified <code>id</code>. If null,
+            then field is inserted as the first one
+          nullable: true
+        group_id:
+          description: <code>id</code> of group this field is being created for (if field is a member
+            of group)
+          type: string
+      required:
+      - name
+      - field_type
+      - presentation
+    Pipeline.CreateDealsPipelineGroupRequest:
+      type: object
+      properties:
+        group_name:
+          type: string
+        logo_id:
+          type: string
+        insert_after:
+          description: If not null, inserts a new group after another group or field with specified id.
+            If null, then group is inserted as the first one
+          nullable: true
+          type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/Pipeline.CreateDealsPipelineFieldRequest'
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Nimble-Token

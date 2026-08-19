@@ -1,0 +1,135 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Nimble CRM Contacts Notes API",
+    "version": "v1"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "authorization_code",
+      "authorizationUrl": "https://app.nimble.com/oauth/authorize",
+      "accessTokenUrl": "https://app.nimble.com/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Notes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a contact note",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.nimble.com/api/v1/contact/:contact_id/note",
+            "params": [
+              {
+                "name": "contact_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Create a contact note"
+        },
+        {
+          "info": {
+            "name": "List contact notes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.nimble.com/api/v1/contact/:contact_id/notes",
+            "params": [
+              {
+                "name": "contact_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "List contact notes"
+        },
+        {
+          "info": {
+            "name": "Get a specific contact note",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.nimble.com/api/v1/contact/:contact_id/note/:note_id",
+            "params": [
+              {
+                "name": "contact_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "note_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get a specific contact note"
+        },
+        {
+          "info": {
+            "name": "Update a contact note",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://app.nimble.com/api/v1/contact/:contact_id/note/:note_id",
+            "params": [
+              {
+                "name": "contact_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "note_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Update a contact note"
+        },
+        {
+          "info": {
+            "name": "Delete a contact note",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://app.nimble.com/api/v1/contact/:contact_id/note/:note_id",
+            "params": [
+              {
+                "name": "contact_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "note_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete a contact note"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

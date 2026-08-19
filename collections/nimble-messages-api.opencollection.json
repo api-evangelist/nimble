@@ -1,0 +1,52 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Nimble CRM Contacts Messages API",
+    "version": "v1"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "authorization_code",
+      "authorizationUrl": "https://app.nimble.com/oauth/authorize",
+      "accessTokenUrl": "https://app.nimble.com/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Messages",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List draft messages",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.nimble.com/api/v1/messages/drafts"
+          },
+          "docs": "List draft messages"
+        },
+        {
+          "info": {
+            "name": "Create a draft message",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.nimble.com/api/v1/message/draft"
+          },
+          "docs": "Create a draft message"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

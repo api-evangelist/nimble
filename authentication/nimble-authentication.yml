@@ -1,22 +1,100 @@
-generated: '2026-07-11'
-method: derived
-source: openapi/nimble-openapi.yml
+generated: '2026-08-13'
+method: searched
+source: openapi/_original/nimble-openapi-original.yml
+docs: https://www.nimble.com/developers/docs/#tag/Authentication
+docs_secondary: https://support.nimble.com/en/articles/502755-nimble-api-access
 summary:
   types:
-  - oauth2
+    - apiKey
+    - http
+    - oauth2
+  api_key_in:
+    - header
   oauth2_flows:
-  - authorizationCode
+    - authorizationCode
+  note: >-
+    Nimble runs two parallel authentication models. The machine-readable
+    securitySchemes block declares only the apiKey (X-Nimble-Token header),
+    but the narrative Authentication reference and the support article
+    document a full OAuth 2.0 authorization_code flow with refresh tokens
+    plus a plain Authorization: Bearer <API-KEY> form. The spec under-declares
+    what the API actually accepts; this file is the superset, upgraded from
+    the derived baseline by reading the docs.
 schemes:
-- name: bearerAuth
-  type: oauth2
-  flows:
-  - flow: authorizationCode
-    authorizationUrl: https://app.nimble.com/oauth/authorize
-    tokenUrl: https://app.nimble.com/oauth/token
-    scopes: 0
-  description: |-
-    OAuth 2.0 bearer token. Provide the token via either the
-    `Authorization: Bearer <token>` header or the
-    `access_token=<token>` query parameter.
-  sources:
-  - openapi/nimble-openapi.yml
+  - name: ApiKey
+    type: apiKey
+    in: header
+    parameter: X-Nimble-Token
+    declared_in_spec: true
+    sources:
+      - openapi/_original/nimble-openapi-original.yml
+  - name: BearerToken
+    type: http
+    scheme: bearer
+    declared_in_spec: false
+    description: >-
+      "The only form of accepted authentication is through the HTTP header.
+      Your API request must have an Authorization header with a value like
+      this: Bearer API-KEY." The per-account API key is generated from the
+      Nimble account settings surface.
+    sources:
+      - https://support.nimble.com/en/articles/502755-nimble-api-access
+  - name: OAuth2
+    type: oauth2
+    declared_in_spec: false
+    audience: third-party developers and older accounts
+    flows:
+      - flow: authorizationCode
+        authorizationUrl: https://app.nimble.com/oauth/authorize
+        tokenUrl: https://app.nimble.com/api/oauth/token
+        refreshUrl: https://app.nimble.com/api/oauth/token
+        scopes:
+          basic: User and Company info
+          contacts: Contacts access
+          deals: Deals access
+    grant_types:
+      - authorization_code
+      - refresh_token
+    response_types:
+      - code
+    implicit_supported: false
+    implicit_note: >-
+      "We don't support Implicit Flow, so `code` is the only available
+      option now."
+    token_endpoint_auth: client_secret_post
+    token_request_content_type: application/x-www-form-urlencoded
+    token_response:
+      token_type: bearer
+      expires_in_seconds: 599
+      refresh_token: true
+      note: >-
+        Access tokens are short-lived — roughly 10 minutes — so any
+        long-running agent integration must implement the refresh_token grant
+        rather than caching an access token.
+    scope_delimiter: >-
+      Comma or plus sign: "basic,contacts,deals" or "basic+contacts+deals".
+    redirect_uri_note: >-
+      The authoritative redirect URL is set in the application settings on the
+      developer portal; the redirect_uri request parameter may only overwrite
+      the path portion and must otherwise match exactly.
+    client_registration:
+      self_service: false
+      process: >-
+        OAuth client credentials are not self-service. Nimble issues Client ID
+        and Client Secret by email — send App Name, App Description and the
+        OAuth callback Redirect URL to api-support@nimble.com.
+      contact: api-support@nimble.com
+      reference: https://support.nimble.com/en/articles/502755-nimble-api-access
+    rfc_references:
+      - https://tools.ietf.org/html/rfc6749
+      - https://tools.ietf.org/html/rfc6750
+    sources:
+      - https://www.nimble.com/developers/docs/#tag/Authentication
+discovery:
+  oauth_metadata_published: false
+  openid_connect: false
+  note: >-
+    No /.well-known/oauth-authorization-server and no
+    /.well-known/openid-configuration on any Nimble host (all 404 — see
+    well-known/nimble-well-known.yml). Endpoints are documented in prose only.
+scopes_reference: scopes/nimble-scopes.yml

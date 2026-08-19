@@ -1,0 +1,156 @@
+generated: '2026-08-13'
+method: searched
+source: https://www.nimble.com/developers/docs/
+derived_from: openapi/_original/nimble-openapi-original.yml
+summary: >-
+  Cross-cutting request/response semantics for the Nimble CRM REST API,
+  read from the OpenAPI 3.0.0 document Nimble embeds in its developer
+  reference plus the narrative Authentication, Handling Errors and Search
+  Contacts sections of that same reference.
+authentication:
+  style: api-key-header
+  schemes:
+    - name: X-Nimble-Token
+      location: header
+      note: The apiKey scheme declared in the OpenAPI securitySchemes.
+    - name: Authorization
+      location: header
+      form: 'Bearer <API-KEY>'
+      note: >-
+        The form the support documentation tells current users to send.
+        "The only form of accepted authentication is through the HTTP header."
+    - name: OAuth 2.0 authorization_code
+      note: >-
+        Offered to third-party developers and older accounts; see
+        authentication/nimble-authentication.yml and scopes/nimble-scopes.yml.
+  cross_reference: authentication/nimble-authentication.yml
+idempotency:
+  supported: false
+  header: null
+  note: >-
+    Nimble publishes NO idempotency contract. There is no Idempotency-Key
+    header or equivalent parameter anywhere in the 89-operation OpenAPI, and
+    the developer reference never discusses safe retry of writes. Agents must
+    treat every POST as non-idempotent; a retried post-contact will create a
+    duplicate contact. Recorded as an explicit absence — no Idempotency
+    pointer is emitted for this provider.
+pagination:
+  style: page-number
+  params:
+    - name: page
+      in: query
+      description: 1-indexed page number.
+    - name: per_page
+      in: query
+      description: Records per page.
+    - name: limit
+      in: query
+      description: >-
+        Used instead of per_page on several list operations (tags,
+        activities); read the operation's own parameters.
+  response_fields:
+    - meta
+    - resources
+  note: >-
+    Pagination parameters are not uniform across the API — page/per_page,
+    limit, and a next_tstamp cursor on activities all appear. There is no
+    single pagination contract.
+  cursor:
+    - name: next_tstamp
+      in: query
+      applies_to: openapi/nimble-activities-api-openapi.yml#list-activities
+      description: Timestamp cursor for walking the activity stream.
+response_envelope:
+  shape: '{ "meta": {...}, "resources": [...] }'
+  note: >-
+    "Typical response to this request is a dictionary with 2 keys (unless
+    otherwise specified by the specific API): meta and resources."
+  resource_shape: >-
+    Contact fields are returned as a map of field-name -> array of
+    {value, label, modifier} objects rather than flat scalars, so the same
+    logical field (phone, email, address) can carry several labelled values.
+field_selection:
+  supported: true
+  params:
+    - name: fields
+      in: query
+      description: Restrict the returned field set.
+    - name: contexts
+      in: query
+      description: >-
+        Request additional related context blocks on a contact. Supersedes the
+        deprecated last_contacted, files_data and leads_data query flags.
+    - name: meta
+      in: query
+      description: Control the meta block returned alongside resources.
+  deprecated_params:
+    - last_contacted
+    - files_data
+    - leads_data
+search:
+  supported: true
+  params:
+    - name: keyword
+      in: query
+      description: Simple keyword lookup.
+    - name: query
+      in: query
+      description: >-
+        Advanced search — a JSON object of {field: {operator: value}} terms
+        joined by and / or / not.
+    - name: record_type
+      in: query
+      description: person | company | all
+    - name: sort
+      in: query
+  mutually_exclusive:
+    - [keyword, query]
+  note: >-
+    Sending both keyword and query returns 409 code 245. The Nimble Search
+    Engine normalizes to lowercase and ASCII-folds accents on both index and
+    query. Synthetic fields `names` and `__any` aggregate several source
+    fields.
+  reference: https://www.nimble.com/developers/docs/#tag/Search-Contacts
+versioning:
+  scheme: uri-path
+  note: >-
+    Version is carried in the path and is NOT uniform — /api/v1 for contacts,
+    contact fields, notes, activities, tasks, messages and myself; /api/v2 for
+    deals, deal pipelines, deal fields and leads; and a single legacy /api/2
+    prefix on the deals tag endpoints. Callers must version per resource, not
+    per API.
+  versions_in_use: [v1, v2, '2']
+  cross_reference: lifecycle/nimble-lifecycle.yml
+errors:
+  envelope: '{ "message": string, "code": integer }'
+  discriminator: code
+  rfc9457: false
+  cross_reference: errors/nimble-problem-types.yml
+rate_limiting:
+  published: false
+  cross_reference: rate-limits/nimble-rate-limits.yml
+request_tracing:
+  request_id_header: null
+  note: No correlation/request-id header is documented.
+metadata:
+  custom_fields: true
+  note: >-
+    Nimble exposes first-class custom field management — contact fields with
+    groups, tabs and choice lists, and per-pipeline deal fields — rather than
+    an opaque metadata bag. See openapi/nimble-contacts-fields-api-openapi.yml
+    and openapi/nimble-deals-pipelines-fields-api-openapi.yml.
+content_type:
+  request: application/json
+  oauth_token_request: application/x-www-form-urlencoded
+  response: application/json
+inbound_webhooks:
+  supported: true
+  direction: inbound-only
+  description: >-
+    Nimble's "Webhook Forms" accept JSON or XML payloads POSTed to a
+    per-form URL generated in the Nimble Web Forms tab, and process them the
+    same way as web form submissions. This is an INGESTION surface — Nimble
+    receives events from other systems. Nimble publishes no outbound event
+    notifications, no subscription API and no AsyncAPI, so no Webhooks or
+    AsyncAPI pointer is emitted.
+  source: https://support.nimble.com/en/articles/9006073-nimble-s-webhook-forms-feature

@@ -1,0 +1,1126 @@
+openapi: 3.0.0
+info:
+  title: Nimble Contacts Pipelines API
+  description: Nimble CRM Contacts Pipelines operations. Split by tag from the OpenAPI Nimble publishes
+    at https://www.nimble.com/developers/docs/ (embedded Redoc spec). Base host https://app.nimble.com.
+  version: v1
+servers:
+- url: https://app.nimble.com
+tags:
+- name: Contacts Pipelines
+paths:
+  /api/v1/contacts/pipelines:
+    get:
+      description: Returns a list pipelines available to view for the requesting user
+      operationId: list-available-contacts-pipelines
+      summary: List contacts pipelines
+      tags:
+      - Contacts Pipelines
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  pipelines:
+                    items:
+                      $ref: '#/components/schemas/Contacts.LeadsPipeline'
+                    type: array
+                required:
+                - pipelines
+                type: object
+          description: ''
+  /api/v2/leads/{lead_id}/{pipeline_id}/successful:
+    parameters:
+    - in: path
+      name: lead_id
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: pipeline_id
+      required: true
+      schema:
+        type: string
+    post:
+      description: Exit lead from a pipeline successfully
+      operationId: mark-lead-exited-successful
+      summary: Exit lead from pipeline successfully
+      tags:
+      - Leads
+      - Contacts Pipelines
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contacts.ExitLeadSuccessfullyRequest'
+        required: true
+      responses:
+        '200':
+          description: updated lead (contact)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contacts.ContactView'
+        '404':
+          description: lead or pipeline couldn't be found
+        '406':
+          description: operation is invalid (e.g., contact isn't editable or transition itself violates
+            certain rules)
+    put:
+      description: Updates the "exit" transition with new notes and/or actual_exit_date
+      operationId: put-lead-exit-successful
+      summary: Update the 'successful exit' transition
+      tags:
+      - Leads
+      - Contacts Pipelines
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contacts.ExitLeadSuccessfullyRequest'
+        required: true
+      responses:
+        '200':
+          description: updated lead (contact)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contacts.ContactView'
+        '404':
+          description: lead or pipeline couldn't be found
+        '406':
+          description: operation is invalid (e.g., contact isn't editable or transition itself violates
+            certain rules)
+  /api/v2/leads/{lead_id}/{pipeline_id}/unsuccessful:
+    parameters:
+    - in: path
+      name: lead_id
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: pipeline_id
+      required: true
+      schema:
+        type: string
+    post:
+      description: Exit lead from a pipeline unsuccessfully
+      operationId: mark-lead-exited-unsuccessfully
+      summary: Exit lead from a pipeline unsuccessfully
+      tags:
+      - Leads
+      - Contacts Pipelines
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contacts.ExitLeadUnsuccessfullyRequest'
+        required: true
+      responses:
+        '200':
+          description: updated lead (contact)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contacts.ContactView'
+        '404':
+          description: lead or pipeline couldn't be found
+        '406':
+          description: operation is invalid (e.g., contact isn't editable or transition itself violates
+            certain rules)
+    put:
+      description: Updates the "exit" transition with new notes and/or actual_exit_date and/or lost_reason
+      operationId: put-lead-exit-unsuccessful
+      summary: Update the 'unsuccessful exit' transition
+      tags:
+      - Leads
+      - Contacts Pipelines
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contacts.ExitLeadUnsuccessfullyRequest'
+        required: true
+      responses:
+        '200':
+          description: updated lead (contact)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contacts.ContactView'
+        '404':
+          description: lead or pipeline couldn't be found
+        '406':
+          description: operation is invalid (e.g., contact isn't editable or transition itself violates
+            certain rules)
+  /api/v2/leads/{lead_id}/{pipeline_id}/move:
+    parameters:
+    - in: path
+      name: lead_id
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: pipeline_id
+      required: true
+      schema:
+        type: string
+    post:
+      description: Move lead to a stage within the pipeline. You can use this operation to enter pipeline
+        for the first time.
+      operationId: move-lead
+      summary: Move lead to a pipeline stage
+      tags:
+      - Leads
+      - Contacts Pipelines
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stage_id:
+                  type: string
+                  description: the id of a target stage
+        required: true
+      responses:
+        '200':
+          description: updated lead (contact)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contacts.ContactView'
+        '404':
+          description: lead or pipeline couldn't be found
+        '406':
+          description: operation is invalid (e.g., contact isn't editable or transition itself violates
+            certain rules)
+  /api/v2/leads/{lead_id}/{pipeline_id}/undo:
+    parameters:
+    - in: path
+      name: lead_id
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: pipeline_id
+      required: true
+      schema:
+        type: string
+    post:
+      description: Undo a recent lead transition to won or lost stage
+      operationId: undo-lead-transition
+      summary: Undo lead won/lost transition
+      tags:
+      - Leads
+      - Contacts Pipelines
+      responses:
+        '200':
+          description: updated lead (contact)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contacts.ContactView'
+        '404':
+          description: lead or pipeline couldn't be found
+        '406':
+          description: operation is invalid (e.g., contact isn't editable or transition itself violates
+            certain rules)
+  /api/v2/leads/{lead_id}/{pipeline_id}:
+    parameters:
+    - in: path
+      name: lead_id
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: pipeline_id
+      required: true
+      schema:
+        type: string
+    delete:
+      description: Clear all leads transitions in the current pipeline "run"
+      operationId: delete-lead-transitions
+      summary: Clear leads transitions
+      tags:
+      - Leads
+      - Contacts Pipelines
+      responses:
+        '200':
+          description: updated lead (contact)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contacts.ContactView'
+        '404':
+          description: lead or pipeline couldn't be found
+        '406':
+          description: operation is invalid (e.g., contact isn't editable or transition itself violates
+            certain rules)
+security:
+- ApiKey: []
+components:
+  schemas:
+    Messages.MessagingAccountIdentifier:
+      properties:
+        account_type:
+          enum:
+          - email
+          - mass_mail
+          type: string
+        identifier:
+          description: 'Account identifier specific to account_type. For account_type: email it should
+            be email address. '
+          type: string
+      required:
+      - account_type
+      - identifier
+      type: object
+    Attachments.AttachmentData:
+      discriminator:
+        propertyName: type
+      properties:
+        attachment_bytes:
+          type: integer
+        attachment_type:
+          type: string
+        icon:
+          type: string
+        link:
+          description: URL that can be used to download an attachment
+          type: string
+        mime_type:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        updated:
+          type: string
+        updated_by:
+          type: string
+      required:
+      - attachment_type
+      - name
+      - link
+      - attachment_bytes
+      - icon
+      - type
+      - mime_type
+      - updated
+      - updated_by
+      type: object
+    Contacts.ContactPrivacy:
+      description: "Defines scopes of object visibility and editability.<br>\nEdit permission means that\
+        \ group or user also is able to read an object.<br>\n***No duplication***, if `id` in edit Principal\
+        \ it must not be in view Principal.<br>\nIf property is `None` - everyone have an action right\
+        \ (Permitted to everyone).<br>\nIf Principal is set, but has empty properies - only owner is allowed\
+        \ to act. <br>\nIf not specified - default privacy from company settings will be applied "
+      properties:
+        edit:
+          description: None means permitted to everyone. Prinipals object define permission explicitly
+          nullable: true
+          type: object
+          oneOf:
+          - $ref: '#/components/schemas/Contacts.Principals'
+        read:
+          description: None means permitted to everyone. Prinipals object define permission explicitly
+          nullable: true
+          type: object
+          oneOf:
+          - $ref: '#/components/schemas/Contacts.Principals'
+      required:
+      - read
+      - edit
+      type: object
+    Contacts.StageRole:
+      properties:
+        is_final:
+          type: boolean
+        name:
+          type: string
+      required:
+      - name
+      - is_final
+      type: object
+    Contacts.ContactView:
+      description: user perspective on a specific contact
+      properties:
+        avatar_url:
+          type: string
+        children:
+          items:
+            type: string
+          type: array
+        employers_info:
+          description: DEPRECATED, use  values in `contexts`
+          items:
+            properties:
+              company_name:
+                type: string
+              contact_id:
+                type: string
+            required:
+            - company_name
+            - contact_id
+            type: object
+          type: array
+        company_last_contacted:
+          description: DEPRECATED, use  values in `contexts`
+          properties:
+            in:
+              $ref: '#/components/schemas/Contacts.LastContacted'
+            out:
+              $ref: '#/components/schemas/Contacts.LastContacted'
+          required:
+          - in
+          - out
+          type: object
+        lc:
+          description: DEPRECATED, use values in `contexts`
+          $ref: '#/components/schemas/Contacts.UserLastContactedView'
+        created:
+          type: string
+        creator:
+          type: string
+        fields:
+          additionalProperties:
+            items:
+              properties:
+                field_id:
+                  type: string
+                modifier:
+                  type: string
+                value:
+                  type: string
+              required:
+              - field_id
+              - value
+              - modifier
+              type: object
+            type: array
+          type: object
+        id:
+          type: string
+        is_important:
+          type: object
+        last_contacted:
+          description: DEPRECATED, use values in `contexts`
+          nullable: true
+          $ref: '#/components/schemas/Contacts.LastContacted'
+        object_type:
+          enum:
+          - contact
+          type: string
+        last_contacted_user:
+          description: email of user that contacted for the last time (DEPRECATED, use values in `contexts`)
+          type: string
+        owner_id:
+          type: string
+        privacy:
+          $ref: '#/components/schemas/Contacts.ContactPrivacy'
+        record_type:
+          $ref: '#/components/schemas/Contacts.ContactType'
+        reminder:
+          nullable: true
+          $ref: '#/components/schemas/Contacts.Reminder'
+        tags:
+          items:
+            type: string
+          type: array
+        updated:
+          type: string
+        updater:
+          type: string
+        stages_info:
+          description: DEPRECATED. use `contexts`
+          type: array
+          items:
+            $ref: '#/components/schemas/Contacts.LeadInStageInfo'
+        notice:
+          $ref: '#/components/schemas/Contacts.ContactNotice'
+        contexts:
+          description: additional requested contexts (usually passed in the `contexts` request parameter)
+          type: array
+          items:
+            $ref: '#/components/schemas/Contacts.ContactViewContext'
+      required:
+      - id
+      - record_type
+      - object_type
+      - fields
+      - owner_id
+      - privacy
+      - children
+      - updated
+      - created
+      - updater
+      - creator
+      - avatar_url
+      - tags
+      - last_contacted
+      - company_last_contacted
+      - is_important
+      - reminder
+      - notice
+      type: object
+    Contacts.UploadedContactFile:
+      type: object
+      properties:
+        file_id:
+          type: string
+        contact_id:
+          type: string
+        file_name:
+          type: string
+        file_size:
+          type: number
+        mime_type:
+          type: string
+        uploader:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        uploaded_at:
+          type: string
+        pipeline_ids:
+          type: array
+          items:
+            type: string
+    Contacts.LeadLostReason:
+      type: object
+      properties:
+        id:
+          type: string
+        text:
+          type: string
+    Contacts.EmployersDataContext:
+      type: object
+      properties:
+        context_key:
+          type: object
+        context:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contacts.EmployerInfo'
+    Settings.MessagingAccountIdentifier:
+      properties:
+        account_type:
+          type: string
+        identifier:
+          type: string
+      required:
+      - account_type
+      - identifier
+      type: object
+    Sequences.SequenceProgressionOutcomes:
+      enum:
+      - successful
+      - unsuccessful
+      - error
+      - removed
+    Contacts.ExitLeadUnsuccessfullyRequest:
+      properties:
+        actual_exit_date:
+          description: |
+            if specified, this value will be set as the actual exit data, otherwise the time of the request will be used
+          type: string
+          nullable: true
+        notes:
+          description: optional notes (comments) to add to this transition to a lost stage
+          type: string
+          nullable: true
+        lost_reason:
+          description: optional lost reason to add to this "exit"
+          type: string
+          nullable: true
+      type: object
+    Messages.MessageTemplateContentMode:
+      type: string
+      enum:
+      - standard
+      - builder
+      - custom_html
+    Contacts.ContactFilesContext:
+      type: object
+      properties:
+        context_key:
+          type: object
+        context:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contacts.ContactFile'
+    Messages.EmailList:
+      type: object
+      properties:
+        list_id:
+          type: string
+          format: objectid
+          description: Unique identifier for the email list
+        name:
+          type: string
+          description: The name of the email list
+        description:
+          type: string
+          nullable: true
+          description: Description of the email list
+        opt_in_settings:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: whether to enable mandatory opt-in (i.e. confirmation of recipient via email)
+            confirmation_message_request:
+              $ref: '#/components/schemas/Messages.EmailListConfirmationMessageRequest'
+        owner_id:
+          type: string
+          format: objectid
+          description: User id of owner
+        is_private:
+          type: boolean
+          description: whether this mailing list is shared across company or not
+        archived_at:
+          type: string
+          format: date-time
+          description: Timestamp when the list was archived
+        is_archived:
+          type: boolean
+          description: whether this mailing list is archived already
+        total_entries:
+          type: integer
+          description: Total number of recipients in this mailing list
+    Contacts.LeadsDataContext:
+      type: object
+      properties:
+        context_key:
+          type: object
+        context:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contacts.LeadInStageInfo'
+    Contacts.LastContactedDataContext:
+      type: object
+      properties:
+        context_key:
+          type: object
+        context:
+          $ref: '#/components/schemas/Contacts.UserLastContactedView'
+    Contacts.LastContacted:
+      properties:
+        deletion_tstamp:
+          type: object
+        object_id:
+          type: object
+        tstamp:
+          type: object
+        type:
+          type: object
+        user_id:
+          type: object
+        direction:
+          enum:
+          - inbound
+          - outbound
+      required:
+      - tstamp
+      - type
+      - object_id
+      - user_id
+      - deletion_tstamp
+      type: object
+    Contacts.Reminder:
+      properties:
+        active:
+          type: boolean
+        contact_id:
+          type: string
+        days_till_triggered:
+          type: integer
+        period:
+          type: integer
+        triggered:
+          type: boolean
+      required:
+      - contact_id
+      - period
+      - days_till_triggered
+      - active
+      - triggered
+      type: object
+    Contacts.ContactType:
+      enum:
+      - person
+      - company
+      type: string
+    Contacts.LeadStage:
+      properties:
+        archived_at:
+          nullable: true
+          type: string
+        created:
+          type: string
+        creator:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        days_limit:
+          nullable: true
+          type: number
+        description:
+          nullable: true
+          type: string
+        name:
+          type: string
+        pipeline_id:
+          type: string
+        position:
+          type: number
+        role:
+          $ref: '#/components/schemas/Contacts.StageRole'
+        stage_id:
+          type: string
+        updated:
+          type: string
+      required:
+      - stage_id
+      - pipeline_id
+      - creator
+      - name
+      - description
+      - created
+      - updated
+      - archived_at
+      - position
+      - days_limit
+      - role
+      type: object
+    Attachments.DropboxAttachmentData:
+      allOf:
+      - $ref: '#/components/schemas/Attachments.AttachmentData'
+      - description: Dropbox
+    Contacts.LastContactedDirectedContainer:
+      properties:
+        in:
+          $ref: '#/components/schemas/Contacts.LastContacted'
+        out:
+          $ref: '#/components/schemas/Contacts.LastContacted'
+        last:
+          $ref: '#/components/schemas/Contacts.LastContacted'
+    Contacts.ContactNotice:
+      properties:
+        created:
+          description: Date and time when the notice was created encoded in ISO 8601
+          type: string
+        updated:
+          description: Date and time when the notice was updated encoded in ISO 8601
+          type: string
+        creator:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        updated_by:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        text:
+          type: string
+        color:
+          type: string
+      required:
+      - created
+      - updated
+      - creator
+      - updated_by
+      - text
+      - color
+      type: object
+    Attachments.OneDriveAttachmentData:
+      allOf:
+      - $ref: '#/components/schemas/Attachments.AttachmentData'
+      - description: OneDrive
+    Contacts.ContactViewContext:
+      oneOf:
+      - $ref: '#/components/schemas/Contacts.ContactFilesContext'
+      - $ref: '#/components/schemas/Contacts.EmployersDataContext'
+      - $ref: '#/components/schemas/Contacts.LastContactedDataContext'
+      - $ref: '#/components/schemas/Contacts.LeadsDataContext'
+      - $ref: '#/components/schemas/Contacts.InSequenceContactInfoContext'
+      - $ref: '#/components/schemas/Contacts.EmailListsContext'
+      discriminator:
+        propertyName: context_key
+        mapping:
+          last_contacted_data: '#/components/schemas/Contacts.LastContactedDataContext'
+          employers_data: '#/components/schemas/Contacts.EmployersDataContext'
+          leads_data: '#/components/schemas/Contacts.LeadsDataContext'
+          contact_files: '#/components/schemas/Contacts.ContactFilesContext'
+          sequences_data: '#/components/schemas/Contacts.InSequenceContactInfoContext'
+          email_lists: '#/components/schemas/Contacts.EmailListsContext'
+    Contacts.ContactFile:
+      type: object
+      properties:
+        source:
+          type: string
+          enum:
+          - device
+          - google_drive
+          - one_drive
+          - dropbox
+        metadata:
+          oneOf:
+          - $ref: '#/components/schemas/Contacts.UploadedContactFile'
+          - $ref: '#/components/schemas/Attachments.DropboxAttachmentData'
+          - $ref: '#/components/schemas/Attachments.GoogleDriveAttachmentData'
+          - $ref: '#/components/schemas/Attachments.OneDriveAttachmentData'
+    Sequences.CompletedSequenceStepRecord:
+      type: object
+      properties:
+        step_id:
+          type: string
+          description: ID (name) of the completed sequence step
+        step_type:
+          description: the type of the completed sequence step
+          enum:
+          - delay
+          - send_message
+          - condition
+        when:
+          type: string
+          description: iso8601 timestamp of when the step was completed
+        step_name:
+          type: string
+          description: the name of a step this contact completed
+    Sequences.InSequenceContactExitDetails:
+      type: object
+      properties:
+        when:
+          type: string
+        exit_method:
+          type: string
+          description: |
+            "how" the contact exited the sequence (e.g. by an exit rule or certain message condition)
+        outcome:
+          $ref: '#/components/schemas/Sequences.SequenceProgressionOutcomes'
+    Messages.MessageTemplateContentSpecification:
+      properties:
+        attachments:
+          items:
+            $ref: '#/components/schemas/Messages.Attachment'
+          type: array
+        bcc:
+          items:
+            $ref: '#/components/schemas/Messages.MessagingAccount'
+          type: array
+        body:
+          description: |
+            Can include template variable references in for of *|VARIABLE|*. Recognized template variables are 'FName',
+            'LName', 'Title', 'CompanyName' and 'Unsubscribe'.
+            Template variables are surrounded with *| |* symbols. Unknown template variable references are not allowed
+            and will result in error.
+          type: string
+        cc:
+          items:
+            $ref: '#/components/schemas/Messages.MessagingAccount'
+          type: array
+        subject:
+          type: string
+        builder_data:
+          type: object
+          description: client Email builder data
+          nullable: true
+        content_mode:
+          $ref: '#/components/schemas/Messages.MessageTemplateContentMode'
+        unsubscribe_category_ids:
+          type: array
+          items:
+            type: string
+          description: ids of unsubscribe categories to which this message belongs. If null -- will unsubscribe
+            from all categories
+          nullable: true
+      required:
+      - subject
+      - body
+      type: object
+    Contacts.Principals:
+      description: |
+        Explicitly defines users and groups that have an action permission. If any set - no one can.
+      properties:
+        group_ids:
+          description: ids of permitted groups. if empty - no group has permission
+          items:
+            type: string
+          type: array
+        user_ids:
+          description: ids of permitted users. If empty - no user has permission
+          items:
+            type: string
+          type: array
+      required:
+      - user_ids
+      - group_ids
+      type: object
+    Contacts.LeadInStageInfo:
+      description: info about stage where lead is
+      properties:
+        pipeline_id:
+          type: string
+          format: ObjectId
+        pipeline_name:
+          type: string
+        stage_name:
+          type: string
+        entered_data:
+          type: string
+          format: datetime
+        is_final:
+          type: boolean
+        days_limit:
+          type: integer
+          nullable: true
+    Accounts.ShortUserInfo:
+      properties:
+        avatar_url:
+          type: string
+        email:
+          type: string
+        is_active:
+          type: boolean
+        name:
+          type: string
+        user_id:
+          type: string
+      required:
+      - user_id
+      - name
+      - email
+      - avatar_url
+      - is_active
+      type: object
+    Sequences.InSequenceContactInfo:
+      type: object
+      properties:
+        sequence_id:
+          description: id of a sequence this contact is in
+          type: string
+        seq_contact_id:
+          description: a unique identifier of a the contact in the sequence
+          type: string
+        sequence_name:
+          description: the name of a sequence this contact belongs to
+          type: string
+        sequence_color:
+          description: the color of a sequence this contact belongs to
+          type: string
+        completed_steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sequences.CompletedSequenceStepRecord'
+        current_step:
+          type: string
+          description: current sequence's step name
+        current_step_id:
+          type: string
+          description: current sequence's step id
+        last_completed_action:
+          type: string
+          description: last completed sequence action name
+        last_completed_action_dao:
+          type: string
+          description: last completed sequence action date
+        has_waited_in_current_step:
+          type: number
+          description: for how many seconds the contact has waited in it's current step
+        email:
+          description: an email address the contact was entered the sequence with
+          type: string
+        exit_details:
+          description: exit details if contact completed the sequence
+          nullable: true
+          type: object
+          oneOf:
+          - $ref: '#/components/schemas/Sequences.InSequenceContactExitDetails'
+        owner:
+          description: user who entered this contact to a sequence
+          oneOf:
+          - $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        next_step_scheduled_at:
+          description: |
+            the timestamp of the next scheduled sequence step (can be use to approximate the next send_message step)
+          type: string
+    Contacts.LeadsPipeline:
+      properties:
+        archived_at:
+          nullable: true
+          type: string
+        color:
+          type: string
+        created:
+          type: string
+        fields:
+          type: array
+          items:
+            type: object
+            properties:
+              column_id:
+                type: string
+              enabled:
+                type: boolean
+            required:
+            - column_id
+            - enabled
+        creator:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        description:
+          nullable: true
+          type: string
+        name:
+          type: string
+        pipeline_id:
+          type: string
+        stages:
+          items:
+            $ref: '#/components/schemas/Contacts.LeadStage'
+          type: array
+        updated:
+          type: string
+        lost_reasons:
+          description: a list with possible lost reasons that can be specified for a lost lead
+          type: array
+          items:
+            $ref: '#/components/schemas/Contacts.LeadLostReason'
+      required:
+      - pipeline_id
+      - creator
+      - name
+      - description
+      - created
+      - updated
+      - archived_at
+      - stages
+      - color
+      - lost_reasons
+      type: object
+    Messages.MessagingAccount:
+      allOf:
+      - $ref: '#/components/schemas/Messages.MessagingAccountIdentifier'
+      properties:
+        avatar_url:
+          nullable: true
+          type: string
+        comment:
+          description: |
+            Field comment holds some short freeform text that shows a role of this messaging account to user.
+            Examples are 'home', 'work', 'assistant', etc.
+          type: string
+        company:
+          description: Name of account's company, might be null.
+          type: object
+        company_id:
+          description: ID of account's company in Nimble db, might be null.
+          nullable: true
+          type: object
+        contact_id:
+          description: Nimble contact id associated with this account
+          nullable: true
+          type: string
+          format: ObjectId
+        user_id:
+          description: Nimble user id (user themself or team member) associated with this account
+          nullable: true
+          type: string
+          format: ObjectId
+        name:
+          description: Field name is for readable name of a user. Sometimes identifier value is not suitable
+            to be shown to user, for example when it's numerical user id (as for Facebook). Can be null
+            if full name is unknown.
+          oneOf:
+          - type: number
+          - type: string
+      type: object
+    Contacts.EmailListsContext:
+      type: object
+      properties:
+        context_key:
+          type: object
+        context:
+          type: array
+          items:
+            $ref: '#/components/schemas/Messages.EmailList'
+    Contacts.InSequenceContactInfoContext:
+      type: object
+      properties:
+        context_key:
+          type: object
+        context:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sequences.InSequenceContactInfo'
+    Messages.EmailListConfirmationMessageRequest:
+      properties:
+        message:
+          $ref: '#/components/schemas/Messages.MessageTemplateContentSpecification'
+        sender_account:
+          $ref: '#/components/schemas/Settings.MessagingAccountIdentifier'
+        sender_credential_id:
+          type: string
+          format: objectid
+          description: Unique identifier of sender's credential to send emails on behalf of
+      required:
+      - sender_account
+      - message
+      - sender_credential_id
+      type: object
+    Contacts.EmployerInfo:
+      description: employer's info
+      type: object
+      properties:
+        contact_id:
+          type: string
+        company_name:
+          type: string
+        avatar_url:
+          type: string
+    Messages.Attachment:
+      properties:
+        content_type:
+          description: MIME type of attachment
+          type: string
+        data_id:
+          description: Field data_id must be first retrieved using any sort of Uploads API.
+          type: string
+        file_size:
+          description: Field file_size is given in bytes.
+          type: integer
+        name:
+          type: string
+        url:
+          description: URL that can be used by a user to download attachment's content
+          type: string
+      required:
+      - data_id
+      - file_size
+      - content_type
+      - name
+      - url
+      type: object
+    Contacts.UserLastContactedView:
+      properties:
+        company_lc:
+          $ref: '#/components/schemas/Contacts.LastContactedDirectedContainer'
+        user_lc:
+          $ref: '#/components/schemas/Contacts.LastContactedDirectedContainer'
+        last_user:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+    Attachments.GoogleDriveAttachmentData:
+      allOf:
+      - $ref: '#/components/schemas/Attachments.AttachmentData'
+      - description: GoogleDrive
+    Contacts.ExitLeadSuccessfullyRequest:
+      properties:
+        actual_exit_date:
+          description: |
+            if specified, this value will be set as the actual exit data, otherwise the time of the request will be used
+          type: string
+          nullable: true
+        notes:
+          description: optional notes (comments) to add to this transition to a won stage
+          type: string
+          nullable: true
+      type: object
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Nimble-Token

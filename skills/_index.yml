@@ -1,0 +1,78 @@
+generated: '2026-08-13'
+method: generated
+source: openapi/_original/nimble-openapi-original.yml
+notes: >-
+  Packaged Agent Skills for the Nimble CRM REST API. Every operationId
+  referenced below was verified to exist verbatim in the OpenAPI Nimble
+  publishes at https://www.nimble.com/developers/docs/ (89 operations total).
+  Skills carry the cross-cutting rules captured in
+  conventions/nimble-conventions.yml and errors/nimble-problem-types.yml —
+  in particular that Nimble ships NO idempotency contract, so every create is
+  unsafe to blind-retry.
+skill_count: 6
+skills:
+  - file: nimble-authenticate-and-verify.md
+    name: Authenticate against the Nimble CRM API and verify access
+    api: openapi/nimble-users-api-openapi.yml
+    operations: [get-myself]
+  - file: nimble-create-and-enrich-contact.md
+    name: Create and enrich a Nimble contact
+    api: openapi/nimble-contacts-api-openapi.yml
+    operations:
+      - post-contact
+      - get-contact
+      - put-contact
+      - put-contact-tags
+      - post-contact-note-for-contact
+      - list-contacts-fields-metadata
+  - file: nimble-search-contacts.md
+    name: Search Nimble contacts with the advanced query syntax
+    api: openapi/nimble-contacts-api-openapi.yml
+    operations:
+      - list-contacts
+      - list-contacts-ids
+      - list-contacts-for-identifiers
+      - list-contacts-fields-metadata
+  - file: nimble-manage-deal-pipeline.md
+    name: Move a deal through a Nimble pipeline
+    api: openapi/nimble-deals-api-openapi.yml
+    operations:
+      - list-deals-pipelines
+      - get-deals-pipeline
+      - create-new-deal
+      - get-deal
+      - put-deal
+      - list-user-deals
+      - list-pipeline-deals-by-stages
+      - list-pipeline-deals-by-owner
+      - create-deal-note
+      - get-won-last-month-deals-sum
+  - file: nimble-manage-custom-fields.md
+    name: Manage Nimble custom contact fields
+    api: openapi/nimble-contacts-fields-api-openapi.yml
+    operations:
+      - list-company-contacts-fields
+      - list-contacts-fields-metadata
+      - post-contact-field
+      - put-contact-field
+      - delete-contact-field
+      - post-contact-choice-field
+      - put-contacts-field-choice
+      - delete-contact-choice-field
+      - create-contacts-fields-group
+      - put-contacts-fields-group
+      - post-contacts-fields-tab
+      - put-contacts-tab-by-id
+  - file: nimble-progress-leads.md
+    name: Progress a lead through a Nimble contact pipeline
+    api: openapi/nimble-leads-api-openapi.yml
+    operations:
+      - list-available-contacts-pipelines
+      - list-contact-proceedings
+      - move-lead
+      - mark-lead-exited-successful
+      - put-lead-exit-successful
+      - mark-lead-exited-unsuccessfully
+      - put-lead-exit-unsuccessful
+      - undo-lead-transition
+      - delete-lead-transitions

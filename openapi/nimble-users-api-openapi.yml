@@ -1,48 +1,57 @@
-openapi: 3.1.0
+openapi: 3.0.0
 info:
-  title: Nimble CRM Contacts Users API
-  description: 'The Nimble REST API lets developers manage contacts, deals,
-
-    pipelines, notes, custom fields, and messages within a Nimble
-
-    account. Requests are authenticated with an OAuth 2.0 bearer
-
-    token, either via the Authorization header or an access_token
-
-    query parameter.
-
-    '
+  title: Nimble Users API
+  description: Nimble CRM Users operations. Split by tag from the OpenAPI Nimble publishes at https://www.nimble.com/developers/docs/
+    (embedded Redoc spec). Base host https://app.nimble.com.
   version: v1
 servers:
-- url: https://app.nimble.com/api/v1
-  description: Nimble production API base
-security:
-- bearerAuth: []
+- url: https://app.nimble.com
 tags:
 - name: Users
+  description: User management
 paths:
-  /myself:
+  /api/v1/myself:
     get:
-      summary: Retrieve information about the authenticated user
-      operationId: getMyself
+      description: Returns information about authenticated user. User_id from this response can be used
+        to assign different Nimble entities to this user. Such as tasks, contacts, etc.
+      operationId: get-myself
+      summary: Current user info
       tags:
       - Users
       responses:
         '200':
-          description: Authenticated user record
+          content:
+            application/json:
+              schema:
+                properties:
+                  company_id:
+                    type: string
+                    example: 4c2118ad54397f271b000000
+                  company_size:
+                    type: integer
+                    example: 3
+                  email:
+                    type: string
+                    example: some@user.com
+                  name:
+                    type: string
+                    example: John Doe
+                  user_id:
+                    type: string
+                    example: 4f2acc3142a053dda595f00b
+                required:
+                - user_id
+                - company_id
+                - email
+                - name
+                - company_size
+                type: object
+          description: ''
+security:
+- ApiKey: []
 components:
   securitySchemes:
-    bearerAuth:
-      type: oauth2
-      description: 'OAuth 2.0 bearer token. Provide the token via either the
-
-        `Authorization: Bearer <token>` header or the
-
-        `access_token=<token>` query parameter.
-
-        '
-      flows:
-        authorizationCode:
-          authorizationUrl: https://app.nimble.com/oauth/authorize
-          tokenUrl: https://app.nimble.com/oauth/token
-          scopes: {}
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Nimble-Token
