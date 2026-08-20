@@ -56,6 +56,13 @@ apis:
   - Contacts
   - Deals
   - Activities
+  - Task
+  - Leads
+  tags_raw:
+  - CRM
+  - Contacts
+  - Deals
+  - Activities
   - Tasks
   - Leads
   properties:
@@ -81,6 +88,9 @@ apis:
   humanURL: https://www.nimble.com/developers/docs/
   baseURL: https://app.nimble.com
   tags:
+  - Activities
+  - Timelines
+  tags_raw:
   - Activities
   - Timeline
   properties:
@@ -224,6 +234,9 @@ apis:
   humanURL: https://www.nimble.com/developers/docs/
   baseURL: https://app.nimble.com
   tags:
+  - Message
+  - Email
+  tags_raw:
   - Messages
   - Email
   properties:
@@ -237,6 +250,9 @@ apis:
   humanURL: https://www.nimble.com/developers/docs/
   baseURL: https://app.nimble.com
   tags:
+  - Task
+  - Productivity
+  tags_raw:
   - Tasks
   - Productivity
   properties:
@@ -250,6 +266,9 @@ apis:
   humanURL: https://www.nimble.com/developers/docs/
   baseURL: https://app.nimble.com
   tags:
+  - User
+  - Authentication
+  tags_raw:
   - Users
   - Authentication
   properties:
