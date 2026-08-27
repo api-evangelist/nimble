@@ -40,46 +40,6 @@ created: '2026-05-11'
 modified: '2026-08-13'
 specificationVersion: '0.23'
 apis:
-- aid: nimble:rest-api
-  name: Nimble REST API
-  description: >-
-    The Nimble CRM REST API — 89 operations across contacts, contact custom fields, contact and deal pipelines,
-    deals, leads, activities, tasks, messages and users. Nimble publishes a full OpenAPI 3.0.0 contract
-    (58 paths, 180 component schemas) embedded in its developer reference. Authentication accepts an account
-    API key as an X-Nimble-Token header or an Authorization: Bearer token, or OAuth 2.0 authorization_code
-    with the coarse basic / contacts / deals scopes. Versioning is per resource family: /api/v1 for contacts,
-    /api/v2 for deals.
-  humanURL: https://www.nimble.com/developers/docs/
-  baseURL: https://app.nimble.com
-  tags:
-  - CRM
-  - Contacts
-  - Deals
-  - Activities
-  - Task
-  - Leads
-  tags_raw:
-  - CRM
-  - Contacts
-  - Deals
-  - Activities
-  - Tasks
-  - Leads
-  properties:
-  - type: OpenAPI
-    url: openapi/_original/nimble-openapi-original.yml
-  - type: Documentation
-    url: https://www.nimble.com/developers/docs/
-  - type: APIReference
-    url: https://www.nimble.com/developers/docs/
-  - type: DeveloperPortal
-    url: https://www.nimble.com/developers/docs/
-  - type: Authentication
-    url: authentication/nimble-authentication.yml
-  - type: GettingStarted
-    url: https://support.nimble.com/en/articles/502755-nimble-api-access
-  - type: Support
-    url: mailto:api-support@nimble.com
 - aid: nimble:nimble-activities-api
   name: Nimble Activities API
   description: >-
@@ -136,8 +96,8 @@ apis:
     url: overlays/nimble-contacts-fields-overlay.yaml
 - aid: nimble:nimble-contacts-pipelines-api
   name: Nimble Contacts Pipelines API
-  description: Contact pipelines — the lead-progression surface for contacts, distinct from deal pipelines.
-    8 operation(s).
+  description: >-
+    Contact pipelines — the lead-progression surface for contacts, distinct from deal pipelines. 8 operation(s).
   humanURL: https://www.nimble.com/developers/docs/
   baseURL: https://app.nimble.com
   tags:
