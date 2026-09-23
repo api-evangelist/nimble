@@ -1,19 +1,25 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
   title: Nimble Users API
-  description: Nimble CRM Users operations. Split by tag from the OpenAPI Nimble publishes at https://www.nimble.com/developers/docs/
-    (embedded Redoc spec). Base host https://app.nimble.com.
   version: v1
+  description: '# Overview
+
+
+    Nimble is a relationship-focused CRM for your entire team.'
+  x-logo:
+    url: https://www.nimble.com/wp-content/themes/new_nimble/images/nimble-logo-white.svg
+    backgroundColor: '#2685c4'
 servers:
 - url: https://app.nimble.com
+security:
+- ApiKey: []
 tags:
 - name: Users
   description: User management
 paths:
   /api/v1/myself:
     get:
-      description: Returns information about authenticated user. User_id from this response can be used
-        to assign different Nimble entities to this user. Such as tasks, contacts, etc.
+      description: Returns information about authenticated user. User_id from this response can be used to assign different Nimble entities to this user. Such as tasks, contacts, etc.
       operationId: get-myself
       summary: Current user info
       tags:
@@ -47,11 +53,28 @@ paths:
                 - company_size
                 type: object
           description: ''
-security:
-- ApiKey: []
 components:
   securitySchemes:
     ApiKey:
       type: apiKey
       in: header
       name: X-Nimble-Token
+x-tagGroups:
+- name: Guides
+  tags:
+  - Authentication
+  - Handling Errors
+- name: API Reference
+  tags:
+  - Users
+  - Contacts
+  - Contacts Fields
+  - Contacts Pipelines
+  - Search Contacts
+  - Activities
+  - Tasks
+  - Deals
+  - Deals Fields
+  - Deals Pipelines
+  - Deals Pipelines Fields
+  - Messages

@@ -1,26 +1,44 @@
 {
   "provider": "nimble",
   "sources": [
-    "nimble-contacts-api-openapi.yml",
-    "nimble-deals-api-openapi.yml",
-    "nimble-fields-api-openapi.yml",
-    "nimble-messages-api-openapi.yml",
-    "nimble-notes-api-openapi.yml",
-    "nimble-pipelines-api-openapi.yml",
-    "nimble-users-api-openapi.yml"
+    "_original/nimble-openapi-original.yml"
   ],
   "outputs": [
+    "nimble-activities-api-openapi.yml",
     "nimble-contacts-api-openapi.yml",
+    "nimble-contacts-fields-api-openapi.yml",
+    "nimble-contacts-pipelines-api-openapi.yml",
     "nimble-deals-api-openapi.yml",
-    "nimble-fields-api-openapi.yml",
+    "nimble-deals-fields-api-openapi.yml",
+    "nimble-deals-pipelines-api-openapi.yml",
+    "nimble-deals-pipelines-fields-api-openapi.yml",
+    "nimble-leads-api-openapi.yml",
     "nimble-messages-api-openapi.yml",
-    "nimble-notes-api-openapi.yml",
-    "nimble-pipelines-api-openapi.yml",
+    "nimble-tasks-api-openapi.yml",
     "nimble-users-api-openapi.yml"
   ],
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "nimble-openapi-original.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "nimble-openapi-original.yml: declared missing tag: Leads",
+    "nimble-openapi-original.yml: declared missing tag: Messages",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "nimble-activities-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "nimble-contacts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "nimble-contacts-fields-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "nimble-contacts-pipelines-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "nimble-deals-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "nimble-deals-fields-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "nimble-deals-pipelines-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "nimble-deals-pipelines-fields-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "nimble-leads-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "nimble-messages-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "nimble-tasks-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "nimble-users-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

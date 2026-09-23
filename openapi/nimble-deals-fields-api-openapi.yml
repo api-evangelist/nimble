@@ -1,11 +1,18 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
   title: Nimble Deals Fields API
-  description: Nimble CRM Deals Fields operations. Split by tag from the OpenAPI Nimble publishes at https://www.nimble.com/developers/docs/
-    (embedded Redoc spec). Base host https://app.nimble.com.
   version: v1
+  description: '# Overview
+
+
+    Nimble is a relationship-focused CRM for your entire team.'
+  x-logo:
+    url: https://www.nimble.com/wp-content/themes/new_nimble/images/nimble-logo-white.svg
+    backgroundColor: '#2685c4'
 servers:
 - url: https://app.nimble.com
+security:
+- ApiKey: []
 tags:
 - name: Deals Fields
   description: Deals fields groups and tabs management
@@ -48,30 +55,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Deals.DealFieldsMetadata'
-security:
-- ApiKey: []
 components:
   schemas:
-    Deals.DealPipelineFieldsTab:
-      type: object
-      properties:
-        tab_id:
-          description: The id of a tab in the database
-          type: string
-        tab_name:
-          description: The name of a tab
-          type: string
-        pipeline_id:
-          type: string
-        members:
-          $ref: '#/components/schemas/Deals.DealPipelineFieldsTabMember'
-    Columns.ColumnPresentation:
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/Columns.ColumnPresentationType'
-        possible_values:
-          $ref: '#/components/schemas/Commons.PossibleValues'
     Deals.IDealField:
       type: object
       properties:
@@ -90,11 +75,13 @@ components:
         field_name:
           description: The name of a field
           type: string
-    Deals.BaseDealPipelineFieldsTabMember:
-      properties:
-        type:
-          type: string
-      type: object
+    Deals.DealListingColumn:
+      allOf:
+      - $ref: '#/components/schemas/Columns.ListingColumn'
+      - properties:
+          search_field:
+            $ref: '#/components/schemas/Search.SearchField'
+        type: object
     Search.SearchField:
       type: object
       properties:
@@ -119,36 +106,6 @@ components:
           type: boolean
         possible_values:
           $ref: '#/components/schemas/Commons.PossibleValues'
-    Deals.DealPipelineField:
-      description: Fields of DealsPipeline
-      allOf:
-      - $ref: '#/components/schemas/Deals.BaseDealPipelineFieldsTabMember'
-      - properties:
-          field:
-            $ref: '#/components/schemas/Deals.IDealField'
-          pipeline_id:
-            type: string
-      type: object
-    Deals.DealFieldsMetadata:
-      type: object
-      properties:
-        pipelines_tabs:
-          type: array
-          items:
-            $ref: '#/components/schemas/Deals.DealPipelineFieldsTab'
-        standard_fields:
-          type: array
-          items:
-            $ref: '#/components/schemas/Deals.IDealField'
-    Deals.DealPipelineFieldsTabMember:
-      oneOf:
-      - $ref: '#/components/schemas/Deals.DealPipelineField'
-      - $ref: '#/components/schemas/Deals.DealPipelineFieldsGroup'
-      discriminator:
-        propertyName: type
-        mapping:
-          field: '#/components/schemas/Deals.DealPipelineField'
-          group: '#/components/schemas/Deals.DealPipelineFieldsGroup'
     Columns.ColumnPresentationType:
       enum:
       - single-line-text-box
@@ -166,43 +123,20 @@ components:
       - privacy
       - user
       - contact employment
-      nullable: false
       type: string
-    Deals.DealListingColumn:
-      allOf:
-      - $ref: '#/components/schemas/Columns.ListingColumn'
-      - properties:
-          search_field:
-            $ref: '#/components/schemas/Search.SearchField'
-        type: object
-    Columns.ListingColumn:
+    Deals.DealPipelineFieldsTabMember:
+      oneOf:
+      - $ref: '#/components/schemas/Deals.DealPipelineField'
+      - $ref: '#/components/schemas/Deals.DealPipelineFieldsGroup'
+      discriminator:
+        propertyName: type
+        mapping:
+          field: '#/components/schemas/Deals.DealPipelineField'
+          group: '#/components/schemas/Deals.DealPipelineFieldsGroup'
+    Deals.BaseDealPipelineFieldsTabMember:
       properties:
-        id:
-          description: unique column identifier
+        type:
           type: string
-        human_readable_name:
-          description: name to display
-          type: string
-        json_path:
-          description: JSONPath to determine the exact value from contact data. It should return a list
-            of values
-          type: string
-        value_json_path:
-          description: JSONPath to determine the exact value from field's value (when value is json itself).
-          type: string
-          nullable: true
-        presentation:
-          description: allows client to distinguish different field types. Single line by default
-          $ref: '#/components/schemas/Columns.ColumnPresentation'
-        read_only:
-          description: defines ability to edit this column
-          type: boolean
-        is_standard:
-          description: show if the column is standard or created by the user
-          type: boolean
-        sortable:
-          description: True if contacts can be sorted by this column
-          type: boolean
       type: object
     Deals.DealPipelineFieldsGroup:
       allOf:
@@ -236,6 +170,13 @@ components:
                 type: string
               value:
                 type: string
+    Columns.ColumnPresentation:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/Columns.ColumnPresentationType'
+        possible_values:
+          $ref: '#/components/schemas/Commons.PossibleValues'
     Columns.ColumnGroup:
       properties:
         columns:
@@ -251,8 +192,90 @@ components:
       - human_readable_name
       - columns
       type: object
+    Deals.DealPipelineFieldsTab:
+      type: object
+      properties:
+        tab_id:
+          description: The id of a tab in the database
+          type: string
+        tab_name:
+          description: The name of a tab
+          type: string
+        pipeline_id:
+          type: string
+        members:
+          $ref: '#/components/schemas/Deals.DealPipelineFieldsTabMember'
+    Columns.ListingColumn:
+      properties:
+        id:
+          description: unique column identifier
+          type: string
+        human_readable_name:
+          description: name to display
+          type: string
+        json_path:
+          description: JSONPath to determine the exact value from contact data. It should return a list of values
+          type: string
+        value_json_path:
+          description: JSONPath to determine the exact value from field's value (when value is json itself).
+          type:
+          - string
+          - 'null'
+        presentation:
+          description: allows client to distinguish different field types. Single line by default
+          $ref: '#/components/schemas/Columns.ColumnPresentation'
+        read_only:
+          description: defines ability to edit this column
+          type: boolean
+        is_standard:
+          description: show if the column is standard or created by the user
+          type: boolean
+        sortable:
+          description: True if contacts can be sorted by this column
+          type: boolean
+      type: object
+    Deals.DealFieldsMetadata:
+      type: object
+      properties:
+        pipelines_tabs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deals.DealPipelineFieldsTab'
+        standard_fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deals.IDealField'
+    Deals.DealPipelineField:
+      description: Fields of DealsPipeline
+      allOf:
+      - $ref: '#/components/schemas/Deals.BaseDealPipelineFieldsTabMember'
+      - properties:
+          field:
+            $ref: '#/components/schemas/Deals.IDealField'
+          pipeline_id:
+            type: string
+      type: object
   securitySchemes:
     ApiKey:
       type: apiKey
       in: header
       name: X-Nimble-Token
+x-tagGroups:
+- name: Guides
+  tags:
+  - Authentication
+  - Handling Errors
+- name: API Reference
+  tags:
+  - Users
+  - Contacts
+  - Contacts Fields
+  - Contacts Pipelines
+  - Search Contacts
+  - Activities
+  - Tasks
+  - Deals
+  - Deals Fields
+  - Deals Pipelines
+  - Deals Pipelines Fields
+  - Messages

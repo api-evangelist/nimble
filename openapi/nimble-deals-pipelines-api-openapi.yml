@@ -1,11 +1,18 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
   title: Nimble Deals Pipelines API
-  description: Nimble CRM Deals Pipelines operations. Split by tag from the OpenAPI Nimble publishes at
-    https://www.nimble.com/developers/docs/ (embedded Redoc spec). Base host https://app.nimble.com.
   version: v1
+  description: '# Overview
+
+
+    Nimble is a relationship-focused CRM for your entire team.'
+  x-logo:
+    url: https://www.nimble.com/wp-content/themes/new_nimble/images/nimble-logo-white.svg
+    backgroundColor: '#2685c4'
 servers:
 - url: https://app.nimble.com
+security:
+- ApiKey: []
 tags:
 - name: Deals Pipelines
   description: Pipelines management
@@ -168,13 +175,19 @@ paths:
         format: ObjectId
       in: query
     - name: stuck
-      description: |
-        Filter deals by whether they are stuck in the current stage.
+      description: 'Filter deals by whether they are stuck in the current stage.
+
         Stages with `expected_days=0` are treated the same as stages without `expected_days`.
+
         For stages with `expected_days`, `true` returns deals older than the configured number of days and
+
         `false` returns deals up to that threshold.
+
         For stages without `expected_days` and for stages with `expected_days=0`, `true` returns no deals and
+
         `false` does not add any extra restriction.
+
+        '
       schema:
         type: boolean
       in: query
@@ -434,23 +447,424 @@ paths:
       responses:
         '200':
           description: Archived
-security:
-- ApiKey: []
 components:
   schemas:
-    Deals.DealPipelineFieldsTab:
+    Contacts.ContactType:
+      enum:
+      - person
+      - company
+      type: string
+    Pipeline.DealStage:
+      description: Stage in the deals pipeline
       type: object
       properties:
-        tab_id:
-          description: The id of a tab in the database
+        default_probability:
+          description: Probability, that will be set to a deal at this stage, if not specific deal probability provided.
+          type: integer
+        stage_id:
           type: string
-        tab_name:
-          description: The name of a tab
+        description:
           type: string
+        creator:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        created:
+          type: string
+        updated:
+          type: string
+        pipline_id:
+          description: Id of pipeline deals belongs to
+          type: string
+        role:
+          type: object
+          properties:
+            name:
+              type: string
+            is_final:
+              type: boolean
+              example: true
+        archived_at:
+          description: When and if this stage has been archived
+          type:
+          - string
+          - 'null'
+        expected_days:
+          description: The number of days a deal is expected to spend at this stage
+          type: integer
+        name:
+          description: Name of the stage
+          type: string
+    Pipeline.EditDealsPipelineRequest:
+      description: Updates pipeline
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: New pipeline name
+        description:
+          type: string
+          description: New pipeline description
+        color:
+          type: string
+          description: New pipeline color
+    Deals.Principals:
+      type: object
+      properties:
+        user_ids:
+          type: array
+          items:
+            type: string
+            format: BSONObjectId
+          description: Set of user IDs with permissions
+          minItems: 0
+        group_ids:
+          type: array
+          items:
+            type: string
+            format: BSONObjectId
+          description: Set of group IDs with permissions
+          minItems: 0
+      required:
+      - user_ids
+      - group_ids
+      example:
+        user_ids:
+        - 507f1f77bcf86cd799439011
+        group_ids:
+        - 507f1f77bcf86cd799439012
+    Deals.DealPipelineTransitions:
+      properties:
         pipeline_id:
           type: string
-        members:
-          $ref: '#/components/schemas/Deals.DealPipelineFieldsTabMember'
+        pipeline_color:
+          type: string
+        pipeline_name:
+          type: string
+        transitions:
+          items:
+            $ref: '#/components/schemas/Deals.DealStageTransition'
+          type: array
+        before_final_stage:
+          $ref: '#/components/schemas/Pipeline.DealStage'
+          description: previous to the final stage (if the deal is won or lost, otherwise - null)
+      required:
+      - pipeline_id
+      - pipeline_color
+      - pipeline_name
+      - transitions
+      type: object
+    Deals.BaseDealPipelineFieldsTabMember:
+      properties:
+        type:
+          type: string
+      type: object
+    Pipeline.LeadLostReason:
+      type: object
+      properties:
+        id:
+          description: The id of a reason in the db
+          type: string
+          format: ObjectId
+        text:
+          description: reason's text
+          type: string
+    Deals.RelatedExternalContact:
+      description: external contact related to this deal
+      type: object
+      properties:
+        contact_info:
+          type: string
+        note:
+          type: string
+    Deals.DealStageTransition:
+      properties:
+        from_stage:
+          $ref: '#/components/schemas/Pipeline.DealStage'
+          description: Can be null if this was the very first transition
+        to_stage:
+          $ref: '#/components/schemas/Pipeline.DealStage'
+        who:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        when:
+          type: string
+          format: date
+        notes:
+          type:
+          - string
+          - 'null'
+      required:
+      - from_stage
+      - to_stage
+      - who
+      - when
+      type: object
+    Errors.NotFoundError:
+      example:
+        object_id: 4f2acc3142a053dda595f00b
+        object_type: deal
+      properties:
+        object_id:
+          type: string
+        object_type:
+          type: string
+      required:
+      - object_type
+      - object_id
+      type: object
+    Fields.DateTimePresentation:
+      type: object
+      properties:
+        date_format:
+          type:
+          - string
+          - 'null'
+          description: 'strftime-like format template as described in
+
+            https://docs.python.org/2.7/library/datetime.html#strftime-and-strptime-behavior
+
+            or null if client should use date format from user settings
+
+            '
+        ignore_specific_time:
+          type:
+          - boolean
+          - 'null'
+          description: 'show if time should be presented in the field. Applicable only if date_format is None.
+
+            Must be null if date_format specified
+
+            '
+      required:
+      - date_format
+      - ignore_specific_time
+    Pipeline.AddressFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - address
+    Errors.ValidationError:
+      description: request was malformed
+      example:
+        errors:
+          /:
+            message: 'missing required properties: ["calendar_id", "summary"]'
+          /base_occurrence/start_dtime:
+            message: Can't parse value 20000-01-01T01:01:00 as DATE-TIME
+        message: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]'
+        code: 245
+        human_readable_error: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]"'
+        extra:
+        - {}
+      properties:
+        errors:
+          description: 'mapping where keys are paths to problematic request attributes
+
+            and values are objects with single message attribute
+
+            '
+          type: object
+        message:
+          type: string
+        code:
+          type: integer
+          description: legacy that you <span style='color:red'>SHOULD NOT USE</span>
+        human_readable_error:
+          type: string
+          description: Error message with some changes making it easier to read.
+        extra:
+          type: array
+          items:
+            type: object
+          description: extra data that would be useful to provide
+      required:
+      - message
+      - errors
+      - human_readable_error
+      type: object
+    Pipeline.BooleanFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - boolean
+    Fields.DecimalNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - decimal
+        fraction_digits:
+          type: integer
+          minimum: 1
+      required:
+      - type
+      - fraction_digits
+    Deals.DealPrivacy:
+      type: object
+      properties:
+        read:
+          $ref: '#/components/schemas/Deals.Principals'
+          description: Principals permitted to read deal. Null if permitted for everyone
+        edit:
+          $ref: '#/components/schemas/Deals.Principals'
+          description: Principals permitted to read and edit deal. Null if permitted for everyone
+      required:
+      - read
+      - edit
+      example:
+        read:
+          user_ids:
+          - 507f1f77bcf86cd799439011
+          group_ids:
+          - 507f1f77bcf86cd799439012
+        edit:
+          user_ids:
+          - 507f1f77bcf86cd799439013
+          group_ids:
+          - 507f1f77bcf86cd799439014
+    Deals.DealFile:
+      type: object
+      properties:
+        uploader:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        uploaded_at:
+          type: string
+        file_size:
+          type: number
+          description: the file size in bytes
+        file_name:
+          type: string
+        file_id:
+          type: string
+        metadata:
+          oneOf:
+          - $ref: '#/components/schemas/Deals.AzureFileMetadata'
+          - $ref: '#/components/schemas/Deals.ExternalFileMetadata'
+    Deals.ExternalFileMetadata:
+      type: object
+      description: metadata for files from external sources (dropbox, google drive, one drive)
+      properties:
+        icon_url:
+          type: string
+        file_url:
+          type: string
+        source:
+          enum:
+          - dropbox
+          - one_drive
+          - google_drive
+    Pipeline.DateTimeFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - datetime
+    Pipeline.StringFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - string
+        validation_rule:
+          enum:
+          - email
+          - url
+    Errors.ForbiddenError:
+      example:
+        message: You don't have access to this deal
+      properties:
+        message:
+          type: string
+          description: 'indicates that we can''t authenticate the request. Message can be an arbitrary string, however there are
+
+            few special cases:<br/>
+
+            "Can''t authenticate request" – something is wrong with the auth token<br/>
+
+            "email_verification_required" - if the user needs to verify their email address to continue having
+
+            access to Nimble<br/>
+
+            '
+      required:
+      - message
+      type: object
+    Deals.DealsStageGroup:
+      type: object
+      description: Grouped data about stage and deals in it + meta
+      properties:
+        deals:
+          description: Deals in this stage
+          type: array
+          items:
+            $ref: '#/components/schemas/Deals.DealView'
+        stage:
+          description: Deal stage from pipeline
+          $ref: '#/components/schemas/Pipeline.DealStage'
+        meta:
+          description: Meta data about this stage
+          type: object
+          properties:
+            total_new_count:
+              description: Total pipeline deals count which entered stage less than 3 days ago
+              type: integer
+            next_page_url:
+              description: URL to load more deals for this stage. None if no more deals
+              type: string
+            total_amount:
+              description: Sum of deal amount separated by currencies
+              type: array
+              items:
+                type: object
+                properties:
+                  currency:
+                    type: string
+                    format: ISO-4217
+                  count:
+                    type: integer
+    Fields.IntegerNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - integer
+      required:
+      - type
+    Deals.DealPipelineFieldsGroup:
+      allOf:
+      - $ref: '#/components/schemas/Deals.BaseDealPipelineFieldsTabMember'
+      - properties:
+          group_name:
+            type: string
+          group_id:
+            type: string
+          logo_id:
+            type: string
+          fields:
+            type: array
+            items:
+              $ref: '#/components/schemas/Deals.DealPipelineField'
+      type: object
+    Deals.NamedFieldsValues:
+      type: object
+      description: Fields of the deals which was filled up by the owner/creator
+      properties:
+        field_name:
+          type: string
+          example: amount
+        values:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: string
+                example: value_1
+              is_primary:
+                type: boolean
+                example: true
     Deals.DealsByOwnerGroup:
       type: object
       description: Grouped data about owners and deals related to it + meta
@@ -481,6 +895,320 @@ components:
                     format: ISO-4217
                   count:
                     type: integer
+    Pipeline.FieldTypeOnFieldCreation:
+      oneOf:
+      - $ref: '#/components/schemas/Pipeline.StringFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.LongStringFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.ChoiceFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.NumberFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.DateTimeFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.BooleanFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.AddressFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.UserFieldValuesType'
+    Contacts.ShortContact:
+      properties:
+        avatar_url:
+          type: string
+        contact_type:
+          $ref: '#/components/schemas/Contacts.ContactType'
+        email:
+          items:
+            type: string
+          type: array
+        id:
+          type: string
+        is_viewable:
+          description: if this contact can be viewed in details by a calling user
+          type: boolean
+        name:
+          type: string
+        employment:
+          description: the most relevant contact employment (e.g., primary or present)
+          type:
+          - object
+          - 'null'
+          properties:
+            company_name:
+              type:
+              - string
+              - 'null'
+            title:
+              type:
+              - string
+              - 'null'
+        phones:
+          properties:
+            label:
+              description: phone label like "home", "work", etc
+              type: string
+            value:
+              type: string
+          required:
+          - label
+          - value
+          type: object
+      required:
+      - avatar_url
+      - contact_type
+      - id
+      - name
+      - email
+      - is_viewable
+      - phones
+      type: object
+    Fields.FieldPresentation:
+      description: 'how values of the field should look. Must match to corresponding field_type. Date and number
+
+        fields must have an appropriate presentation. There is no presentation for other types
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/Fields.IntegerNumberPresentation'
+      - $ref: '#/components/schemas/Fields.DecimalNumberPresentation'
+      - $ref: '#/components/schemas/Fields.PercentageNumberPresentation'
+      - $ref: '#/components/schemas/Fields.FinancialNumberPresentation'
+      - $ref: '#/components/schemas/Fields.DateTimePresentation'
+    Deals.IDealField:
+      type: object
+      properties:
+        field_id:
+          description: The id of a field in the database
+          type: string
+        modifier:
+          type: string
+        multiples:
+          type: boolean
+        available_actions:
+          description: Shows available for user actions
+          type: string
+        field_type:
+          type: string
+        field_name:
+          description: The name of a field
+          type: string
+    Deals.RelatedContact:
+      description: Contacts related to deal
+      type: object
+      properties:
+        contact:
+          description: short info about related contact
+          $ref: '#/components/schemas/Contacts.ShortContact'
+        note:
+          description: contact's note
+          type: string
+        employments:
+          description: employments of this contact if applicable
+          type: array
+          items:
+            $ref: '#/components/schemas/Deals.EmploymentInfo'
+    Fields.FinancialNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - financial
+        currency:
+          type:
+          - string
+          - 'null'
+      required:
+      - type
+      - currency
+    Pipeline.CreateDealsPipelineFieldRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the new field
+        field_type:
+          $ref: '#/components/schemas/Pipeline.FieldTypeOnFieldCreation'
+        presentation:
+          $ref: '#/components/schemas/Fields.FieldPresentation'
+        pipeline_id:
+          type:
+          - string
+          - 'null'
+          description: <code>id</code> of pipeline this field is being created for (if known)
+        insert_after:
+          type:
+          - string
+          - 'null'
+          description: Inserts a new field after field or group with specified <code>id</code>. If null, then field is inserted as the first one
+        group_id:
+          description: <code>id</code> of group this field is being created for (if field is a member of group)
+          type: string
+      required:
+      - name
+      - field_type
+      - presentation
+    Fields.PercentageNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - percentage
+        fraction_digits:
+          type: integer
+          minimum: 1
+      required:
+      - type
+      - fraction_digits
+    Deals.DealPipelineFieldsTabMember:
+      oneOf:
+      - $ref: '#/components/schemas/Deals.DealPipelineField'
+      - $ref: '#/components/schemas/Deals.DealPipelineFieldsGroup'
+      discriminator:
+        propertyName: type
+        mapping:
+          field: '#/components/schemas/Deals.DealPipelineField'
+          group: '#/components/schemas/Deals.DealPipelineFieldsGroup'
+    Pipeline.ChoiceFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - choice
+        values:
+          $ref: '#/components/schemas/Commons.PossibleValues'
+    Pipeline.UserFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - user
+    Pipeline.NumberFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - number
+    Deals.EmploymentInfo:
+      description: Information about date employment
+      type: object
+      properties:
+        employer:
+          $ref: '#/components/schemas/Contacts.ShortContact'
+        start_date:
+          description: First working day
+          type: string
+        end_date:
+          description: Last working day
+          type: string
+        title:
+          description: Job-title of contact
+          type: string
+    Commons.PossibleValues:
+      type: object
+      properties:
+        ordering_type:
+          type: string
+          enum:
+          - ordinal
+          - alphabetic
+        values:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              value:
+                type: string
+    Deals.DealPipelineFieldsTab:
+      type: object
+      properties:
+        tab_id:
+          description: The id of a tab in the database
+          type: string
+        tab_name:
+          description: The name of a tab
+          type: string
+        pipeline_id:
+          type: string
+        members:
+          $ref: '#/components/schemas/Deals.DealPipelineFieldsTabMember'
+    Errors.ActionCanNotBeCompleted:
+      description: Action can not be complited becouse of reason described in error message
+      properties:
+        message:
+          description: Human-readable message for an error
+          type: string
+        error_type:
+          description: stable and unique identifier for error type. Clients should be able to rely on it
+          type: string
+    Pipeline.LongStringFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - long_string
+    Pipeline.EditDealStageRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Stage name
+          minLength: 1
+          maxLength: 4096
+        description:
+          type:
+          - string
+          - 'null'
+          description: Stage description
+          minLength: 1
+          maxLength: 4096
+        expected_days:
+          type: integer
+          description: The number of days a deal is expected to spend at this stage
+        default_probability:
+          description: Stage default probability. Will be assigned to all deals in stage if they don't have their own
+          type: integer
+          minimum: 0
+          maximum: 100
+    Pipeline.CreateDealsPipelineGroupRequest:
+      type: object
+      properties:
+        group_name:
+          type: string
+        logo_id:
+          type: string
+        insert_after:
+          description: If not null, inserts a new group after another group or field with specified id. If null, then group is inserted as the first one
+          type:
+          - string
+          - 'null'
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/Pipeline.CreateDealsPipelineFieldRequest'
+    Deals.FieldsValues:
+      type: object
+      description: Fields of the deals which was filled up by the owner/creator
+      properties:
+        field_id:
+          type: string
+          example: 65958d7ef2e8748e6361ddb1
+        values:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: string
+                example: value_1
+              is_primary:
+                type: boolean
+                example: true
+    Deals.AzureFileMetadata:
+      type: object
+      description: metadata for files uploaded from device using Azure JS SDK
+      properties:
+        data_id:
+          description: id of an object in the cloud
+          type: string
+        source:
+          enum:
+          - uploaded_azure
     Pipeline.CreateDealsPipelineRequest:
       type: object
       properties:
@@ -523,132 +1251,25 @@ components:
       - stages
       - fields_tab_members
       - default_currency
-    Pipeline.NumberFieldValuesType:
-      type: object
+    Accounts.ShortUserInfo:
       properties:
-        field_kind:
-          enum:
-          - number
-    Deals.DealsStageGroup:
-      type: object
-      description: Grouped data about stage and deals in it + meta
-      properties:
-        deals:
-          description: Deals in this stage
-          type: array
-          items:
-            $ref: '#/components/schemas/Deals.DealView'
-        stage:
-          description: Deal stage from pipeline
-          $ref: '#/components/schemas/Pipeline.DealStage'
-        meta:
-          description: Meta data about this stage
-          type: object
-          properties:
-            total_new_count:
-              description: Total pipeline deals count which entered stage less than 3 days ago
-              type: integer
-            next_page_url:
-              description: URL to load more deals for this stage. None if no more deals
-              type: string
-            total_amount:
-              description: Sum of deal amount separated by currencies
-              type: array
-              items:
-                type: object
-                properties:
-                  currency:
-                    type: string
-                    format: ISO-4217
-                  count:
-                    type: integer
-    Deals.DealPipelineFieldsTabMember:
-      oneOf:
-      - $ref: '#/components/schemas/Deals.DealPipelineField'
-      - $ref: '#/components/schemas/Deals.DealPipelineFieldsGroup'
-      discriminator:
-        propertyName: type
-        mapping:
-          field: '#/components/schemas/Deals.DealPipelineField'
-          group: '#/components/schemas/Deals.DealPipelineFieldsGroup'
-    Pipeline.BooleanFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - boolean
-    Pipeline.DateTimeFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - datetime
-    Deals.AzureFileMetadata:
-      type: object
-      description: metadata for files uploaded from device using Azure JS SDK
-      properties:
-        data_id:
-          description: id of an object in the cloud
+        avatar_url:
           type: string
-        source:
-          enum:
-          - uploaded_azure
-    Pipeline.EditDealsPipelineRequest:
-      description: Updates pipeline
-      type: object
-      properties:
+        email:
+          type: string
+        is_active:
+          type: boolean
         name:
           type: string
-          minLength: 1
-          maxLength: 200
-          description: New pipeline name
-        description:
+        user_id:
           type: string
-          description: New pipeline description
-        color:
-          type: string
-          description: New pipeline color
-    Pipeline.EditDealStageRequest:
+      required:
+      - user_id
+      - name
+      - email
+      - avatar_url
+      - is_active
       type: object
-      properties:
-        name:
-          type: string
-          description: Stage name
-          minLength: 1
-          maxLength: 4096
-        description:
-          type: string
-          description: Stage description
-          nullable: true
-          minLength: 1
-          maxLength: 4096
-        expected_days:
-          type: integer
-          description: The number of days a deal is expected to spend at this stage
-        default_probability:
-          description: Stage default probability. Will be assigned to all deals in stage if they don't
-            have their own
-          type: integer
-          minimum: 0
-          maximum: 100
-    Deals.NamedFieldsValues:
-      type: object
-      description: Fields of the deals which was filled up by the owner/creator
-      properties:
-        field_name:
-          type: string
-          example: amount
-        values:
-          type: array
-          items:
-            type: object
-            properties:
-              value:
-                type: string
-                example: value_1
-              is_primary:
-                type: boolean
-                example: true
     Pipeline.CreateDealStageRequest:
       description: Stage in the pipeline where deals will be placed
       type: object
@@ -675,121 +1296,7 @@ components:
           type: number
           minimum: 0
           maximum: 100
-          description: Default probability for all deals in this stage (will be deal probability if one
-            doesn't have its own)
-    Fields.FieldPresentation:
-      description: |
-        how values of the field should look. Must match to corresponding field_type. Date and number
-        fields must have an appropriate presentation. There is no presentation for other types
-      oneOf:
-      - $ref: '#/components/schemas/Fields.IntegerNumberPresentation'
-      - $ref: '#/components/schemas/Fields.DecimalNumberPresentation'
-      - $ref: '#/components/schemas/Fields.PercentageNumberPresentation'
-      - $ref: '#/components/schemas/Fields.FinancialNumberPresentation'
-      - $ref: '#/components/schemas/Fields.DateTimePresentation'
-    Deals.RelatedExternalContact:
-      description: external contact related to this deal
-      type: object
-      properties:
-        contact_info:
-          type: string
-        note:
-          type: string
-    Deals.EmploymentInfo:
-      description: Information about date employment
-      type: object
-      properties:
-        employer:
-          $ref: '#/components/schemas/Contacts.ShortContact'
-        start_date:
-          description: First working day
-          type: string
-        end_date:
-          description: Last working day
-          type: string
-        title:
-          description: Job-title of contact
-          type: string
-    Errors.NotFoundError:
-      example:
-        object_id: 4f2acc3142a053dda595f00b
-        object_type: deal
-      properties:
-        object_id:
-          type: string
-        object_type:
-          type: string
-      required:
-      - object_type
-      - object_id
-      type: object
-    Deals.DealPipelineTransitions:
-      properties:
-        pipeline_id:
-          type: string
-        pipeline_color:
-          type: string
-        pipeline_name:
-          type: string
-        transitions:
-          items:
-            $ref: '#/components/schemas/Deals.DealStageTransition'
-          type: array
-        before_final_stage:
-          $ref: '#/components/schemas/Pipeline.DealStage'
-          nullable: true
-          description: previous to the final stage (if the deal is won or lost, otherwise - null)
-      required:
-      - pipeline_id
-      - pipeline_color
-      - pipeline_name
-      - transitions
-      type: object
-    Deals.DealPipelineFieldsGroup:
-      allOf:
-      - $ref: '#/components/schemas/Deals.BaseDealPipelineFieldsTabMember'
-      - properties:
-          group_name:
-            type: string
-          group_id:
-            type: string
-          logo_id:
-            type: string
-          fields:
-            type: array
-            items:
-              $ref: '#/components/schemas/Deals.DealPipelineField'
-      type: object
-    Deals.DealFile:
-      type: object
-      properties:
-        uploader:
-          $ref: '#/components/schemas/Accounts.ShortUserInfo'
-        uploaded_at:
-          type: string
-        file_size:
-          type: number
-          description: the file size in bytes
-        file_name:
-          type: string
-        file_id:
-          type: string
-        metadata:
-          oneOf:
-          - $ref: '#/components/schemas/Deals.AzureFileMetadata'
-          - $ref: '#/components/schemas/Deals.ExternalFileMetadata'
-    Fields.PercentageNumberPresentation:
-      type: object
-      properties:
-        number_type:
-          enum:
-          - percentage
-        fraction_digits:
-          type: integer
-          minimum: 1
-      required:
-      - type
-      - fraction_digits
+          description: Default probability for all deals in this stage (will be deal probability if one doesn't have its own)
     Deals.DealView:
       properties:
         updated:
@@ -834,16 +1341,7 @@ components:
           description: User who owns this deal
           $ref: '#/components/schemas/Accounts.ShortUserInfo'
         fields_values:
-          description: 'Fields of the deals which was filled up by the owner/creator. At leas field <code>deal_name</code>
-            is required. <br> Standard fields description: <br> <ul><li><b style=''color:red''>name</b>
-            - required. Name of the deal.</li> <li><b style=''color:#ff7200''>probability</b> - required
-            (if none <code>Stage.default_probability</code> set). Deal probability. If not provided by
-            user,  deal will try to derive it from stage''s <code>default_probability</code>. If none,
-            will rise error</li> <li><b>description</b> - optional. Description of the deal. Sending just
-            '' '' (whitespace) removing it</li> <li><b>amount</b> - optional. Amount of tha money in the
-            deal. Can be only positive number or 0</li> <li><b>expected_close_date</b> - optional. Date
-            when deal is expected to be closed.</li> <li><b>actual_close_date</b> - optional. Actual date.
-            View only.</li> </ul> <br> To remove any field send <code>{field_id:[]}</code>'
+          description: 'Fields of the deals which was filled up by the owner/creator. At leas field <code>deal_name</code> is required. <br> Standard fields description: <br> <ul><li><b style=''color:red''>name</b> - required. Name of the deal.</li> <li><b style=''color:#ff7200''>probability</b> - required (if none <code>Stage.default_probability</code> set). Deal probability. If not provided by user,  deal will try to derive it from stage''s <code>default_probability</code>. If none, will rise error</li> <li><b>description</b> - optional. Description of the deal. Sending just '' '' (whitespace) removing it</li> <li><b>amount</b> - optional. Amount of tha money in the deal. Can be only positive number or 0</li> <li><b>expected_close_date</b> - optional. Date when deal is expected to be closed.</li> <li><b>actual_close_date</b> - optional. Actual date. View only.</li> </ul> <br> To remove any field send <code>{field_id:[]}</code>'
           $ref: '#/components/schemas/Deals.FieldsValues'
         fields_values_with_names:
           $ref: '#/components/schemas/Deals.NamedFieldsValues'
@@ -860,212 +1358,6 @@ components:
           type: integer
         age_in_days:
           type: number
-    Pipeline.LongStringFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - long_string
-    Pipeline.UserFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - user
-    Deals.BaseDealPipelineFieldsTabMember:
-      properties:
-        type:
-          type: string
-      type: object
-    Contacts.ShortContact:
-      properties:
-        avatar_url:
-          type: string
-        contact_type:
-          $ref: '#/components/schemas/Contacts.ContactType'
-        email:
-          items:
-            type: string
-          type: array
-        id:
-          type: string
-        is_viewable:
-          description: if this contact can be viewed in details by a calling user
-          type: boolean
-        name:
-          type: string
-        employment:
-          nullable: true
-          description: the most relevant contact employment (e.g., primary or present)
-          type: object
-          properties:
-            company_name:
-              type: string
-              nullable: true
-            title:
-              type: string
-              nullable: true
-        phones:
-          properties:
-            label:
-              description: phone label like "home", "work", etc
-              type: string
-            value:
-              type: string
-          required:
-          - label
-          - value
-          type: object
-      required:
-      - avatar_url
-      - contact_type
-      - id
-      - name
-      - email
-      - is_viewable
-      - phones
-      type: object
-    Errors.ValidationError:
-      description: request was malformed
-      example:
-        errors:
-          /:
-            message: 'missing required properties: ["calendar_id", "summary"]'
-          /base_occurrence/start_dtime:
-            message: Can't parse value 20000-01-01T01:01:00 as DATE-TIME
-        message: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]'
-        code: 245
-        human_readable_error: 'Invalid value {} (dict): missing required properties: []"calendar_id",
-          "summary"]"'
-        extra:
-        - {}
-      properties:
-        errors:
-          description: |
-            mapping where keys are paths to problematic request attributes
-            and values are objects with single message attribute
-          type: object
-        message:
-          type: string
-        code:
-          type: integer
-          description: legacy that you <span style='color:red'>SHOULD NOT USE</span>
-        human_readable_error:
-          type: string
-          description: Error message with some changes making it easier to read.
-        extra:
-          type: array
-          items:
-            type: object
-          description: extra data that would be useful to provide
-      required:
-      - message
-      - errors
-      - human_readable_error
-      type: object
-    Contacts.ContactType:
-      enum:
-      - person
-      - company
-      type: string
-    Fields.DecimalNumberPresentation:
-      type: object
-      properties:
-        number_type:
-          enum:
-          - decimal
-        fraction_digits:
-          type: integer
-          minimum: 1
-      required:
-      - type
-      - fraction_digits
-    Deals.FieldsValues:
-      type: object
-      description: Fields of the deals which was filled up by the owner/creator
-      properties:
-        field_id:
-          type: string
-          example: 65958d7ef2e8748e6361ddb1
-        values:
-          type: array
-          items:
-            type: object
-            properties:
-              value:
-                type: string
-                example: value_1
-              is_primary:
-                type: boolean
-                example: true
-    Pipeline.AddressFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - address
-    Pipeline.LeadLostReason:
-      type: object
-      properties:
-        id:
-          description: The id of a reason in the db
-          type: string
-          format: ObjectId
-        text:
-          description: reason's text
-          type: string
-    Pipeline.StringFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - string
-        validation_rule:
-          enum:
-          - email
-          - url
-    Commons.PossibleValues:
-      type: object
-      properties:
-        ordering_type:
-          type: string
-          enum:
-          - ordinal
-          - alphabetic
-        values:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-              value:
-                type: string
-    Errors.ForbiddenError:
-      example:
-        message: You don't have access to this deal
-      properties:
-        message:
-          type: string
-          description: |
-            indicates that we can't authenticate the request. Message can be an arbitrary string, however there are
-            few special cases:<br/>
-            "Can't authenticate request" – something is wrong with the auth token<br/>
-            "email_verification_required" - if the user needs to verify their email address to continue having
-            access to Nimble<br/>
-      required:
-      - message
-      type: object
-    Errors.ActionCanNotBeCompleted:
-      description: Action can not be complited becouse of reason described in error message
-      properties:
-        message:
-          description: Human-readable message for an error
-          type: string
-        error_type:
-          description: stable and unique identifier for error type. Clients should be able to rely on
-            it
-          type: string
     Pipeline.DealsPipeline:
       properties:
         pipeline_id:
@@ -1078,16 +1370,18 @@ components:
           description: The description for the pipeline
           type: string
         description:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         created:
           type: string
         updated:
           type: string
         archived_at:
           description: The timestamp of when the pipeline was archived (None if it's not archived)
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         stages:
           type: array
           items:
@@ -1104,149 +1398,13 @@ components:
           type: boolean
         default_currency:
           description: Default currency for pipeline
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         tabs:
           type: array
           items:
             $ref: '#/components/schemas/Deals.DealPipelineFieldsTab'
-    Deals.ExternalFileMetadata:
-      type: object
-      description: metadata for files from external sources (dropbox, google drive, one drive)
-      properties:
-        icon_url:
-          type: string
-        file_url:
-          type: string
-        source:
-          enum:
-          - dropbox
-          - one_drive
-          - google_drive
-    Fields.IntegerNumberPresentation:
-      type: object
-      properties:
-        number_type:
-          enum:
-          - integer
-      required:
-      - type
-    Fields.DateTimePresentation:
-      type: object
-      properties:
-        date_format:
-          type: string
-          nullable: true
-          description: |
-            strftime-like format template as described in
-            https://docs.python.org/2.7/library/datetime.html#strftime-and-strptime-behavior
-            or null if client should use date format from user settings
-        ignore_specific_time:
-          type: boolean
-          nullable: true
-          description: |
-            show if time should be presented in the field. Applicable only if date_format is None.
-            Must be null if date_format specified
-      required:
-      - date_format
-      - ignore_specific_time
-    Deals.DealStageTransition:
-      properties:
-        from_stage:
-          $ref: '#/components/schemas/Pipeline.DealStage'
-          description: Can be null if this was the very first transition
-        to_stage:
-          $ref: '#/components/schemas/Pipeline.DealStage'
-        who:
-          $ref: '#/components/schemas/Accounts.ShortUserInfo'
-        when:
-          type: string
-          format: date
-        notes:
-          type: string
-          nullable: true
-      required:
-      - from_stage
-      - to_stage
-      - who
-      - when
-      type: object
-    Accounts.ShortUserInfo:
-      properties:
-        avatar_url:
-          type: string
-        email:
-          type: string
-        is_active:
-          type: boolean
-        name:
-          type: string
-        user_id:
-          type: string
-      required:
-      - user_id
-      - name
-      - email
-      - avatar_url
-      - is_active
-      type: object
-    Pipeline.DealStage:
-      description: Stage in the deals pipeline
-      type: object
-      properties:
-        default_probability:
-          description: Probability, that will be set to a deal at this stage, if not specific deal probability
-            provided.
-          type: integer
-        stage_id:
-          type: string
-        description:
-          type: string
-        creator:
-          $ref: '#/components/schemas/Accounts.ShortUserInfo'
-        created:
-          type: string
-        updated:
-          type: string
-        pipline_id:
-          description: Id of pipeline deals belongs to
-          type: string
-        role:
-          type: object
-          properties:
-            name:
-              type: string
-            is_final:
-              type: boolean
-              example: true
-        archived_at:
-          description: When and if this stage has been archived
-          type: string
-          nullable: true
-        expected_days:
-          description: The number of days a deal is expected to spend at this stage
-          type: integer
-        name:
-          description: Name of the stage
-          type: string
-    Deals.IDealField:
-      type: object
-      properties:
-        field_id:
-          description: The id of a field in the database
-          type: string
-        modifier:
-          type: string
-        multiples:
-          type: boolean
-        available_actions:
-          description: Shows available for user actions
-          type: string
-        field_type:
-          type: string
-        field_name:
-          description: The name of a field
-          type: string
     Deals.DealPipelineField:
       description: Fields of DealsPipeline
       allOf:
@@ -1257,145 +1415,27 @@ components:
           pipeline_id:
             type: string
       type: object
-    Deals.DealPrivacy:
-      type: object
-      properties:
-        read:
-          $ref: '#/components/schemas/Deals.Principals'
-          description: Principals permitted to read deal. Null if permitted for everyone
-        edit:
-          $ref: '#/components/schemas/Deals.Principals'
-          description: Principals permitted to read and edit deal. Null if permitted for everyone
-      required:
-      - read
-      - edit
-      example:
-        read:
-          user_ids:
-          - 507f1f77bcf86cd799439011
-          group_ids:
-          - 507f1f77bcf86cd799439012
-        edit:
-          user_ids:
-          - 507f1f77bcf86cd799439013
-          group_ids:
-          - 507f1f77bcf86cd799439014
-    Fields.FinancialNumberPresentation:
-      type: object
-      properties:
-        number_type:
-          enum:
-          - financial
-        currency:
-          type: string
-          nullable: true
-      required:
-      - type
-      - currency
-    Pipeline.FieldTypeOnFieldCreation:
-      oneOf:
-      - $ref: '#/components/schemas/Pipeline.StringFieldValuesType'
-      - $ref: '#/components/schemas/Pipeline.LongStringFieldValuesType'
-      - $ref: '#/components/schemas/Pipeline.ChoiceFieldValuesType'
-      - $ref: '#/components/schemas/Pipeline.NumberFieldValuesType'
-      - $ref: '#/components/schemas/Pipeline.DateTimeFieldValuesType'
-      - $ref: '#/components/schemas/Pipeline.BooleanFieldValuesType'
-      - $ref: '#/components/schemas/Pipeline.AddressFieldValuesType'
-      - $ref: '#/components/schemas/Pipeline.UserFieldValuesType'
-    Pipeline.ChoiceFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - choice
-        values:
-          $ref: '#/components/schemas/Commons.PossibleValues'
-    Deals.Principals:
-      type: object
-      properties:
-        user_ids:
-          type: array
-          items:
-            type: string
-            format: BSONObjectId
-          description: Set of user IDs with permissions
-          minItems: 0
-        group_ids:
-          type: array
-          items:
-            type: string
-            format: BSONObjectId
-          description: Set of group IDs with permissions
-          minItems: 0
-      required:
-      - user_ids
-      - group_ids
-      example:
-        user_ids:
-        - 507f1f77bcf86cd799439011
-        group_ids:
-        - 507f1f77bcf86cd799439012
-    Pipeline.CreateDealsPipelineFieldRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the new field
-        field_type:
-          $ref: '#/components/schemas/Pipeline.FieldTypeOnFieldCreation'
-        presentation:
-          $ref: '#/components/schemas/Fields.FieldPresentation'
-          nullable: true
-        pipeline_id:
-          type: string
-          description: <code>id</code> of pipeline this field is being created for (if known)
-          nullable: true
-        insert_after:
-          type: string
-          description: Inserts a new field after field or group with specified <code>id</code>. If null,
-            then field is inserted as the first one
-          nullable: true
-        group_id:
-          description: <code>id</code> of group this field is being created for (if field is a member
-            of group)
-          type: string
-      required:
-      - name
-      - field_type
-      - presentation
-    Deals.RelatedContact:
-      description: Contacts related to deal
-      type: object
-      properties:
-        contact:
-          description: short info about related contact
-          $ref: '#/components/schemas/Contacts.ShortContact'
-        note:
-          description: contact's note
-          type: string
-        employments:
-          description: employments of this contact if applicable
-          type: array
-          items:
-            $ref: '#/components/schemas/Deals.EmploymentInfo'
-    Pipeline.CreateDealsPipelineGroupRequest:
-      type: object
-      properties:
-        group_name:
-          type: string
-        logo_id:
-          type: string
-        insert_after:
-          description: If not null, inserts a new group after another group or field with specified id.
-            If null, then group is inserted as the first one
-          nullable: true
-          type: string
-        fields:
-          type: array
-          items:
-            $ref: '#/components/schemas/Pipeline.CreateDealsPipelineFieldRequest'
   securitySchemes:
     ApiKey:
       type: apiKey
       in: header
       name: X-Nimble-Token
+x-tagGroups:
+- name: Guides
+  tags:
+  - Authentication
+  - Handling Errors
+- name: API Reference
+  tags:
+  - Users
+  - Contacts
+  - Contacts Fields
+  - Contacts Pipelines
+  - Search Contacts
+  - Activities
+  - Tasks
+  - Deals
+  - Deals Fields
+  - Deals Pipelines
+  - Deals Pipelines Fields
+  - Messages
