@@ -79,18 +79,6 @@ components:
       required:
       - subject
       type: object
-    Sequences.SequenceBriefInfo:
-      type: object
-      properties:
-        id:
-          type: string
-          description: unique id of the sequence
-        name:
-          type: string
-          description: name of the sequence
-      required:
-      - id
-      - name
     Deals.ShortSavedDeal:
       properties:
         deal_id:
@@ -108,38 +96,6 @@ components:
           type:
           - integer
           - 'null'
-    Accounts.ShortUserInfo:
-      properties:
-        avatar_url:
-          type: string
-        email:
-          type: string
-        is_active:
-          type: boolean
-        name:
-          type: string
-        user_id:
-          type: string
-      required:
-      - user_id
-      - name
-      - email
-      - avatar_url
-      - is_active
-      type: object
-    Errors.NotFoundError:
-      example:
-        object_id: 4f2acc3142a053dda595f00b
-        object_type: deal
-      properties:
-        object_id:
-          type: string
-        object_type:
-          type: string
-      required:
-      - object_type
-      - object_id
-      type: object
     Tasks.TaskRelatedObjectsSpec:
       description: Objects to associate with a task. Use `related.contacts` rather than the legacy `related_to` field.
       properties:
@@ -153,230 +109,6 @@ components:
           items:
             type: string
           type: array
-      type: object
-    Tasks.Task:
-      properties:
-        assigned_to:
-          $ref: '#/components/schemas/Accounts.ShortUserInfo'
-        comments:
-          items:
-            $ref: '#/components/schemas/Commons.Comment'
-          type: array
-        company_id:
-          type: string
-        completed:
-          type: boolean
-        completed_time:
-          type:
-          - string
-          - 'null'
-        created:
-          type: string
-        due_date:
-          type:
-          - string
-          - 'null'
-        due_date_text:
-          type:
-          - string
-          - 'null'
-        id:
-          type: string
-        is_important:
-          type: boolean
-        notes:
-          type:
-          - string
-          - 'null'
-        owner:
-          $ref: '#/components/schemas/Accounts.ShortUserInfo'
-        owner_id:
-          type: string
-        related:
-          $ref: '#/components/schemas/Tasks.TaskRelatedObjects'
-        related_to:
-          description: Legacy response field. To associate contacts when creating a task, use `related.contacts`.
-          items:
-            type: string
-          type: array
-        starred:
-          type: boolean
-        subject:
-          type: string
-        tags:
-          items:
-            type: string
-          type: array
-        updated:
-          type: string
-        version:
-          default: 2
-          type: integer
-      required:
-      - version
-      - assigned_to
-      - comments
-      - company_id
-      - completed
-      - completed_time
-      - created
-      - due_date
-      - due_date_text
-      - id
-      - is_important
-      - starred
-      - notes
-      - owner_id
-      - related_to
-      - related
-      - subject
-      - tags
-      - updated
-      - owner
-      type: object
-    Legacy.UserMetadata:
-      properties:
-        city:
-          type:
-          - string
-          - 'null'
-          description: (deprecated)
-        company_name:
-          type: string
-          description: (deprecated)
-        country:
-          description: (deprecated)
-          type:
-          - string
-          - 'null'
-        employees_count:
-          description: (deprecated)
-          type:
-          - integer
-          - 'null'
-        help_tour_data:
-          description: (deprecated)
-          properties:
-            app/activities/list:
-              type: integer
-            app/b/homepage:
-              type: integer
-            app/contacts/list:
-              type: integer
-            app/contacts/view:
-              type: integer
-            app/deals/list:
-              type: integer
-            app/deals/view:
-              type: integer
-            app/groupmessages/create:
-              type: integer
-            app/messages/list:
-              type: integer
-            app/messages/view:
-              type: integer
-            app/settings/:
-              type: integer
-            app/social/list:
-              type: integer
-            contact_list_group_message:
-              type: integer
-            disabled:
-              type: integer
-            nimble_widget:
-              type: integer
-          type: object
-        industry:
-          description: (deprecated)
-          type:
-          - string
-          - 'null'
-        phone:
-          type:
-          - string
-          - 'null'
-        state:
-          description: (deprecated)
-          type:
-          - string
-          - 'null'
-        street:
-          description: (deprecated)
-          type:
-          - string
-          - 'null'
-        title:
-          type:
-          - string
-          - 'null'
-        zip:
-          description: (deprecated)
-          type:
-          - string
-          - 'null'
-      required:
-      - title
-      - company_name
-      - industry
-      - phone
-      - street
-      - city
-      - state
-      - zip
-      - country
-      - employees_count
-      - help_tour_data
-      type: object
-    Settings.UserPermissions:
-      additionalProperties:
-        type: number
-      description: users permission
-      example:
-        api use: 1
-        manage deals pipelines: 1
-        mass delete: 1
-        mass export: 1
-        private deals edit: 1
-        private deals view: 1
-      type: object
-    Errors.ValidationError:
-      description: request was malformed
-      example:
-        errors:
-          /:
-            message: 'missing required properties: ["calendar_id", "summary"]'
-          /base_occurrence/start_dtime:
-            message: Can't parse value 20000-01-01T01:01:00 as DATE-TIME
-        message: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]'
-        code: 245
-        human_readable_error: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]"'
-        extra:
-        - {}
-      properties:
-        errors:
-          description: 'mapping where keys are paths to problematic request attributes
-
-            and values are objects with single message attribute
-
-            '
-          type: object
-        message:
-          type: string
-        code:
-          type: integer
-          description: legacy that you <span style='color:red'>SHOULD NOT USE</span>
-        human_readable_error:
-          type: string
-          description: Error message with some changes making it easier to read.
-        extra:
-          type: array
-          items:
-            type: object
-          description: extra data that would be useful to provide
-      required:
-      - message
-      - errors
-      - human_readable_error
       type: object
     Contacts.ShortContact:
       properties:
@@ -509,24 +241,98 @@ components:
       - metadata
       - has_password
       type: object
-    Commons.Comment:
+    Errors.NotFoundError:
+      example:
+        object_id: 4f2acc3142a053dda595f00b
+        object_type: deal
       properties:
-        author:
-          $ref: '#/components/schemas/Accounts.User'
-        comment_id:
+        object_id:
           type: string
-        created:
-          type: string
-        text:
-          type: string
-        updated:
+        object_type:
           type: string
       required:
-      - comment_id
-      - author
-      - text
+      - object_type
+      - object_id
+      type: object
+    Tasks.Task:
+      properties:
+        assigned_to:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        comments:
+          items:
+            $ref: '#/components/schemas/Commons.Comment'
+          type: array
+        company_id:
+          type: string
+        completed:
+          type: boolean
+        completed_time:
+          type:
+          - string
+          - 'null'
+        created:
+          type: string
+        due_date:
+          type:
+          - string
+          - 'null'
+        due_date_text:
+          type:
+          - string
+          - 'null'
+        id:
+          type: string
+        is_important:
+          type: boolean
+        notes:
+          type:
+          - string
+          - 'null'
+        owner:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        owner_id:
+          type: string
+        related:
+          $ref: '#/components/schemas/Tasks.TaskRelatedObjects'
+        related_to:
+          description: Legacy response field. To associate contacts when creating a task, use `related.contacts`.
+          items:
+            type: string
+          type: array
+        starred:
+          type: boolean
+        subject:
+          type: string
+        tags:
+          items:
+            type: string
+          type: array
+        updated:
+          type: string
+        version:
+          default: 2
+          type: integer
+      required:
+      - version
+      - assigned_to
+      - comments
+      - company_id
+      - completed
+      - completed_time
       - created
+      - due_date
+      - due_date_text
+      - id
+      - is_important
+      - starred
+      - notes
+      - owner_id
+      - related_to
+      - related
+      - subject
+      - tags
       - updated
+      - owner
       type: object
     Tasks.TaskRelatedObjects:
       properties:
@@ -554,6 +360,200 @@ components:
       - new_deals
       - sequence
       type: object
+    Legacy.UserMetadata:
+      properties:
+        city:
+          type:
+          - string
+          - 'null'
+          description: (deprecated)
+        company_name:
+          type: string
+          description: (deprecated)
+        country:
+          description: (deprecated)
+          type:
+          - string
+          - 'null'
+        employees_count:
+          description: (deprecated)
+          type:
+          - integer
+          - 'null'
+        help_tour_data:
+          description: (deprecated)
+          properties:
+            app/activities/list:
+              type: integer
+            app/b/homepage:
+              type: integer
+            app/contacts/list:
+              type: integer
+            app/contacts/view:
+              type: integer
+            app/deals/list:
+              type: integer
+            app/deals/view:
+              type: integer
+            app/groupmessages/create:
+              type: integer
+            app/messages/list:
+              type: integer
+            app/messages/view:
+              type: integer
+            app/settings/:
+              type: integer
+            app/social/list:
+              type: integer
+            contact_list_group_message:
+              type: integer
+            disabled:
+              type: integer
+            nimble_widget:
+              type: integer
+          type: object
+        industry:
+          description: (deprecated)
+          type:
+          - string
+          - 'null'
+        phone:
+          type:
+          - string
+          - 'null'
+        state:
+          description: (deprecated)
+          type:
+          - string
+          - 'null'
+        street:
+          description: (deprecated)
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        zip:
+          description: (deprecated)
+          type:
+          - string
+          - 'null'
+      required:
+      - title
+      - company_name
+      - industry
+      - phone
+      - street
+      - city
+      - state
+      - zip
+      - country
+      - employees_count
+      - help_tour_data
+      type: object
+    Commons.Comment:
+      properties:
+        author:
+          $ref: '#/components/schemas/Accounts.User'
+        comment_id:
+          type: string
+        created:
+          type: string
+        text:
+          type: string
+        updated:
+          type: string
+      required:
+      - comment_id
+      - author
+      - text
+      - created
+      - updated
+      type: object
+    Settings.UserPermissions:
+      additionalProperties:
+        type: number
+      description: users permission
+      example:
+        api use: 1
+        manage deals pipelines: 1
+        mass delete: 1
+        mass export: 1
+        private deals edit: 1
+        private deals view: 1
+      type: object
+    Errors.ValidationError:
+      description: request was malformed
+      example:
+        errors:
+          /:
+            message: 'missing required properties: ["calendar_id", "summary"]'
+          /base_occurrence/start_dtime:
+            message: Can't parse value 20000-01-01T01:01:00 as DATE-TIME
+        message: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]'
+        code: 245
+        human_readable_error: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]"'
+        extra:
+        - {}
+      properties:
+        errors:
+          description: 'mapping where keys are paths to problematic request attributes
+
+            and values are objects with single message attribute
+
+            '
+          type: object
+        message:
+          type: string
+        code:
+          type: integer
+          description: legacy that you <span style='color:red'>SHOULD NOT USE</span>
+        human_readable_error:
+          type: string
+          description: Error message with some changes making it easier to read.
+        extra:
+          type: array
+          items:
+            type: object
+          description: extra data that would be useful to provide
+      required:
+      - message
+      - errors
+      - human_readable_error
+      type: object
+    Accounts.ShortUserInfo:
+      properties:
+        avatar_url:
+          type: string
+        email:
+          type: string
+        is_active:
+          type: boolean
+        name:
+          type: string
+        user_id:
+          type: string
+      required:
+      - user_id
+      - name
+      - email
+      - avatar_url
+      - is_active
+      type: object
+    Sequences.SequenceBriefInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: unique id of the sequence
+        name:
+          type: string
+          description: name of the sequence
+      required:
+      - id
+      - name
   securitySchemes:
     ApiKey:
       type: apiKey

@@ -183,18 +183,34 @@ components:
       - person
       - company
       type: string
-    Sequences.SequenceBriefInfo:
-      type: object
+    Activities.ActivityTypeDef:
       properties:
-        id:
+        archived:
+          description: True if the type was archived. We shouldn't create new activities of archived types
+          type: boolean
+        can_update_definition:
+          description: True if user can change definition of that type, False otherwise
+          type: boolean
+        can_update_lc:
+          description: True if completion of the activity should update the last contacted date
+          type: boolean
+        logo_id:
+          description: id of a picture to display for these activities
           type: string
-          description: unique id of the sequence
-        name:
+        type_id:
+          description: unique and stable id for an activity type
           type: string
-          description: name of the sequence
+        type_name:
+          description: human-readable name for an activity type
+          type: string
       required:
-      - id
-      - name
+      - type_id
+      - type_name
+      - logo_id
+      - can_update_lc
+      - can_update_definition
+      - archived
+      type: object
     Deals.ShortSavedDeal:
       properties:
         deal_id:
@@ -212,84 +228,6 @@ components:
           type:
           - integer
           - 'null'
-    Calls.CallResolutionSpec:
-      enum:
-      - successful
-      - unsuccessful
-      - abandoned
-      - left_voicemail
-      type: string
-    Activities.Activity:
-      properties:
-        activity_id:
-          type: string
-        activity_type:
-          $ref: '#/components/schemas/Activities.ActivityTypeDef'
-        assigned_to:
-          $ref: '#/components/schemas/Accounts.User'
-        comments:
-          items:
-            $ref: '#/components/schemas/Commons.Comment'
-          type: array
-        completed_tstamp:
-          type: object
-        created:
-          type: string
-        description:
-          type: string
-        details:
-          description: Activity specific data that only relevant for certain implementation
-          type: object
-        feed_tstamp:
-          type: object
-        is_important:
-          type: boolean
-        name:
-          type: string
-        owner:
-          $ref: '#/components/schemas/Accounts.User'
-        priority:
-          enum:
-          - high
-          - medium
-          - low
-          type: string
-        related_contacts:
-          items:
-            $ref: '#/components/schemas/Contacts.ShortContact'
-          type: array
-        new_related_deals:
-          items:
-            $ref: '#/components/schemas/Deals.ShortSavedDeal'
-          type: array
-        related_sequence:
-          $ref: '#/components/schemas/Sequences.SequenceBriefInfo'
-          description: sequence that created this activity, if applicable
-        scheduled_tstamp:
-          type: object
-        tags:
-          items:
-            type: string
-          type: array
-      required:
-      - details
-      - activity_type
-      - activity_id
-      - name
-      - description
-      - assigned_to
-      - related_contacts
-      - scheduled_tstamp
-      - completed_tstamp
-      - feed_tstamp
-      - tags
-      - priority
-      - comments
-      - is_important
-      - owner
-      - created
-      - related_sequence
-      type: object
     Legacy.UserMetadata:
       properties:
         city:
@@ -383,45 +321,6 @@ components:
       - employees_count
       - help_tour_data
       type: object
-    Errors.ValidationError:
-      description: request was malformed
-      example:
-        errors:
-          /:
-            message: 'missing required properties: ["calendar_id", "summary"]'
-          /base_occurrence/start_dtime:
-            message: Can't parse value 20000-01-01T01:01:00 as DATE-TIME
-        message: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]'
-        code: 245
-        human_readable_error: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]"'
-        extra:
-        - {}
-      properties:
-        errors:
-          description: 'mapping where keys are paths to problematic request attributes
-
-            and values are objects with single message attribute
-
-            '
-          type: object
-        message:
-          type: string
-        code:
-          type: integer
-          description: legacy that you <span style='color:red'>SHOULD NOT USE</span>
-        human_readable_error:
-          type: string
-          description: Error message with some changes making it easier to read.
-        extra:
-          type: array
-          items:
-            type: object
-          description: extra data that would be useful to provide
-      required:
-      - message
-      - errors
-      - human_readable_error
-      type: object
     Accounts.User:
       properties:
         account_type:
@@ -502,65 +401,6 @@ components:
       - metadata
       - has_password
       type: object
-    Settings.UserPermissions:
-      additionalProperties:
-        type: number
-      description: users permission
-      example:
-        api use: 1
-        manage deals pipelines: 1
-        mass delete: 1
-        mass export: 1
-        private deals edit: 1
-        private deals view: 1
-      type: object
-    Activities.ActivityTypeDef:
-      properties:
-        archived:
-          description: True if the type was archived. We shouldn't create new activities of archived types
-          type: boolean
-        can_update_definition:
-          description: True if user can change definition of that type, False otherwise
-          type: boolean
-        can_update_lc:
-          description: True if completion of the activity should update the last contacted date
-          type: boolean
-        logo_id:
-          description: id of a picture to display for these activities
-          type: string
-        type_id:
-          description: unique and stable id for an activity type
-          type: string
-        type_name:
-          description: human-readable name for an activity type
-          type: string
-      required:
-      - type_id
-      - type_name
-      - logo_id
-      - can_update_lc
-      - can_update_definition
-      - archived
-      type: object
-    Commons.Comment:
-      properties:
-        author:
-          $ref: '#/components/schemas/Accounts.User'
-        comment_id:
-          type: string
-        created:
-          type: string
-        text:
-          type: string
-        updated:
-          type: string
-      required:
-      - comment_id
-      - author
-      - text
-      - created
-      - updated
-      type: object
     Contacts.ShortContact:
       properties:
         avatar_url:
@@ -612,6 +452,166 @@ components:
       - is_viewable
       - phones
       type: object
+    Activities.Activity:
+      properties:
+        activity_id:
+          type: string
+        activity_type:
+          $ref: '#/components/schemas/Activities.ActivityTypeDef'
+        assigned_to:
+          $ref: '#/components/schemas/Accounts.User'
+        comments:
+          items:
+            $ref: '#/components/schemas/Commons.Comment'
+          type: array
+        completed_tstamp:
+          type: object
+        created:
+          type: string
+        description:
+          type: string
+        details:
+          description: Activity specific data that only relevant for certain implementation
+          type: object
+        feed_tstamp:
+          type: object
+        is_important:
+          type: boolean
+        name:
+          type: string
+        owner:
+          $ref: '#/components/schemas/Accounts.User'
+        priority:
+          enum:
+          - high
+          - medium
+          - low
+          type: string
+        related_contacts:
+          items:
+            $ref: '#/components/schemas/Contacts.ShortContact'
+          type: array
+        new_related_deals:
+          items:
+            $ref: '#/components/schemas/Deals.ShortSavedDeal'
+          type: array
+        related_sequence:
+          $ref: '#/components/schemas/Sequences.SequenceBriefInfo'
+          description: sequence that created this activity, if applicable
+        scheduled_tstamp:
+          type: object
+        tags:
+          items:
+            type: string
+          type: array
+      required:
+      - details
+      - activity_type
+      - activity_id
+      - name
+      - description
+      - assigned_to
+      - related_contacts
+      - scheduled_tstamp
+      - completed_tstamp
+      - feed_tstamp
+      - tags
+      - priority
+      - comments
+      - is_important
+      - owner
+      - created
+      - related_sequence
+      type: object
+    Commons.Comment:
+      properties:
+        author:
+          $ref: '#/components/schemas/Accounts.User'
+        comment_id:
+          type: string
+        created:
+          type: string
+        text:
+          type: string
+        updated:
+          type: string
+      required:
+      - comment_id
+      - author
+      - text
+      - created
+      - updated
+      type: object
+    Settings.UserPermissions:
+      additionalProperties:
+        type: number
+      description: users permission
+      example:
+        api use: 1
+        manage deals pipelines: 1
+        mass delete: 1
+        mass export: 1
+        private deals edit: 1
+        private deals view: 1
+      type: object
+    Calls.CallResolutionSpec:
+      enum:
+      - successful
+      - unsuccessful
+      - abandoned
+      - left_voicemail
+      type: string
+    Errors.ValidationError:
+      description: request was malformed
+      example:
+        errors:
+          /:
+            message: 'missing required properties: ["calendar_id", "summary"]'
+          /base_occurrence/start_dtime:
+            message: Can't parse value 20000-01-01T01:01:00 as DATE-TIME
+        message: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]'
+        code: 245
+        human_readable_error: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]"'
+        extra:
+        - {}
+      properties:
+        errors:
+          description: 'mapping where keys are paths to problematic request attributes
+
+            and values are objects with single message attribute
+
+            '
+          type: object
+        message:
+          type: string
+        code:
+          type: integer
+          description: legacy that you <span style='color:red'>SHOULD NOT USE</span>
+        human_readable_error:
+          type: string
+          description: Error message with some changes making it easier to read.
+        extra:
+          type: array
+          items:
+            type: object
+          description: extra data that would be useful to provide
+      required:
+      - message
+      - errors
+      - human_readable_error
+      type: object
+    Sequences.SequenceBriefInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: unique id of the sequence
+        name:
+          type: string
+          description: name of the sequence
+      required:
+      - id
+      - name
   securitySchemes:
     ApiKey:
       type: apiKey
