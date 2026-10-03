@@ -628,41 +628,78 @@ paths:
           description: ''
 components:
   schemas:
+    Fields.FieldPresentation:
+      description: 'how values of the field should look. Must match to corresponding field_type. Date and number
+
+        fields must have an appropriate presentation. There is no presentation for other types
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/Fields.IntegerNumberPresentation'
+      - $ref: '#/components/schemas/Fields.DecimalNumberPresentation'
+      - $ref: '#/components/schemas/Fields.PercentageNumberPresentation'
+      - $ref: '#/components/schemas/Fields.FinancialNumberPresentation'
+      - $ref: '#/components/schemas/Fields.DateTimePresentation'
+    Fields.EmploymentFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - employment
+    Fields.FinancialNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - financial
+        currency:
+          type:
+          - string
+          - 'null'
+      required:
+      - type
+      - currency
+    Fields.IntegerNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - integer
+      required:
+      - type
+    Fields.TextValidationRule:
+      type: object
+      properties:
+        type:
+          enum:
+          - email
+          - url
+    Fields.ChoiceFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - choice
+        values:
+          $ref: '#/components/schemas/Commons.PossibleValues'
+    Fields.PercentageNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - percentage
+        fraction_digits:
+          type: integer
+          minimum: 1
+      required:
+      - type
+      - fraction_digits
     Fields.NumberFieldValuesType:
       type: object
       properties:
         field_kind:
           enum:
           - number
-    Commons.PossibleValues:
-      type: object
-      properties:
-        ordering_type:
-          type: string
-          enum:
-          - ordinal
-          - alphabetic
-        values:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-              value:
-                type: string
-    Fields.FieldType:
-      oneOf:
-      - $ref: '#/components/schemas/Fields.StringFieldValuesType'
-      - $ref: '#/components/schemas/Fields.LongStringFieldValuesType'
-      - $ref: '#/components/schemas/Fields.ChoiceFieldValuesType'
-      - $ref: '#/components/schemas/Fields.NumberFieldValuesType'
-      - $ref: '#/components/schemas/Fields.DateTimeFieldValuesType'
-      - $ref: '#/components/schemas/Fields.BooleanFieldValuesType'
-      - $ref: '#/components/schemas/Fields.AddressFieldValuesType'
-      - $ref: '#/components/schemas/Fields.AttachmentFieldValuesType'
-      - $ref: '#/components/schemas/Fields.UserFieldValuesType'
-      - $ref: '#/components/schemas/Fields.EmploymentFieldValuesType'
     Fields.CreateFieldRequest:
       type: object
       properties:
@@ -695,28 +732,58 @@ components:
       - field_type
       - presentation
       - insert_after
-    Fields.TextValidationRule:
+    Fields.LongStringFieldValuesType:
       type: object
       properties:
-        type:
+        field_kind:
           enum:
-          - email
-          - url
-    Fields.ContactsFieldsMetadata:
+          - long_string
+    Fields.FieldTypeOnFieldCreation:
+      oneOf:
+      - $ref: '#/components/schemas/Fields.StringFieldValuesType'
+      - $ref: '#/components/schemas/Fields.LongStringFieldValuesType'
+      - $ref: '#/components/schemas/Fields.ChoiceFieldValuesType'
+      - $ref: '#/components/schemas/Fields.NumberFieldValuesType'
+      - $ref: '#/components/schemas/Fields.DateTimeFieldValuesType'
+      - $ref: '#/components/schemas/Fields.BooleanFieldValuesType'
+      - $ref: '#/components/schemas/Fields.AddressFieldValuesType'
+      - $ref: '#/components/schemas/Fields.UserFieldValuesType'
+    Fields.AttachmentFieldValuesType:
       type: object
       properties:
-        tabs:
-          items:
-            $ref: '#/components/schemas/Fields.ContactFieldsTab'
-          type: array
+        field_kind:
+          enum:
+          - attachment
+    Errors.PreflightCheckError:
+      example:
+        message: Some contacts cannot be updated because of their privacy settings
+        nse_query:
+          and:
+          - is_editable:
+              is: false
+          - _id:
+              in:
+              - 5dfb9c3e84a6b90f0c01c23a
+              - 5dfb9c3e84a6b90f0c01c23b
+        total: 10
+        type: non_editable_contacts
+      properties:
+        message:
+          type: string
+        nse_query:
+          description: problem contacts selection query
+          type: object
+        total:
+          type: integer
+        type:
+          description: unique and stable identifier of error type
+          type: string
       required:
-      - tabs
-      description: Contain the structure of contacts tabs, groups, and fields.
-    Contacts.ContactType:
-      enum:
-      - person
-      - company
-      type: string
+      - type
+      - message
+      - total
+      - nse_query
+      type: object
     Fields.ContactField:
       type: object
       properties:
@@ -751,117 +818,45 @@ components:
           - edit_all
           - edit_choices_only
           - view_only
-    Errors.PreflightCheckError:
-      example:
-        message: Some contacts cannot be updated because of their privacy settings
-        nse_query:
-          and:
-          - is_editable:
-              is: false
-          - _id:
-              in:
-              - 5dfb9c3e84a6b90f0c01c23a
-              - 5dfb9c3e84a6b90f0c01c23b
-        total: 10
-        type: non_editable_contacts
-      properties:
-        message:
-          type: string
-        nse_query:
-          description: problem contacts selection query
-          type: object
-        total:
-          type: integer
-        type:
-          description: unique and stable identifier of error type
-          type: string
-      required:
-      - type
-      - message
-      - total
-      - nse_query
-      type: object
-    Fields.FinancialNumberPresentation:
-      type: object
-      properties:
-        number_type:
-          enum:
-          - financial
-        currency:
-          type:
-          - string
-          - 'null'
-      required:
-      - type
-      - currency
-    Fields.BooleanFieldValuesType:
+    Fields.AddressFieldValuesType:
       type: object
       properties:
         field_kind:
           enum:
-          - boolean
-    Fields.DecimalNumberPresentation:
+          - address
+    Commons.PossibleValues:
       type: object
       properties:
-        number_type:
+        ordering_type:
+          type: string
           enum:
-          - decimal
-        fraction_digits:
-          type: integer
-          minimum: 1
-      required:
-      - type
-      - fraction_digits
-    Fields.FieldPresentation:
-      description: 'how values of the field should look. Must match to corresponding field_type. Date and number
-
-        fields must have an appropriate presentation. There is no presentation for other types
-
-        '
-      oneOf:
-      - $ref: '#/components/schemas/Fields.IntegerNumberPresentation'
-      - $ref: '#/components/schemas/Fields.DecimalNumberPresentation'
-      - $ref: '#/components/schemas/Fields.PercentageNumberPresentation'
-      - $ref: '#/components/schemas/Fields.FinancialNumberPresentation'
-      - $ref: '#/components/schemas/Fields.DateTimePresentation'
-    Fields.ChoiceFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - choice
+          - ordinal
+          - alphabetic
         values:
-          $ref: '#/components/schemas/Commons.PossibleValues'
-    Fields.StringFieldValuesType:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              value:
+                type: string
+    Fields.ContactsFieldsMetadata:
       type: object
       properties:
-        field_kind:
-          enum:
-          - string
-        validation_rule:
-          $ref: '#/components/schemas/Fields.TextValidationRule'
-    Fields.AttachmentFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - attachment
+        tabs:
+          items:
+            $ref: '#/components/schemas/Fields.ContactFieldsTab'
+          type: array
+      required:
+      - tabs
+      description: Contain the structure of contacts tabs, groups, and fields.
     Fields.UserFieldValuesType:
       type: object
       properties:
         field_kind:
           enum:
           - user
-    Errors.PreflightCheckFailures:
-      description: action cannot be applied to all specified contacts
-      properties:
-        errors:
-          items:
-            $ref: '#/components/schemas/Errors.PreflightCheckError'
-          type: array
-      required:
-      - errors
-      type: object
     Fields.ContactFieldsTab:
       properties:
         tab_id:
@@ -891,61 +886,24 @@ components:
           - edit_all
           - rearrange_only
           - view_only
-    Fields.IntegerNumberPresentation:
-      type: object
-      properties:
-        number_type:
-          enum:
-          - integer
-      required:
-      - type
     Fields.DateTimeFieldValuesType:
       type: object
       properties:
         field_kind:
           enum:
           - datetime
-    Fields.EmploymentFieldValuesType:
-      type: object
+    Fields.UpdateIsPrimaryRequest:
       properties:
-        field_kind:
-          enum:
-          - employment
-    Errors.NotFoundError:
-      example:
-        object_id: 4f2acc3142a053dda595f00b
-        object_type: deal
-      properties:
-        object_id:
+        field_id:
           type: string
-        object_type:
-          type: string
+        position:
+          minimum: 0
+          type: integer
       required:
-      - object_type
-      - object_id
+      - field_id
+      - position
+      - is_primary
       type: object
-    Fields.AddressFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - address
-    Fields.LongStringFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - long_string
-    Fields.FieldTypeOnFieldCreation:
-      oneOf:
-      - $ref: '#/components/schemas/Fields.StringFieldValuesType'
-      - $ref: '#/components/schemas/Fields.LongStringFieldValuesType'
-      - $ref: '#/components/schemas/Fields.ChoiceFieldValuesType'
-      - $ref: '#/components/schemas/Fields.NumberFieldValuesType'
-      - $ref: '#/components/schemas/Fields.DateTimeFieldValuesType'
-      - $ref: '#/components/schemas/Fields.BooleanFieldValuesType'
-      - $ref: '#/components/schemas/Fields.AddressFieldValuesType'
-      - $ref: '#/components/schemas/Fields.UserFieldValuesType'
     Fields.DateTimePresentation:
       type: object
       properties:
@@ -972,30 +930,14 @@ components:
       required:
       - date_format
       - ignore_specific_time
-    Fields.PercentageNumberPresentation:
+    Fields.StringFieldValuesType:
       type: object
       properties:
-        number_type:
+        field_kind:
           enum:
-          - percentage
-        fraction_digits:
-          type: integer
-          minimum: 1
-      required:
-      - type
-      - fraction_digits
-    Fields.UpdateIsPrimaryRequest:
-      properties:
-        field_id:
-          type: string
-        position:
-          minimum: 0
-          type: integer
-      required:
-      - field_id
-      - position
-      - is_primary
-      type: object
+          - string
+        validation_rule:
+          $ref: '#/components/schemas/Fields.TextValidationRule'
     Errors.ValidationError:
       description: request was malformed
       example:
@@ -1035,6 +977,59 @@ components:
       - errors
       - human_readable_error
       type: object
+    Fields.BooleanFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - boolean
+    Errors.PreflightCheckFailures:
+      description: action cannot be applied to all specified contacts
+      properties:
+        errors:
+          items:
+            $ref: '#/components/schemas/Errors.PreflightCheckError'
+          type: array
+      required:
+      - errors
+      type: object
+    Fields.FieldType:
+      oneOf:
+      - $ref: '#/components/schemas/Fields.StringFieldValuesType'
+      - $ref: '#/components/schemas/Fields.LongStringFieldValuesType'
+      - $ref: '#/components/schemas/Fields.ChoiceFieldValuesType'
+      - $ref: '#/components/schemas/Fields.NumberFieldValuesType'
+      - $ref: '#/components/schemas/Fields.DateTimeFieldValuesType'
+      - $ref: '#/components/schemas/Fields.BooleanFieldValuesType'
+      - $ref: '#/components/schemas/Fields.AddressFieldValuesType'
+      - $ref: '#/components/schemas/Fields.AttachmentFieldValuesType'
+      - $ref: '#/components/schemas/Fields.UserFieldValuesType'
+      - $ref: '#/components/schemas/Fields.EmploymentFieldValuesType'
+    Errors.NotFoundError:
+      example:
+        object_id: 4f2acc3142a053dda595f00b
+        object_type: deal
+      properties:
+        object_id:
+          type: string
+        object_type:
+          type: string
+      required:
+      - object_type
+      - object_id
+      type: object
+    Fields.DecimalNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - decimal
+        fraction_digits:
+          type: integer
+          minimum: 1
+      required:
+      - type
+      - fraction_digits
     Fields.ContactFieldsGroup:
       type: object
       properties:
@@ -1052,6 +1047,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Fields.ContactField'
+    Contacts.ContactType:
+      enum:
+      - person
+      - company
+      type: string
   securitySchemes:
     ApiKey:
       type: apiKey

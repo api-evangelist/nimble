@@ -411,14 +411,51 @@ paths:
                 $ref: '#/components/schemas/Errors.NotFoundError'
 components:
   schemas:
-    Pipeline.ChoiceFieldValuesType:
+    Fields.FieldPresentation:
+      description: 'how values of the field should look. Must match to corresponding field_type. Date and number
+
+        fields must have an appropriate presentation. There is no presentation for other types
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/Fields.IntegerNumberPresentation'
+      - $ref: '#/components/schemas/Fields.DecimalNumberPresentation'
+      - $ref: '#/components/schemas/Fields.PercentageNumberPresentation'
+      - $ref: '#/components/schemas/Fields.FinancialNumberPresentation'
+      - $ref: '#/components/schemas/Fields.DateTimePresentation'
+    Fields.FinancialNumberPresentation:
       type: object
       properties:
-        field_kind:
+        number_type:
           enum:
-          - choice
-        values:
-          $ref: '#/components/schemas/Commons.PossibleValues'
+          - financial
+        currency:
+          type:
+          - string
+          - 'null'
+      required:
+      - type
+      - currency
+    Fields.IntegerNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - integer
+      required:
+      - type
+    Fields.PercentageNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - percentage
+        fraction_digits:
+          type: integer
+          minimum: 1
+      required:
+      - type
+      - fraction_digits
     Errors.NotAcceptableError:
       example:
         message: You can not reopen already active deal
@@ -432,6 +469,28 @@ components:
       - message
       - type
       type: object
+    Pipeline.DateTimeFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - datetime
+    Pipeline.StringFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - string
+        validation_rule:
+          enum:
+          - email
+          - url
+    Pipeline.AddressFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - address
     Commons.PossibleValues:
       type: object
       properties:
@@ -449,115 +508,6 @@ components:
                 type: string
               value:
                 type: string
-    Pipeline.UserFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - user
-    Pipeline.DateTimeFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - datetime
-    Pipeline.AddressFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - address
-    Deals.DealPipelineFieldsTab:
-      type: object
-      properties:
-        tab_id:
-          description: The id of a tab in the database
-          type: string
-        tab_name:
-          description: The name of a tab
-          type: string
-        pipeline_id:
-          type: string
-        members:
-          $ref: '#/components/schemas/Deals.DealPipelineFieldsTabMember'
-    Deals.DealPipelineField:
-      description: Fields of DealsPipeline
-      allOf:
-      - $ref: '#/components/schemas/Deals.BaseDealPipelineFieldsTabMember'
-      - properties:
-          field:
-            $ref: '#/components/schemas/Deals.IDealField'
-          pipeline_id:
-            type: string
-      type: object
-    Deals.DealPipelineFieldsTabMember:
-      oneOf:
-      - $ref: '#/components/schemas/Deals.DealPipelineField'
-      - $ref: '#/components/schemas/Deals.DealPipelineFieldsGroup'
-      discriminator:
-        propertyName: type
-        mapping:
-          field: '#/components/schemas/Deals.DealPipelineField'
-          group: '#/components/schemas/Deals.DealPipelineFieldsGroup'
-    Pipeline.CreateDealsPipelineGroupRequest:
-      type: object
-      properties:
-        group_name:
-          type: string
-        logo_id:
-          type: string
-        insert_after:
-          description: If not null, inserts a new group after another group or field with specified id. If null, then group is inserted as the first one
-          type:
-          - string
-          - 'null'
-        fields:
-          type: array
-          items:
-            $ref: '#/components/schemas/Pipeline.CreateDealsPipelineFieldRequest'
-    Deals.DealPipelineFieldsGroup:
-      allOf:
-      - $ref: '#/components/schemas/Deals.BaseDealPipelineFieldsTabMember'
-      - properties:
-          group_name:
-            type: string
-          group_id:
-            type: string
-          logo_id:
-            type: string
-          fields:
-            type: array
-            items:
-              $ref: '#/components/schemas/Deals.DealPipelineField'
-      type: object
-    Pipeline.FieldTypeOnFieldCreation:
-      oneOf:
-      - $ref: '#/components/schemas/Pipeline.StringFieldValuesType'
-      - $ref: '#/components/schemas/Pipeline.LongStringFieldValuesType'
-      - $ref: '#/components/schemas/Pipeline.ChoiceFieldValuesType'
-      - $ref: '#/components/schemas/Pipeline.NumberFieldValuesType'
-      - $ref: '#/components/schemas/Pipeline.DateTimeFieldValuesType'
-      - $ref: '#/components/schemas/Pipeline.BooleanFieldValuesType'
-      - $ref: '#/components/schemas/Pipeline.AddressFieldValuesType'
-      - $ref: '#/components/schemas/Pipeline.UserFieldValuesType'
-    Deals.BaseDealPipelineFieldsTabMember:
-      properties:
-        type:
-          type: string
-      type: object
-    Fields.FinancialNumberPresentation:
-      type: object
-      properties:
-        number_type:
-          enum:
-          - financial
-        currency:
-          type:
-          - string
-          - 'null'
-      required:
-      - type
-      - currency
     Deals.DealFieldsMetadata:
       type: object
       properties:
@@ -569,30 +519,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Deals.IDealField'
-    Pipeline.CreateDealsPipelineFieldChoiceRequest:
-      type: object
-      properties:
-        choice:
-          type: object
-          description: New choice
-          properties:
-            id:
-              type: string
-            value:
-              type: string
-        insert_after:
-          description: Move choice after choice with specified id. If <code>null</code>, then choice will be the first one in field
-          type:
-          - string
-          - 'null'
-      required:
-      - choice
-    Pipeline.NumberFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - number
     Errors.ForbiddenError:
       example:
         message: You don't have access to this deal
@@ -613,121 +539,12 @@ components:
       required:
       - message
       type: object
-    Pipeline.UpdateDealsPipelineFieldChoiceRequest:
-      type: object
-      properties:
-        value:
-          description: New choice value
-          type:
-          - string
-          - 'null'
-        insert_after:
-          description: Move choice after choice with specified id. If <code>null</code>, then choice will be the first one in field
-          type:
-          - string
-          - 'null'
-    Pipeline.CreateDealsPipelineFieldRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the new field
-        field_type:
-          $ref: '#/components/schemas/Pipeline.FieldTypeOnFieldCreation'
-        presentation:
-          $ref: '#/components/schemas/Fields.FieldPresentation'
-        pipeline_id:
-          type:
-          - string
-          - 'null'
-          description: <code>id</code> of pipeline this field is being created for (if known)
-        insert_after:
-          type:
-          - string
-          - 'null'
-          description: Inserts a new field after field or group with specified <code>id</code>. If null, then field is inserted as the first one
-        group_id:
-          description: <code>id</code> of group this field is being created for (if field is a member of group)
-          type: string
-      required:
-      - name
-      - field_type
-      - presentation
-    Fields.DecimalNumberPresentation:
-      type: object
-      properties:
-        number_type:
-          enum:
-          - decimal
-        fraction_digits:
-          type: integer
-          minimum: 1
-      required:
-      - type
-      - fraction_digits
-    Fields.FieldPresentation:
-      description: 'how values of the field should look. Must match to corresponding field_type. Date and number
-
-        fields must have an appropriate presentation. There is no presentation for other types
-
-        '
-      oneOf:
-      - $ref: '#/components/schemas/Fields.IntegerNumberPresentation'
-      - $ref: '#/components/schemas/Fields.DecimalNumberPresentation'
-      - $ref: '#/components/schemas/Fields.PercentageNumberPresentation'
-      - $ref: '#/components/schemas/Fields.FinancialNumberPresentation'
-      - $ref: '#/components/schemas/Fields.DateTimePresentation'
-    Deals.IDealField:
-      type: object
-      properties:
-        field_id:
-          description: The id of a field in the database
-          type: string
-        modifier:
-          type: string
-        multiples:
-          type: boolean
-        available_actions:
-          description: Shows available for user actions
-          type: string
-        field_type:
-          type: string
-        field_name:
-          description: The name of a field
-          type: string
-    Pipeline.BooleanFieldValuesType:
+    Pipeline.UserFieldValuesType:
       type: object
       properties:
         field_kind:
           enum:
-          - boolean
-    Pipeline.LongStringFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - long_string
-    Fields.IntegerNumberPresentation:
-      type: object
-      properties:
-        number_type:
-          enum:
-          - integer
-      required:
-      - type
-    Errors.NotFoundError:
-      example:
-        object_id: 4f2acc3142a053dda595f00b
-        object_type: deal
-      properties:
-        object_id:
-          type: string
-        object_type:
-          type: string
-      required:
-      - object_type
-      - object_id
-      type: object
+          - user
     Pipeline.UpdateDealsPipelineFieldRequest:
       type: object
       properties:
@@ -773,18 +590,6 @@ components:
       required:
       - date_format
       - ignore_specific_time
-    Fields.PercentageNumberPresentation:
-      type: object
-      properties:
-        number_type:
-          enum:
-          - percentage
-        fraction_digits:
-          type: integer
-          minimum: 1
-      required:
-      - type
-      - fraction_digits
     Errors.ValidationError:
       description: request was malformed
       example:
@@ -824,16 +629,211 @@ components:
       - errors
       - human_readable_error
       type: object
-    Pipeline.StringFieldValuesType:
+    Deals.DealPipelineFieldsTabMember:
+      oneOf:
+      - $ref: '#/components/schemas/Deals.DealPipelineField'
+      - $ref: '#/components/schemas/Deals.DealPipelineFieldsGroup'
+      discriminator:
+        propertyName: type
+        mapping:
+          field: '#/components/schemas/Deals.DealPipelineField'
+          group: '#/components/schemas/Deals.DealPipelineFieldsGroup'
+    Pipeline.UpdateDealsPipelineFieldChoiceRequest:
+      type: object
+      properties:
+        value:
+          description: New choice value
+          type:
+          - string
+          - 'null'
+        insert_after:
+          description: Move choice after choice with specified id. If <code>null</code>, then choice will be the first one in field
+          type:
+          - string
+          - 'null'
+    Pipeline.CreateDealsPipelineFieldRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the new field
+        field_type:
+          $ref: '#/components/schemas/Pipeline.FieldTypeOnFieldCreation'
+        presentation:
+          $ref: '#/components/schemas/Fields.FieldPresentation'
+        pipeline_id:
+          type:
+          - string
+          - 'null'
+          description: <code>id</code> of pipeline this field is being created for (if known)
+        insert_after:
+          type:
+          - string
+          - 'null'
+          description: Inserts a new field after field or group with specified <code>id</code>. If null, then field is inserted as the first one
+        group_id:
+          description: <code>id</code> of group this field is being created for (if field is a member of group)
+          type: string
+      required:
+      - name
+      - field_type
+      - presentation
+    Deals.BaseDealPipelineFieldsTabMember:
+      properties:
+        type:
+          type: string
+      type: object
+    Pipeline.FieldTypeOnFieldCreation:
+      oneOf:
+      - $ref: '#/components/schemas/Pipeline.StringFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.LongStringFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.ChoiceFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.NumberFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.DateTimeFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.BooleanFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.AddressFieldValuesType'
+      - $ref: '#/components/schemas/Pipeline.UserFieldValuesType'
+    Deals.DealPipelineField:
+      description: Fields of DealsPipeline
+      allOf:
+      - $ref: '#/components/schemas/Deals.BaseDealPipelineFieldsTabMember'
+      - properties:
+          field:
+            $ref: '#/components/schemas/Deals.IDealField'
+          pipeline_id:
+            type: string
+      type: object
+    Pipeline.CreateDealsPipelineFieldChoiceRequest:
+      type: object
+      properties:
+        choice:
+          type: object
+          description: New choice
+          properties:
+            id:
+              type: string
+            value:
+              type: string
+        insert_after:
+          description: Move choice after choice with specified id. If <code>null</code>, then choice will be the first one in field
+          type:
+          - string
+          - 'null'
+      required:
+      - choice
+    Deals.DealPipelineFieldsGroup:
+      allOf:
+      - $ref: '#/components/schemas/Deals.BaseDealPipelineFieldsTabMember'
+      - properties:
+          group_name:
+            type: string
+          group_id:
+            type: string
+          logo_id:
+            type: string
+          fields:
+            type: array
+            items:
+              $ref: '#/components/schemas/Deals.DealPipelineField'
+      type: object
+    Errors.NotFoundError:
+      example:
+        object_id: 4f2acc3142a053dda595f00b
+        object_type: deal
+      properties:
+        object_id:
+          type: string
+        object_type:
+          type: string
+      required:
+      - object_type
+      - object_id
+      type: object
+    Pipeline.CreateDealsPipelineGroupRequest:
+      type: object
+      properties:
+        group_name:
+          type: string
+        logo_id:
+          type: string
+        insert_after:
+          description: If not null, inserts a new group after another group or field with specified id. If null, then group is inserted as the first one
+          type:
+          - string
+          - 'null'
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/Pipeline.CreateDealsPipelineFieldRequest'
+    Fields.DecimalNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - decimal
+        fraction_digits:
+          type: integer
+          minimum: 1
+      required:
+      - type
+      - fraction_digits
+    Deals.IDealField:
+      type: object
+      properties:
+        field_id:
+          description: The id of a field in the database
+          type: string
+        modifier:
+          type: string
+        multiples:
+          type: boolean
+        available_actions:
+          description: Shows available for user actions
+          type: string
+        field_type:
+          type: string
+        field_name:
+          description: The name of a field
+          type: string
+    Pipeline.NumberFieldValuesType:
       type: object
       properties:
         field_kind:
           enum:
-          - string
-        validation_rule:
+          - number
+    Pipeline.ChoiceFieldValuesType:
+      type: object
+      properties:
+        field_kind:
           enum:
-          - email
-          - url
+          - choice
+        values:
+          $ref: '#/components/schemas/Commons.PossibleValues'
+    Pipeline.LongStringFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - long_string
+    Deals.DealPipelineFieldsTab:
+      type: object
+      properties:
+        tab_id:
+          description: The id of a tab in the database
+          type: string
+        tab_name:
+          description: The name of a tab
+          type: string
+        pipeline_id:
+          type: string
+        members:
+          $ref: '#/components/schemas/Deals.DealPipelineFieldsTabMember'
+    Pipeline.BooleanFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - boolean
   securitySchemes:
     ApiKey:
       type: apiKey

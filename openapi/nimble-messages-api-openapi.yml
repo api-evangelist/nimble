@@ -90,105 +90,18 @@ paths:
                 $ref: '#/components/schemas/Messages.DraftMessageWithParticipants'
 components:
   schemas:
-    Contacts.ContactType:
-      enum:
-      - person
-      - company
-      type: string
-    Messages.MessagingAccountIdentifier:
-      properties:
-        account_type:
-          enum:
-          - email
-          - mass_mail
-          type: string
-        identifier:
-          description: 'Account identifier specific to account_type. For account_type: email it should be email address. '
-          type: string
-      required:
-      - account_type
-      - identifier
+    Messages.MessageTrackingConfiguration:
+      description: 'tracking configuration
+
+        '
       type: object
-    Messages.MessageTemplateContentMode:
-      type: string
-      enum:
-      - standard
-      - builder
-      - custom_html
-    Contacts.ShortContact:
       properties:
-        avatar_url:
-          type: string
-        contact_type:
-          $ref: '#/components/schemas/Contacts.ContactType'
-        email:
-          items:
-            type: string
-          type: array
-        id:
-          type: string
-        is_viewable:
-          description: if this contact can be viewed in details by a calling user
+        opens_tracking:
           type: boolean
-        name:
-          type: string
-        employment:
-          description: the most relevant contact employment (e.g., primary or present)
-          type:
-          - object
-          - 'null'
-          properties:
-            company_name:
-              type:
-              - string
-              - 'null'
-            title:
-              type:
-              - string
-              - 'null'
-        phones:
-          properties:
-            label:
-              description: phone label like "home", "work", etc
-              type: string
-            value:
-              type: string
-          required:
-          - label
-          - value
-          type: object
-      required:
-      - avatar_url
-      - contact_type
-      - id
-      - name
-      - email
-      - is_viewable
-      - phones
-      type: object
-    Messages.Attachment:
-      properties:
-        content_type:
-          description: MIME type of attachment
-          type: string
-        data_id:
-          description: Field data_id must be first retrieved using any sort of Uploads API.
-          type: string
-        file_size:
-          description: Field file_size is given in bytes.
-          type: integer
-        name:
-          type: string
-        url:
-          description: URL that can be used by a user to download attachment's content
-          type: string
-      required:
-      - data_id
-      - file_size
-      - content_type
-      - name
-      - url
-      type: object
+          description: whether to track message opens
+        clicks_tracking:
+          type: boolean
+          description: whether to track link clicks in a message
     Messages.MessagingAccount:
       allOf:
       - $ref: '#/components/schemas/Messages.MessagingAccountIdentifier'
@@ -229,6 +142,52 @@ components:
           oneOf:
           - type: number
           - type: string
+      type: object
+    Messages.MappedMessagingAccount:
+      description: scheduled message participant (sender, cc, bcc, recipient) matched to a Nimble contact if available
+      type: object
+      properties:
+        email:
+          type: string
+        contact:
+          description: matched Nimble contact if available
+          oneOf:
+          - $ref: '#/components/schemas/Contacts.ShortContact'
+        user:
+          description: matched Nimble user if available
+          type:
+          - object
+          - 'null'
+          oneOf:
+          - $ref: '#/components/schemas/Accounts.ShortUserInfo'
+    Messages.MessageTemplateContentMode:
+      type: string
+      enum:
+      - standard
+      - builder
+      - custom_html
+    Messages.Attachment:
+      properties:
+        content_type:
+          description: MIME type of attachment
+          type: string
+        data_id:
+          description: Field data_id must be first retrieved using any sort of Uploads API.
+          type: string
+        file_size:
+          description: Field file_size is given in bytes.
+          type: integer
+        name:
+          type: string
+        url:
+          description: URL that can be used by a user to download attachment's content
+          type: string
+      required:
+      - data_id
+      - file_size
+      - content_type
+      - name
+      - url
       type: object
     Messages.WatchRepliesRequest:
       description: 'pass this object if we want to watch for the replies to this message
@@ -327,36 +286,70 @@ components:
           - 'null'
           format: ObjectId
           description: credential to send this message (if null, credential will be determined by sender)
-    Messages.MessageTrackingConfiguration:
-      description: 'tracking configuration
-
-        '
-      type: object
-      properties:
-        opens_tracking:
-          type: boolean
-          description: whether to track message opens
-        clicks_tracking:
-          type: boolean
-          description: whether to track link clicks in a message
-    Accounts.ShortUserInfo:
+    Contacts.ShortContact:
       properties:
         avatar_url:
           type: string
+        contact_type:
+          $ref: '#/components/schemas/Contacts.ContactType'
         email:
+          items:
+            type: string
+          type: array
+        id:
           type: string
-        is_active:
+        is_viewable:
+          description: if this contact can be viewed in details by a calling user
           type: boolean
         name:
           type: string
-        user_id:
-          type: string
+        employment:
+          description: the most relevant contact employment (e.g., primary or present)
+          type:
+          - object
+          - 'null'
+          properties:
+            company_name:
+              type:
+              - string
+              - 'null'
+            title:
+              type:
+              - string
+              - 'null'
+        phones:
+          properties:
+            label:
+              description: phone label like "home", "work", etc
+              type: string
+            value:
+              type: string
+          required:
+          - label
+          - value
+          type: object
       required:
-      - user_id
+      - avatar_url
+      - contact_type
+      - id
       - name
       - email
-      - avatar_url
-      - is_active
+      - is_viewable
+      - phones
+      type: object
+    Messages.MessagingAccountIdentifier:
+      properties:
+        account_type:
+          enum:
+          - email
+          - mass_mail
+          type: string
+        identifier:
+          description: 'Account identifier specific to account_type. For account_type: email it should be email address. '
+          type: string
+      required:
+      - account_type
+      - identifier
       type: object
     Messages.DraftMessageWithParticipants:
       type: object
@@ -387,23 +380,30 @@ components:
           type: array
         sender:
           $ref: '#/components/schemas/Messages.MappedMessagingAccount'
-    Messages.MappedMessagingAccount:
-      description: scheduled message participant (sender, cc, bcc, recipient) matched to a Nimble contact if available
-      type: object
+    Accounts.ShortUserInfo:
       properties:
+        avatar_url:
+          type: string
         email:
           type: string
-        contact:
-          description: matched Nimble contact if available
-          oneOf:
-          - $ref: '#/components/schemas/Contacts.ShortContact'
-        user:
-          description: matched Nimble user if available
-          type:
-          - object
-          - 'null'
-          oneOf:
-          - $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        is_active:
+          type: boolean
+        name:
+          type: string
+        user_id:
+          type: string
+      required:
+      - user_id
+      - name
+      - email
+      - avatar_url
+      - is_active
+      type: object
+    Contacts.ContactType:
+      enum:
+      - person
+      - company
+      type: string
   securitySchemes:
     ApiKey:
       type: apiKey
