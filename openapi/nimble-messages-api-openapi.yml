@@ -90,6 +90,30 @@ paths:
                 $ref: '#/components/schemas/Messages.DraftMessageWithParticipants'
 components:
   schemas:
+    Accounts.ShortUserInfo:
+      properties:
+        avatar_url:
+          type: string
+        email:
+          type: string
+        is_active:
+          type: boolean
+        name:
+          type: string
+        user_id:
+          type: string
+      required:
+      - user_id
+      - name
+      - email
+      - avatar_url
+      - is_active
+      type: object
+    Contacts.ContactType:
+      enum:
+      - person
+      - company
+      type: string
     Messages.MessageTrackingConfiguration:
       description: 'tracking configuration
 
@@ -102,6 +126,49 @@ components:
         clicks_tracking:
           type: boolean
           description: whether to track link clicks in a message
+    Messages.MessageTemplateContentMode:
+      type: string
+      enum:
+      - standard
+      - builder
+      - custom_html
+    Messages.Attachment:
+      properties:
+        content_type:
+          description: MIME type of attachment
+          type: string
+        data_id:
+          description: Field data_id must be first retrieved using any sort of Uploads API.
+          type: string
+        file_size:
+          description: Field file_size is given in bytes.
+          type: integer
+        name:
+          type: string
+        url:
+          description: URL that can be used by a user to download attachment's content
+          type: string
+      required:
+      - data_id
+      - file_size
+      - content_type
+      - name
+      - url
+      type: object
+    Messages.MessagingAccountIdentifier:
+      properties:
+        account_type:
+          enum:
+          - email
+          - mass_mail
+          type: string
+        identifier:
+          description: 'Account identifier specific to account_type. For account_type: email it should be email address. '
+          type: string
+      required:
+      - account_type
+      - identifier
+      type: object
     Messages.MessagingAccount:
       allOf:
       - $ref: '#/components/schemas/Messages.MessagingAccountIdentifier'
@@ -143,6 +210,35 @@ components:
           - type: number
           - type: string
       type: object
+    Messages.DraftMessageWithParticipants:
+      type: object
+      properties:
+        draft_id:
+          type: string
+        specification:
+          $ref: '#/components/schemas/Messages.IncompleteMessageSpecification'
+        updated:
+          description: last timestamp of when the draft was updated
+          type: string
+        creator:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        recipients:
+          description: matched recipients
+          items:
+            $ref: '#/components/schemas/Messages.MappedMessagingAccount'
+          type: array
+        cc:
+          description: matched cc addresses
+          items:
+            $ref: '#/components/schemas/Messages.MappedMessagingAccount'
+          type: array
+        bcc:
+          description: matched bcc addresses
+          items:
+            $ref: '#/components/schemas/Messages.MappedMessagingAccount'
+          type: array
+        sender:
+          $ref: '#/components/schemas/Messages.MappedMessagingAccount'
     Messages.MappedMessagingAccount:
       description: scheduled message participant (sender, cc, bcc, recipient) matched to a Nimble contact if available
       type: object
@@ -160,51 +256,6 @@ components:
           - 'null'
           oneOf:
           - $ref: '#/components/schemas/Accounts.ShortUserInfo'
-    Messages.MessageTemplateContentMode:
-      type: string
-      enum:
-      - standard
-      - builder
-      - custom_html
-    Messages.Attachment:
-      properties:
-        content_type:
-          description: MIME type of attachment
-          type: string
-        data_id:
-          description: Field data_id must be first retrieved using any sort of Uploads API.
-          type: string
-        file_size:
-          description: Field file_size is given in bytes.
-          type: integer
-        name:
-          type: string
-        url:
-          description: URL that can be used by a user to download attachment's content
-          type: string
-      required:
-      - data_id
-      - file_size
-      - content_type
-      - name
-      - url
-      type: object
-    Messages.WatchRepliesRequest:
-      description: 'pass this object if we want to watch for the replies to this message
-
-        '
-      type: object
-      properties:
-        expiration_interval:
-          type:
-          - number
-          - 'null'
-          description: expiration interval in seconds
-        expiration_tstamp:
-          type:
-          - string
-          - 'null'
-          description: some concrete datetime when the thread watcher expires
     Messages.IncompleteMessageSpecification:
       description: '"incomplete" message specification. All fields are optional.
 
@@ -337,73 +388,22 @@ components:
       - is_viewable
       - phones
       type: object
-    Messages.MessagingAccountIdentifier:
-      properties:
-        account_type:
-          enum:
-          - email
-          - mass_mail
-          type: string
-        identifier:
-          description: 'Account identifier specific to account_type. For account_type: email it should be email address. '
-          type: string
-      required:
-      - account_type
-      - identifier
-      type: object
-    Messages.DraftMessageWithParticipants:
+    Messages.WatchRepliesRequest:
+      description: 'pass this object if we want to watch for the replies to this message
+
+        '
       type: object
       properties:
-        draft_id:
-          type: string
-        specification:
-          $ref: '#/components/schemas/Messages.IncompleteMessageSpecification'
-        updated:
-          description: last timestamp of when the draft was updated
-          type: string
-        creator:
-          $ref: '#/components/schemas/Accounts.ShortUserInfo'
-        recipients:
-          description: matched recipients
-          items:
-            $ref: '#/components/schemas/Messages.MappedMessagingAccount'
-          type: array
-        cc:
-          description: matched cc addresses
-          items:
-            $ref: '#/components/schemas/Messages.MappedMessagingAccount'
-          type: array
-        bcc:
-          description: matched bcc addresses
-          items:
-            $ref: '#/components/schemas/Messages.MappedMessagingAccount'
-          type: array
-        sender:
-          $ref: '#/components/schemas/Messages.MappedMessagingAccount'
-    Accounts.ShortUserInfo:
-      properties:
-        avatar_url:
-          type: string
-        email:
-          type: string
-        is_active:
-          type: boolean
-        name:
-          type: string
-        user_id:
-          type: string
-      required:
-      - user_id
-      - name
-      - email
-      - avatar_url
-      - is_active
-      type: object
-    Contacts.ContactType:
-      enum:
-      - person
-      - company
-      type: string
+        expiration_interval:
+          type:
+          - number
+          - 'null'
+          description: expiration interval in seconds
+        expiration_tstamp:
+          type:
+          - string
+          - 'null'
+          description: some concrete datetime when the thread watcher expires
   securitySchemes:
     ApiKey:
       type: apiKey

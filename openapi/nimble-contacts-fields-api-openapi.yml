@@ -628,24 +628,69 @@ paths:
           description: ''
 components:
   schemas:
-    Fields.FieldPresentation:
-      description: 'how values of the field should look. Must match to corresponding field_type. Date and number
-
-        fields must have an appropriate presentation. There is no presentation for other types
-
-        '
-      oneOf:
-      - $ref: '#/components/schemas/Fields.IntegerNumberPresentation'
-      - $ref: '#/components/schemas/Fields.DecimalNumberPresentation'
-      - $ref: '#/components/schemas/Fields.PercentageNumberPresentation'
-      - $ref: '#/components/schemas/Fields.FinancialNumberPresentation'
-      - $ref: '#/components/schemas/Fields.DateTimePresentation'
-    Fields.EmploymentFieldValuesType:
+    Fields.UpdateIsPrimaryRequest:
+      properties:
+        field_id:
+          type: string
+        position:
+          minimum: 0
+          type: integer
+      required:
+      - field_id
+      - position
+      - is_primary
+      type: object
+    Fields.DateTimeFieldValuesType:
       type: object
       properties:
         field_kind:
           enum:
-          - employment
+          - datetime
+    Fields.StringFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - string
+        validation_rule:
+          $ref: '#/components/schemas/Fields.TextValidationRule'
+    Fields.PercentageNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - percentage
+        fraction_digits:
+          type: integer
+          minimum: 1
+      required:
+      - type
+      - fraction_digits
+    Fields.TextValidationRule:
+      type: object
+      properties:
+        type:
+          enum:
+          - email
+          - url
+    Fields.UserFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - user
+    Fields.NumberFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - number
+    Fields.LongStringFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - long_string
     Fields.FinancialNumberPresentation:
       type: object
       properties:
@@ -659,21 +704,53 @@ components:
       required:
       - type
       - currency
-    Fields.IntegerNumberPresentation:
+    Fields.BooleanFieldValuesType:
       type: object
       properties:
-        number_type:
+        field_kind:
           enum:
-          - integer
-      required:
-      - type
-    Fields.TextValidationRule:
+          - boolean
+    Fields.FieldPresentation:
+      description: 'how values of the field should look. Must match to corresponding field_type. Date and number
+
+        fields must have an appropriate presentation. There is no presentation for other types
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/Fields.IntegerNumberPresentation'
+      - $ref: '#/components/schemas/Fields.DecimalNumberPresentation'
+      - $ref: '#/components/schemas/Fields.PercentageNumberPresentation'
+      - $ref: '#/components/schemas/Fields.FinancialNumberPresentation'
+      - $ref: '#/components/schemas/Fields.DateTimePresentation'
+    Commons.PossibleValues:
       type: object
       properties:
-        type:
+        ordering_type:
+          type: string
           enum:
-          - email
-          - url
+          - ordinal
+          - alphabetic
+        values:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              value:
+                type: string
+    Fields.EmploymentFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - employment
+    Fields.AddressFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - address
     Fields.ChoiceFieldValuesType:
       type: object
       properties:
@@ -682,78 +759,6 @@ components:
           - choice
         values:
           $ref: '#/components/schemas/Commons.PossibleValues'
-    Fields.PercentageNumberPresentation:
-      type: object
-      properties:
-        number_type:
-          enum:
-          - percentage
-        fraction_digits:
-          type: integer
-          minimum: 1
-      required:
-      - type
-      - fraction_digits
-    Fields.NumberFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - number
-    Fields.CreateFieldRequest:
-      type: object
-      properties:
-        field_type:
-          $ref: '#/components/schemas/Fields.FieldTypeOnFieldCreation'
-        group_id:
-          type:
-          - string
-          - 'null'
-        insert_after:
-          description: If not null, inserts a new field after another field or group with specified id. If null, then inserted field to be the first one
-          type:
-          - string
-          - 'null'
-        name:
-          maxLength: 50
-          minLength: 1
-          type: string
-        presentation:
-          $ref: '#/components/schemas/Fields.FieldPresentation'
-        tab_id:
-          type: string
-        multiples:
-          type: boolean
-          description: whether this field can hold multiple values (by default, false)
-      required:
-      - name
-      - tab_id
-      - group_id
-      - field_type
-      - presentation
-      - insert_after
-    Fields.LongStringFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - long_string
-    Fields.FieldTypeOnFieldCreation:
-      oneOf:
-      - $ref: '#/components/schemas/Fields.StringFieldValuesType'
-      - $ref: '#/components/schemas/Fields.LongStringFieldValuesType'
-      - $ref: '#/components/schemas/Fields.ChoiceFieldValuesType'
-      - $ref: '#/components/schemas/Fields.NumberFieldValuesType'
-      - $ref: '#/components/schemas/Fields.DateTimeFieldValuesType'
-      - $ref: '#/components/schemas/Fields.BooleanFieldValuesType'
-      - $ref: '#/components/schemas/Fields.AddressFieldValuesType'
-      - $ref: '#/components/schemas/Fields.UserFieldValuesType'
-    Fields.AttachmentFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - attachment
     Errors.PreflightCheckError:
       example:
         message: Some contacts cannot be updated because of their privacy settings
@@ -784,160 +789,6 @@ components:
       - total
       - nse_query
       type: object
-    Fields.ContactField:
-      type: object
-      properties:
-        type:
-          enum:
-          - field
-          type: string
-        name:
-          type: string
-        field_id:
-          type: string
-        modifier:
-          type: string
-        multiples:
-          type: boolean
-        read_only:
-          description: if contacts values of this field is editable. It is different from available_actions.read_only
-          type: boolean
-        field_type:
-          $ref: '#/components/schemas/Fields.FieldType'
-        presentation:
-          $ref: '#/components/schemas/Fields.FieldPresentation'
-        available_actions:
-          description: 'edit_all - all operations with field available
-
-            edit_choices_only - just choices of field available for changing
-
-            view_only - field can''t be changed
-
-            '
-          enum:
-          - edit_all
-          - edit_choices_only
-          - view_only
-    Fields.AddressFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - address
-    Commons.PossibleValues:
-      type: object
-      properties:
-        ordering_type:
-          type: string
-          enum:
-          - ordinal
-          - alphabetic
-        values:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-              value:
-                type: string
-    Fields.ContactsFieldsMetadata:
-      type: object
-      properties:
-        tabs:
-          items:
-            $ref: '#/components/schemas/Fields.ContactFieldsTab'
-          type: array
-      required:
-      - tabs
-      description: Contain the structure of contacts tabs, groups, and fields.
-    Fields.UserFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - user
-    Fields.ContactFieldsTab:
-      properties:
-        tab_id:
-          type: string
-        tab_name:
-          type: string
-        contact_types:
-          $ref: '#/components/schemas/Contacts.ContactType'
-        is_standard:
-          type: boolean
-        members:
-          description: a member could be a group of fields or separate field
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/Fields.ContactFieldsGroup'
-            - $ref: '#/components/schemas/Fields.ContactField'
-        available_actions:
-          description: 'edit_all - available all operations with tab
-
-            rearrange_only - available just moving tab between other tabs
-
-            view_only - tab can''t be changed
-
-            '
-          enum:
-          - edit_all
-          - rearrange_only
-          - view_only
-    Fields.DateTimeFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - datetime
-    Fields.UpdateIsPrimaryRequest:
-      properties:
-        field_id:
-          type: string
-        position:
-          minimum: 0
-          type: integer
-      required:
-      - field_id
-      - position
-      - is_primary
-      type: object
-    Fields.DateTimePresentation:
-      type: object
-      properties:
-        date_format:
-          type:
-          - string
-          - 'null'
-          description: 'strftime-like format template as described in
-
-            https://docs.python.org/2.7/library/datetime.html#strftime-and-strptime-behavior
-
-            or null if client should use date format from user settings
-
-            '
-        ignore_specific_time:
-          type:
-          - boolean
-          - 'null'
-          description: 'show if time should be presented in the field. Applicable only if date_format is None.
-
-            Must be null if date_format specified
-
-            '
-      required:
-      - date_format
-      - ignore_specific_time
-    Fields.StringFieldValuesType:
-      type: object
-      properties:
-        field_kind:
-          enum:
-          - string
-        validation_rule:
-          $ref: '#/components/schemas/Fields.TextValidationRule'
     Errors.ValidationError:
       description: request was malformed
       example:
@@ -977,34 +828,72 @@ components:
       - errors
       - human_readable_error
       type: object
-    Fields.BooleanFieldValuesType:
-      type: object
+    Fields.ContactFieldsTab:
       properties:
-        field_kind:
-          enum:
-          - boolean
-    Errors.PreflightCheckFailures:
-      description: action cannot be applied to all specified contacts
-      properties:
-        errors:
-          items:
-            $ref: '#/components/schemas/Errors.PreflightCheckError'
+        tab_id:
+          type: string
+        tab_name:
+          type: string
+        contact_types:
+          $ref: '#/components/schemas/Contacts.ContactType'
+        is_standard:
+          type: boolean
+        members:
+          description: a member could be a group of fields or separate field
           type: array
-      required:
-      - errors
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Fields.ContactFieldsGroup'
+            - $ref: '#/components/schemas/Fields.ContactField'
+        available_actions:
+          description: 'edit_all - available all operations with tab
+
+            rearrange_only - available just moving tab between other tabs
+
+            view_only - tab can''t be changed
+
+            '
+          enum:
+          - edit_all
+          - rearrange_only
+          - view_only
+    Fields.CreateFieldRequest:
       type: object
-    Fields.FieldType:
-      oneOf:
-      - $ref: '#/components/schemas/Fields.StringFieldValuesType'
-      - $ref: '#/components/schemas/Fields.LongStringFieldValuesType'
-      - $ref: '#/components/schemas/Fields.ChoiceFieldValuesType'
-      - $ref: '#/components/schemas/Fields.NumberFieldValuesType'
-      - $ref: '#/components/schemas/Fields.DateTimeFieldValuesType'
-      - $ref: '#/components/schemas/Fields.BooleanFieldValuesType'
-      - $ref: '#/components/schemas/Fields.AddressFieldValuesType'
-      - $ref: '#/components/schemas/Fields.AttachmentFieldValuesType'
-      - $ref: '#/components/schemas/Fields.UserFieldValuesType'
-      - $ref: '#/components/schemas/Fields.EmploymentFieldValuesType'
+      properties:
+        field_type:
+          $ref: '#/components/schemas/Fields.FieldTypeOnFieldCreation'
+        group_id:
+          type:
+          - string
+          - 'null'
+        insert_after:
+          description: If not null, inserts a new field after another field or group with specified id. If null, then inserted field to be the first one
+          type:
+          - string
+          - 'null'
+        name:
+          maxLength: 50
+          minLength: 1
+          type: string
+        presentation:
+          $ref: '#/components/schemas/Fields.FieldPresentation'
+        tab_id:
+          type: string
+        multiples:
+          type: boolean
+          description: whether this field can hold multiple values (by default, false)
+      required:
+      - name
+      - tab_id
+      - group_id
+      - field_type
+      - presentation
+      - insert_after
+    Contacts.ContactType:
+      enum:
+      - person
+      - company
+      type: string
     Errors.NotFoundError:
       example:
         object_id: 4f2acc3142a053dda595f00b
@@ -1018,18 +907,36 @@ components:
       - object_type
       - object_id
       type: object
-    Fields.DecimalNumberPresentation:
+    Fields.FieldType:
+      oneOf:
+      - $ref: '#/components/schemas/Fields.StringFieldValuesType'
+      - $ref: '#/components/schemas/Fields.LongStringFieldValuesType'
+      - $ref: '#/components/schemas/Fields.ChoiceFieldValuesType'
+      - $ref: '#/components/schemas/Fields.NumberFieldValuesType'
+      - $ref: '#/components/schemas/Fields.DateTimeFieldValuesType'
+      - $ref: '#/components/schemas/Fields.BooleanFieldValuesType'
+      - $ref: '#/components/schemas/Fields.AddressFieldValuesType'
+      - $ref: '#/components/schemas/Fields.AttachmentFieldValuesType'
+      - $ref: '#/components/schemas/Fields.UserFieldValuesType'
+      - $ref: '#/components/schemas/Fields.EmploymentFieldValuesType'
+    Fields.IntegerNumberPresentation:
       type: object
       properties:
         number_type:
           enum:
-          - decimal
-        fraction_digits:
-          type: integer
-          minimum: 1
+          - integer
       required:
       - type
-      - fraction_digits
+    Fields.FieldTypeOnFieldCreation:
+      oneOf:
+      - $ref: '#/components/schemas/Fields.StringFieldValuesType'
+      - $ref: '#/components/schemas/Fields.LongStringFieldValuesType'
+      - $ref: '#/components/schemas/Fields.ChoiceFieldValuesType'
+      - $ref: '#/components/schemas/Fields.NumberFieldValuesType'
+      - $ref: '#/components/schemas/Fields.DateTimeFieldValuesType'
+      - $ref: '#/components/schemas/Fields.BooleanFieldValuesType'
+      - $ref: '#/components/schemas/Fields.AddressFieldValuesType'
+      - $ref: '#/components/schemas/Fields.UserFieldValuesType'
     Fields.ContactFieldsGroup:
       type: object
       properties:
@@ -1047,11 +954,104 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Fields.ContactField'
-    Contacts.ContactType:
-      enum:
-      - person
-      - company
-      type: string
+    Fields.DecimalNumberPresentation:
+      type: object
+      properties:
+        number_type:
+          enum:
+          - decimal
+        fraction_digits:
+          type: integer
+          minimum: 1
+      required:
+      - type
+      - fraction_digits
+    Fields.ContactsFieldsMetadata:
+      type: object
+      properties:
+        tabs:
+          items:
+            $ref: '#/components/schemas/Fields.ContactFieldsTab'
+          type: array
+      required:
+      - tabs
+      description: Contain the structure of contacts tabs, groups, and fields.
+    Fields.AttachmentFieldValuesType:
+      type: object
+      properties:
+        field_kind:
+          enum:
+          - attachment
+    Fields.ContactField:
+      type: object
+      properties:
+        type:
+          enum:
+          - field
+          type: string
+        name:
+          type: string
+        field_id:
+          type: string
+        modifier:
+          type: string
+        multiples:
+          type: boolean
+        read_only:
+          description: if contacts values of this field is editable. It is different from available_actions.read_only
+          type: boolean
+        field_type:
+          $ref: '#/components/schemas/Fields.FieldType'
+        presentation:
+          $ref: '#/components/schemas/Fields.FieldPresentation'
+        available_actions:
+          description: 'edit_all - all operations with field available
+
+            edit_choices_only - just choices of field available for changing
+
+            view_only - field can''t be changed
+
+            '
+          enum:
+          - edit_all
+          - edit_choices_only
+          - view_only
+    Errors.PreflightCheckFailures:
+      description: action cannot be applied to all specified contacts
+      properties:
+        errors:
+          items:
+            $ref: '#/components/schemas/Errors.PreflightCheckError'
+          type: array
+      required:
+      - errors
+      type: object
+    Fields.DateTimePresentation:
+      type: object
+      properties:
+        date_format:
+          type:
+          - string
+          - 'null'
+          description: 'strftime-like format template as described in
+
+            https://docs.python.org/2.7/library/datetime.html#strftime-and-strptime-behavior
+
+            or null if client should use date format from user settings
+
+            '
+        ignore_specific_time:
+          type:
+          - boolean
+          - 'null'
+          description: 'show if time should be presented in the field. Applicable only if date_format is None.
+
+            Must be null if date_format specified
+
+            '
+      required:
+      - date_format
+      - ignore_specific_time
   securitySchemes:
     ApiKey:
       type: apiKey
