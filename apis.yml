@@ -249,6 +249,9 @@ apis:
   - type: Overlay
     url: overlays/nimble-users-overlay.yaml
 common:
+- type: CapabilityMap
+  url: capabilities/nimble-capability-edges.yml
+  name: Nimble Business Capability Map
 - type: Website
   url: https://www.nimble.com
 - type: DeveloperPortal

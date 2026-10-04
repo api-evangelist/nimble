@@ -1,0 +1,67 @@
+slug: nimble
+provider: Nimble
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 5
+edges:
+- tag: Deals
+  spec_file: nimble-deals-api-openapi.yml
+  capability_id: BC-410.30
+  capability_id_l1: BC-410
+  capability_name: Opportunity & Pipeline Management
+  confidence: 0.9
+  evidence: POST /api/v2/deals  create-new-deal  Create new deal; GET /api/v2/deals/widget/won_last_month  Get
+    sum of all deals amount won last month
+  reason: Create/read/update/delete of sales deals plus won-amount aggregation — the deal lifecycle at
+    the core of Opportunity & Pipeline Management.
+- tag: Contacts
+  spec_file: nimble-contacts-api-openapi.yml
+  capability_id: BC-420.10
+  capability_id_l1: BC-420
+  capability_name: Customer Data Management
+  confidence: 0.85
+  evidence: POST /api/v1/contact  post-contact  Create new contact; GET /api/v1/contact/{contact_id}  Returns
+    contact data by its id; PUT /api/v1/contact/{contact_id}  Updates contact by its id
+  reason: Full CRUD and listing over the CRM contact master record, plus notes — this is customer/contact
+    data mastering in a CRM, i.e. Customer Data Management.
+- tag: Contacts Pipelines
+  spec_file: nimble-contacts-pipelines-api-openapi.yml
+  capability_id: BC-410.30
+  capability_id_l1: BC-410
+  capability_name: Opportunity & Pipeline Management
+  confidence: 0.85
+  evidence: POST /api/v2/leads/{lead_id}/{pipeline_id}/move  move-lead  Move lead to a pipeline stage;
+    mark-lead-exited-successful  Exit lead from pipeline successfully; Contacts.LeadLostReason
+  reason: Operations advance leads through pipeline stages and record won/lost exits with lost reasons
+    — lead and deal progression, i.e. Opportunity & Pipeline Management.
+- tag: Leads
+  spec_file: nimble-leads-api-openapi.yml
+  capability_id: BC-410.30
+  capability_id_l1: BC-410
+  capability_name: Opportunity & Pipeline Management
+  confidence: 0.85
+  evidence: POST /api/v2/leads/{lead_id}/{pipeline_id}/move  move-lead  Move lead to a pipeline stage;
+    undo-lead-transition  Undo lead won/lost transition
+  reason: Lead stage transitions and won/lost outcomes within a sales pipeline — the lead-to-opportunity
+    lifecycle, i.e. Opportunity & Pipeline Management.
+- tag: Deals Pipelines
+  spec_file: nimble-deals-pipelines-api-openapi.yml
+  capability_id: BC-410.30
+  capability_id_l1: BC-410
+  capability_name: Opportunity & Pipeline Management
+  confidence: 0.7
+  evidence: POST /api/v2/deals/pipelines  Create new deals pipeline; POST /api/v2/deals/pipelines/{pipeline_id}/stages  Create
+    new deals pipeline stage; GET /api/v2/deals/pipelines/{pipeline_id}/deals  List pipeline's deals separated
+    by stages
+  reason: Defines sales pipelines, their stages and lost reasons and reports deals by stage/owner. Clearly
+    Sales Management; ambiguity between pipeline structure design (Sales Operations) and pipeline management
+    proper, so moderate confidence on the L2.
