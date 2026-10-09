@@ -57,3 +57,16 @@ api_pricing:
     access requires an active Nimble account; tokens are issued from the
     account settings surface described at
     https://support.nimble.com/en/articles/502755-nimble-api-access
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - hybrid
+  units: []
+  plans:
+  - name: Nimble Business
+    access: other
+    model: hybrid
+    model_how: derived
+    units: []
+    periods: []
