@@ -1,0 +1,419 @@
+generated: '2026-10-12'
+method: searched
+source:
+- https://zapier.com/apps/nimble/integrations
+checked:
+- https://composio.dev/toolkits/nimble
+- https://monid.ai/tools/nimble
+- https://n8n.io/integrations/nimble/
+- https://zapier.com/apps/nimble/integrations
+summary: null
+marketplace_apps:
+- marketplace: zapier
+  channel: ipaas-listing
+  app: nimble
+  url: https://zapier.com/apps/nimble/integrations
+  external_url: https://www.nimble.com/?utm_source=zapier
+  partner_tier: SILVER
+  triggers:
+  - key: contact
+    label: New Contact
+  actions:
+  - key: contact
+    label: Create Contact
+  - key: task
+    label: Create Task
+  searches: []
+edges:
+- partner_name: Mailchimp
+  partner: mailchimp
+  partner_match: name-exact
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/mailchimp
+  direction: third-party
+  category: Marketing Automation
+  partner_url: https://mailchimp.com/
+- partner_name: LinkedIn
+  partner: linkedin
+  partner_match: name-exact
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/linkedin
+  direction: third-party
+  category: Microsoft
+  partner_url: http://www.linkedin.com/
+- partner_name: ActiveCampaign
+  partner: activecampaign
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/activecampaign
+  direction: third-party
+  category: Marketing Automation
+  partner_url: https://www.activecampaign.com/?utm_source=unpaid_syndication_website&utm_medium=referral&utm_campaign=zapier_listing
+- partner_name: QuickBooks Online
+  partner: null
+  partner_match: null
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/quickbooks
+  direction: third-party
+  category: Accounting
+  partner_url: http://intuit.com/
+- partner_name: AWeber
+  partner: aweber
+  partner_match: name-exact
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/aweber
+  direction: third-party
+  category: Email Newsletters
+  partner_url: http://zpr.io/6S2qW
+- partner_name: Typeform
+  partner: typeform
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/typeform
+  direction: third-party
+  category: Forms & Surveys
+  partner_url: https://www.typeform.com/signup?utm_medium=referral&utm_source=zapier&utm_campaign=zapier_integration&utm_content=marketplace
+- partner_name: HubSpot
+  partner: hubspot
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/hubspot
+  direction: third-party
+  category: Marketing Automation
+  partner_url: http://www.hubspot.com/
+- partner_name: Asana
+  partner: asana
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/asana
+  direction: third-party
+  category: Project Management
+  partner_url: http://asana.com/
+- partner_name: Intercom
+  partner: intercom
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/intercom
+  direction: third-party
+  category: Customer Support
+  partner_url: https://www.intercom.com/welcome-to-intercom?utm_source=external-website&utm_medium=partner&utm_campaign=20220503_all_oc_all_global_gl_all_all_par_extmktplc&utm_term=zapier
+- partner_name: Gravity Forms
+  partner: gravity-forms
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/gravity-forms
+  direction: third-party
+  category: Forms & Surveys
+  partner_url: https://www.gravityforms.com/?utm_campaign=partners&utm_source=zapier-listing-learn-more&utm_medium=free-placement
+- partner_name: Google Tasks
+  partner: google-tasks
+  partner_match: name-exact
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/google-tasks
+  direction: third-party
+  category: Google
+  partner_url: https://google.com/
+- partner_name: Seamless
+  partner: seamless-ai
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/seamless
+  direction: third-party
+  category: AI Sales Tools
+  partner_url: https://seamless.ai/customers/education/articles/zapier-connection-guide
+- partner_name: Calendly
+  partner: calendly
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/calendly
+  direction: third-party
+  category: Scheduling & Booking
+  partner_url: https://calendly.com/?utm_medium=partner&utm_source=zapier&utm_campaign=main_partner_page&utm_content=main_inbound_link
+- partner_name: Eventbrite
+  partner: eventbrite
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/eventbrite
+  direction: third-party
+  category: Event Management
+  partner_url: https://eventbrite.com/
+- partner_name: Google Ads
+  partner: google-ads
+  partner_match: name-exact
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/google-ads
+  direction: third-party
+  category: Ads & Conversion
+  partner_url: https://ads.google.com/
+- partner_name: Wufoo
+  partner: wufoo
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/wufoo
+  direction: third-party
+  category: Forms & Surveys
+  partner_url: https://www.wufoo.com/
+- partner_name: WPForms
+  partner: null
+  partner_match: null
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/wpforms
+  direction: third-party
+  category: Forms & Surveys
+  partner_url: https://wpforms.com/
+- partner_name: Zendesk Sell
+  partner: zendesk-sell
+  partner_match: name-exact
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/zendesk-sell
+  direction: third-party
+  category: CRM (Customer Relationship Management)
+  partner_url: https://getbase.com/
+- partner_name: Acuity Scheduling
+  partner: acuity-scheduling
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/acuity-scheduling
+  direction: third-party
+  category: Scheduling & Booking
+  partner_url: https://acuityscheduling.com/?utm_source=zapier.com&utm_medium=referral&utm_campaign=integration-page
+- partner_name: Kartra
+  partner: kartra
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/kartra
+  direction: third-party
+  category: Marketing Automation
+  partner_url: https://home.kartra.com/
+- partner_name: Magento
+  partner: magento
+  partner_match: name-exact
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/magento
+  direction: third-party
+  category: eCommerce
+  partner_url: https://magento.com/
+- partner_name: Constant Contact
+  partner: constant-contact
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/constant-contact
+  direction: third-party
+  category: Email Newsletters
+  partner_url: http://www.constantcontact.com/signup.jsp?pn=zapier
+- partner_name: OnceHub
+  partner: null
+  partner_match: null
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/oncehub
+  direction: third-party
+  category: Scheduling & Booking
+  partner_url: https://www.oncehub.com/scheduleonce/home
+- partner_name: Freshdesk
+  partner: freshdesk
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/freshdesk
+  direction: third-party
+  category: Customer Support
+  partner_url: http://freshdesk.com/
+- partner_name: Ninja Forms
+  partner: null
+  partner_match: null
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/ninjaforms
+  direction: third-party
+  category: Forms & Surveys
+  partner_url: http://ninjaforms.com/extensions/zapier/
+- partner_name: Google Forms
+  partner: google-forms
+  partner_match: name-exact
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/google-forms
+  direction: third-party
+  category: Forms & Surveys
+  partner_url: http://google.com/
+- partner_name: Apollo
+  partner: apollo
+  partner_match: name-exact
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/apollo
+  direction: third-party
+  category: Sales & CRM
+  partner_url: https://www.apollo.io/
+- partner_name: Dropbox
+  partner: dropbox
+  partner_match: name-exact
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/dropbox
+  direction: third-party
+  category: File Management & Storage
+  partner_url: https://dropbox.com/
+- partner_name: Autopilot Journeys
+  partner: null
+  partner_match: null
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/autopilot
+  direction: third-party
+  category: Marketing Automation
+  partner_url: https://autopilothq.com/
+- partner_name: Mailshake
+  partner: null
+  partner_match: null
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/mailshake
+  direction: third-party
+  category: Drip Emails
+  partner_url: https://mailshake.com/
+templates:
+- title: Create Nimble Contacts From Mailchimp Subscribers
+  url: https://zapier.com/apps/mailchimp/integrations/nimble/394/create-nimble-contacts-from-mailchimp-subscribers
+  apps:
+  - mailchimp
+  - nimble
+- title: Turn Mailchimp unsubscribes into Nimble tasks
+  url: https://zapier.com/apps/mailchimp/integrations/nimble/2979/turn-mailchimp-unsubscribes-into-nimble-tasks
+  apps:
+  - mailchimp
+  - nimble
+- title: Share new Nimble contacts in Slack
+  url: https://zapier.com/apps/nimble/integrations/slack/2970/share-new-nimble-contacts-in-slack
+  apps:
+  - nimble
+  - slack
+- title: Create Nimble contacts from Gravity Form submissions
+  url: https://zapier.com/apps/gravity-forms/integrations/nimble/2921/create-nimble-contacts-from-gravity-form-submissions
+  apps:
+  - gravity-forms
+  - nimble
+- title: Add new Nimble contacts to Mailchimp
+  url: https://zapier.com/apps/mailchimp/integrations/nimble/2922/add-new-nimble-contacts-to-mailchimp
+  apps:
+  - nimble
+  - mailchimp
+- title: Turn your new Ninja Form submissions into Nimble contacts
+  url: https://zapier.com/apps/nimble/integrations/ninjaforms/2974/turn-your-new-ninja-form-submissions-into-nimble-contacts
+  apps:
+  - ninjaforms
+  - nimble
+- title: Create Nimble Contacts From Wufoo
+  url: https://zapier.com/apps/nimble/integrations/wufoo/235/create-nimble-contacts-from-wufoo
+  apps:
+  - wufoo
+  - nimble
+- title: Add Leads to Nimble From Sniply Forms
+  url: https://zapier.com/apps/nimble/integrations/sniply/311/add-leads-to-nimble-from-sniply-forms
+  apps:
+  - sniply
+  - nimble
+- title: Create Nimble Contacts From Google Contacts
+  url: https://zapier.com/apps/google-contacts/integrations/nimble/391/create-nimble-contacts-from-google-contacts
+  apps:
+  - google-contacts
+  - nimble
+- title: Create Nimble Tasks From Evernote Notes
+  url: https://zapier.com/apps/evernote/integrations/nimble/392/create-nimble-tasks-from-evernote-notes
+  apps:
+  - evernote
+  - nimble
+- title: Create Nimble contacts from new business card transcriptions in Contacts+
+  url: https://zapier.com/apps/contacts-plus/integrations/nimble/395/create-nimble-contacts-from-new-business-card-transcriptions-in-contacts
+  apps:
+  - contacts-plus
+  - nimble
+- title: Copy new Nimble Contacts to Google Contacts
+  url: https://zapier.com/apps/google-contacts/integrations/nimble/2923/copy-new-nimble-contacts-to-google-contacts
+  apps:
+  - nimble
+  - google-contacts
+template_total: 189
