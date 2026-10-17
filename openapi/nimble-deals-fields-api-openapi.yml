@@ -57,6 +57,76 @@ paths:
                 $ref: '#/components/schemas/Deals.DealFieldsMetadata'
 components:
   schemas:
+    Commons.PossibleValues:
+      type: object
+      properties:
+        ordering_type:
+          type: string
+          enum:
+          - ordinal
+          - alphabetic
+        values:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              value:
+                type: string
+    Deals.DealPipelineField:
+      description: Fields of DealsPipeline
+      allOf:
+      - $ref: '#/components/schemas/Deals.BaseDealPipelineFieldsTabMember'
+      - properties:
+          field:
+            $ref: '#/components/schemas/Deals.IDealField'
+          pipeline_id:
+            type: string
+      type: object
+    Deals.DealFieldsMetadata:
+      type: object
+      properties:
+        pipelines_tabs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deals.DealPipelineFieldsTab'
+        standard_fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deals.IDealField'
+    Columns.ColumnPresentationType:
+      enum:
+      - single-line-text-box
+      - phone
+      - mail
+      - url
+      - multi-line-text-box
+      - select-box
+      - address
+      - numeric-general
+      - date
+      - boolean
+      - attachment
+      - tags
+      - privacy
+      - user
+      - contact employment
+      type: string
+    Columns.ColumnPresentation:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/Columns.ColumnPresentationType'
+        possible_values:
+          $ref: '#/components/schemas/Commons.PossibleValues'
+    Deals.DealListingColumn:
+      allOf:
+      - $ref: '#/components/schemas/Columns.ListingColumn'
+      - properties:
+          search_field:
+            $ref: '#/components/schemas/Search.SearchField'
+        type: object
     Search.SearchField:
       type: object
       properties:
@@ -81,86 +151,20 @@ components:
           type: boolean
         possible_values:
           $ref: '#/components/schemas/Commons.PossibleValues'
-    Deals.DealPipelineField:
-      description: Fields of DealsPipeline
-      allOf:
-      - $ref: '#/components/schemas/Deals.BaseDealPipelineFieldsTabMember'
-      - properties:
-          field:
-            $ref: '#/components/schemas/Deals.IDealField'
-          pipeline_id:
-            type: string
-      type: object
-    Deals.DealListingColumn:
-      allOf:
-      - $ref: '#/components/schemas/Columns.ListingColumn'
-      - properties:
-          search_field:
-            $ref: '#/components/schemas/Search.SearchField'
-        type: object
-    Deals.DealPipelineFieldsTab:
-      type: object
+    Deals.DealPipelineFieldsTabMember:
+      oneOf:
+      - $ref: '#/components/schemas/Deals.DealPipelineField'
+      - $ref: '#/components/schemas/Deals.DealPipelineFieldsGroup'
+      discriminator:
+        propertyName: type
+        mapping:
+          field: '#/components/schemas/Deals.DealPipelineField'
+          group: '#/components/schemas/Deals.DealPipelineFieldsGroup'
+    Deals.BaseDealPipelineFieldsTabMember:
       properties:
-        tab_id:
-          description: The id of a tab in the database
+        type:
           type: string
-        tab_name:
-          description: The name of a tab
-          type: string
-        pipeline_id:
-          type: string
-        members:
-          $ref: '#/components/schemas/Deals.DealPipelineFieldsTabMember'
-    Commons.PossibleValues:
       type: object
-      properties:
-        ordering_type:
-          type: string
-          enum:
-          - ordinal
-          - alphabetic
-        values:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-              value:
-                type: string
-    Columns.ColumnGroup:
-      properties:
-        columns:
-          items:
-            $ref: '#/components/schemas/Columns.ListingColumn'
-          type: array
-        group_id:
-          type: string
-        human_readable_name:
-          type: string
-      required:
-      - group_id
-      - human_readable_name
-      - columns
-      type: object
-    Deals.IDealField:
-      type: object
-      properties:
-        field_id:
-          description: The id of a field in the database
-          type: string
-        modifier:
-          type: string
-        multiples:
-          type: boolean
-        available_actions:
-          description: Shows available for user actions
-          type: string
-        field_type:
-          type: string
-        field_name:
-          description: The name of a field
-          type: string
     Columns.ListingColumn:
       properties:
         id:
@@ -190,24 +194,6 @@ components:
           description: True if contacts can be sorted by this column
           type: boolean
       type: object
-    Columns.ColumnPresentationType:
-      enum:
-      - single-line-text-box
-      - phone
-      - mail
-      - url
-      - multi-line-text-box
-      - select-box
-      - address
-      - numeric-general
-      - date
-      - boolean
-      - attachment
-      - tags
-      - privacy
-      - user
-      - contact employment
-      type: string
     Deals.DealPipelineFieldsGroup:
       allOf:
       - $ref: '#/components/schemas/Deals.BaseDealPipelineFieldsTabMember'
@@ -223,38 +209,52 @@ components:
             items:
               $ref: '#/components/schemas/Deals.DealPipelineField'
       type: object
-    Deals.BaseDealPipelineFieldsTabMember:
+    Deals.IDealField:
+      type: object
       properties:
-        type:
+        field_id:
+          description: The id of a field in the database
           type: string
-      type: object
-    Deals.DealPipelineFieldsTabMember:
-      oneOf:
-      - $ref: '#/components/schemas/Deals.DealPipelineField'
-      - $ref: '#/components/schemas/Deals.DealPipelineFieldsGroup'
-      discriminator:
-        propertyName: type
-        mapping:
-          field: '#/components/schemas/Deals.DealPipelineField'
-          group: '#/components/schemas/Deals.DealPipelineFieldsGroup'
-    Deals.DealFieldsMetadata:
-      type: object
-      properties:
-        pipelines_tabs:
-          type: array
-          items:
-            $ref: '#/components/schemas/Deals.DealPipelineFieldsTab'
-        standard_fields:
-          type: array
-          items:
-            $ref: '#/components/schemas/Deals.IDealField'
-    Columns.ColumnPresentation:
+        modifier:
+          type: string
+        multiples:
+          type: boolean
+        available_actions:
+          description: Shows available for user actions
+          type: string
+        field_type:
+          type: string
+        field_name:
+          description: The name of a field
+          type: string
+    Deals.DealPipelineFieldsTab:
       type: object
       properties:
-        type:
-          $ref: '#/components/schemas/Columns.ColumnPresentationType'
-        possible_values:
-          $ref: '#/components/schemas/Commons.PossibleValues'
+        tab_id:
+          description: The id of a tab in the database
+          type: string
+        tab_name:
+          description: The name of a tab
+          type: string
+        pipeline_id:
+          type: string
+        members:
+          $ref: '#/components/schemas/Deals.DealPipelineFieldsTabMember'
+    Columns.ColumnGroup:
+      properties:
+        columns:
+          items:
+            $ref: '#/components/schemas/Columns.ListingColumn'
+          type: array
+        group_id:
+          type: string
+        human_readable_name:
+          type: string
+      required:
+      - group_id
+      - human_readable_name
+      - columns
+      type: object
   securitySchemes:
     ApiKey:
       type: apiKey

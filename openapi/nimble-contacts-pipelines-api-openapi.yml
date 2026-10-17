@@ -251,6 +251,23 @@ paths:
           description: operation is invalid (e.g., contact isn't editable or transition itself violates certain rules)
 components:
   schemas:
+    Contacts.ContactViewContext:
+      oneOf:
+      - $ref: '#/components/schemas/Contacts.ContactFilesContext'
+      - $ref: '#/components/schemas/Contacts.EmployersDataContext'
+      - $ref: '#/components/schemas/Contacts.LastContactedDataContext'
+      - $ref: '#/components/schemas/Contacts.LeadsDataContext'
+      - $ref: '#/components/schemas/Contacts.InSequenceContactInfoContext'
+      - $ref: '#/components/schemas/Contacts.EmailListsContext'
+      discriminator:
+        propertyName: context_key
+        mapping:
+          last_contacted_data: '#/components/schemas/Contacts.LastContactedDataContext'
+          employers_data: '#/components/schemas/Contacts.EmployersDataContext'
+          leads_data: '#/components/schemas/Contacts.LeadsDataContext'
+          contact_files: '#/components/schemas/Contacts.ContactFilesContext'
+          sequences_data: '#/components/schemas/Contacts.InSequenceContactInfoContext'
+          email_lists: '#/components/schemas/Contacts.EmailListsContext'
     Contacts.Reminder:
       properties:
         active:
@@ -285,39 +302,13 @@ components:
       - message
       - sender_credential_id
       type: object
-    Contacts.ContactNotice:
+    Contacts.LeadLostReason:
+      type: object
       properties:
-        created:
-          description: Date and time when the notice was created encoded in ISO 8601
+        id:
           type: string
-        updated:
-          description: Date and time when the notice was updated encoded in ISO 8601
-          type: string
-        creator:
-          $ref: '#/components/schemas/Accounts.ShortUserInfo'
-        updated_by:
-          $ref: '#/components/schemas/Accounts.ShortUserInfo'
         text:
           type: string
-        color:
-          type: string
-      required:
-      - created
-      - updated
-      - creator
-      - updated_by
-      - text
-      - color
-      type: object
-    Contacts.InSequenceContactInfoContext:
-      type: object
-      properties:
-        context_key:
-          type: object
-        context:
-          type: array
-          items:
-            $ref: '#/components/schemas/Sequences.InSequenceContactInfo'
     Contacts.ContactPrivacy:
       description: 'Defines scopes of object visibility and editability.<br>
 
@@ -349,13 +340,228 @@ components:
       - read
       - edit
       type: object
-    Contacts.LastContactedDataContext:
+    Attachments.GoogleDriveAttachmentData:
+      allOf:
+      - $ref: '#/components/schemas/Attachments.AttachmentData'
+      - description: GoogleDrive
+    Contacts.UserLastContactedView:
+      properties:
+        company_lc:
+          $ref: '#/components/schemas/Contacts.LastContactedDirectedContainer'
+        user_lc:
+          $ref: '#/components/schemas/Contacts.LastContactedDirectedContainer'
+        last_user:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+    Contacts.InSequenceContactInfoContext:
       type: object
       properties:
         context_key:
           type: object
         context:
-          $ref: '#/components/schemas/Contacts.UserLastContactedView'
+          type: array
+          items:
+            $ref: '#/components/schemas/Sequences.InSequenceContactInfo'
+    Messages.EmailList:
+      type: object
+      properties:
+        list_id:
+          type: string
+          format: objectid
+          description: Unique identifier for the email list
+        name:
+          type: string
+          description: The name of the email list
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of the email list
+        opt_in_settings:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: whether to enable mandatory opt-in (i.e. confirmation of recipient via email)
+            confirmation_message_request:
+              $ref: '#/components/schemas/Messages.EmailListConfirmationMessageRequest'
+        owner_id:
+          type: string
+          format: objectid
+          description: User id of owner
+        is_private:
+          type: boolean
+          description: whether this mailing list is shared across company or not
+        archived_at:
+          type: string
+          format: date-time
+          description: Timestamp when the list was archived
+        is_archived:
+          type: boolean
+          description: whether this mailing list is archived already
+        total_entries:
+          type: integer
+          description: Total number of recipients in this mailing list
+    Contacts.LeadInStageInfo:
+      description: info about stage where lead is
+      properties:
+        pipeline_id:
+          type: string
+          format: ObjectId
+        pipeline_name:
+          type: string
+        stage_name:
+          type: string
+        entered_data:
+          type: string
+          format: datetime
+        is_final:
+          type: boolean
+        days_limit:
+          type:
+          - integer
+          - 'null'
+    Messages.MessageTemplateContentSpecification:
+      properties:
+        attachments:
+          items:
+            $ref: '#/components/schemas/Messages.Attachment'
+          type: array
+        bcc:
+          items:
+            $ref: '#/components/schemas/Messages.MessagingAccount'
+          type: array
+        body:
+          description: 'Can include template variable references in for of *|VARIABLE|*. Recognized template variables are ''FName'',
+
+            ''LName'', ''Title'', ''CompanyName'' and ''Unsubscribe''.
+
+            Template variables are surrounded with *| |* symbols. Unknown template variable references are not allowed
+
+            and will result in error.
+
+            '
+          type: string
+        cc:
+          items:
+            $ref: '#/components/schemas/Messages.MessagingAccount'
+          type: array
+        subject:
+          type: string
+        builder_data:
+          type:
+          - object
+          - 'null'
+          description: client Email builder data
+        content_mode:
+          $ref: '#/components/schemas/Messages.MessageTemplateContentMode'
+        unsubscribe_category_ids:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: ids of unsubscribe categories to which this message belongs. If null -- will unsubscribe from all categories
+      required:
+      - subject
+      - body
+      type: object
+    Contacts.Principals:
+      description: 'Explicitly defines users and groups that have an action permission. If any set - no one can.
+
+        '
+      properties:
+        group_ids:
+          description: ids of permitted groups. if empty - no group has permission
+          items:
+            type: string
+          type: array
+        user_ids:
+          description: ids of permitted users. If empty - no user has permission
+          items:
+            type: string
+          type: array
+      required:
+      - user_ids
+      - group_ids
+      type: object
+    Contacts.LastContactedDirectedContainer:
+      properties:
+        in:
+          $ref: '#/components/schemas/Contacts.LastContacted'
+        out:
+          $ref: '#/components/schemas/Contacts.LastContacted'
+        last:
+          $ref: '#/components/schemas/Contacts.LastContacted'
+    Messages.Attachment:
+      properties:
+        content_type:
+          description: MIME type of attachment
+          type: string
+        data_id:
+          description: Field data_id must be first retrieved using any sort of Uploads API.
+          type: string
+        file_size:
+          description: Field file_size is given in bytes.
+          type: integer
+        name:
+          type: string
+        url:
+          description: URL that can be used by a user to download attachment's content
+          type: string
+      required:
+      - data_id
+      - file_size
+      - content_type
+      - name
+      - url
+      type: object
+    Contacts.EmployerInfo:
+      description: employer's info
+      type: object
+      properties:
+        contact_id:
+          type: string
+        company_name:
+          type: string
+        avatar_url:
+          type: string
+    Contacts.EmployersDataContext:
+      type: object
+      properties:
+        context_key:
+          type: object
+        context:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contacts.EmployerInfo'
+    Contacts.ContactNotice:
+      properties:
+        created:
+          description: Date and time when the notice was created encoded in ISO 8601
+          type: string
+        updated:
+          description: Date and time when the notice was updated encoded in ISO 8601
+          type: string
+        creator:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        updated_by:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        text:
+          type: string
+        color:
+          type: string
+      required:
+      - created
+      - updated
+      - creator
+      - updated_by
+      - text
+      - color
+      type: object
+    Attachments.DropboxAttachmentData:
+      allOf:
+      - $ref: '#/components/schemas/Attachments.AttachmentData'
+      - description: Dropbox
     Contacts.ContactView:
       description: user perspective on a specific contact
       properties:
@@ -475,25 +681,6 @@ components:
       - reminder
       - notice
       type: object
-    Contacts.Principals:
-      description: 'Explicitly defines users and groups that have an action permission. If any set - no one can.
-
-        '
-      properties:
-        group_ids:
-          description: ids of permitted groups. if empty - no group has permission
-          items:
-            type: string
-          type: array
-        user_ids:
-          description: ids of permitted users. If empty - no user has permission
-          items:
-            type: string
-          type: array
-      required:
-      - user_ids
-      - group_ids
-      type: object
     Attachments.AttachmentData:
       discriminator:
         propertyName: type
@@ -528,75 +715,18 @@ components:
       - updated
       - updated_by
       type: object
-    Contacts.UserLastContactedView:
-      properties:
-        company_lc:
-          $ref: '#/components/schemas/Contacts.LastContactedDirectedContainer'
-        user_lc:
-          $ref: '#/components/schemas/Contacts.LastContactedDirectedContainer'
-        last_user:
-          $ref: '#/components/schemas/Accounts.ShortUserInfo'
-    Contacts.LastContacted:
-      properties:
-        deletion_tstamp:
-          type: object
-        object_id:
-          type: object
-        tstamp:
-          type: object
-        type:
-          type: object
-        user_id:
-          type: object
-        direction:
-          enum:
-          - inbound
-          - outbound
-      required:
-      - tstamp
-      - type
-      - object_id
-      - user_id
-      - deletion_tstamp
-      type: object
-    Contacts.LeadLostReason:
+    Sequences.InSequenceContactExitDetails:
       type: object
       properties:
-        id:
+        when:
           type: string
-        text:
+        exit_method:
           type: string
-    Contacts.StageRole:
-      properties:
-        is_final:
-          type: boolean
-        name:
-          type: string
-      required:
-      - name
-      - is_final
-      type: object
-    Contacts.UploadedContactFile:
-      type: object
-      properties:
-        file_id:
-          type: string
-        contact_id:
-          type: string
-        file_name:
-          type: string
-        file_size:
-          type: number
-        mime_type:
-          type: string
-        uploader:
-          $ref: '#/components/schemas/Accounts.ShortUserInfo'
-        uploaded_at:
-          type: string
-        pipeline_ids:
-          type: array
-          items:
-            type: string
+          description: '"how" the contact exited the sequence (e.g. by an exit rule or certain message condition)
+
+            '
+        outcome:
+          $ref: '#/components/schemas/Sequences.SequenceProgressionOutcomes'
     Contacts.ContactFile:
       type: object
       properties:
@@ -613,102 +743,34 @@ components:
           - $ref: '#/components/schemas/Attachments.DropboxAttachmentData'
           - $ref: '#/components/schemas/Attachments.GoogleDriveAttachmentData'
           - $ref: '#/components/schemas/Attachments.OneDriveAttachmentData'
-    Contacts.EmailListsContext:
+    Sequences.CompletedSequenceStepRecord:
       type: object
       properties:
-        context_key:
-          type: object
-        context:
-          type: array
-          items:
-            $ref: '#/components/schemas/Messages.EmailList'
-    Messages.MessageTemplateContentSpecification:
+        step_id:
+          type: string
+          description: ID (name) of the completed sequence step
+        step_type:
+          description: the type of the completed sequence step
+          enum:
+          - delay
+          - send_message
+          - condition
+        when:
+          type: string
+          description: iso8601 timestamp of when the step was completed
+        step_name:
+          type: string
+          description: the name of a step this contact completed
+    Contacts.StageRole:
       properties:
-        attachments:
-          items:
-            $ref: '#/components/schemas/Messages.Attachment'
-          type: array
-        bcc:
-          items:
-            $ref: '#/components/schemas/Messages.MessagingAccount'
-          type: array
-        body:
-          description: 'Can include template variable references in for of *|VARIABLE|*. Recognized template variables are ''FName'',
-
-            ''LName'', ''Title'', ''CompanyName'' and ''Unsubscribe''.
-
-            Template variables are surrounded with *| |* symbols. Unknown template variable references are not allowed
-
-            and will result in error.
-
-            '
-          type: string
-        cc:
-          items:
-            $ref: '#/components/schemas/Messages.MessagingAccount'
-          type: array
-        subject:
-          type: string
-        builder_data:
-          type:
-          - object
-          - 'null'
-          description: client Email builder data
-        content_mode:
-          $ref: '#/components/schemas/Messages.MessageTemplateContentMode'
-        unsubscribe_category_ids:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          description: ids of unsubscribe categories to which this message belongs. If null -- will unsubscribe from all categories
-      required:
-      - subject
-      - body
-      type: object
-    Messages.Attachment:
-      properties:
-        content_type:
-          description: MIME type of attachment
-          type: string
-        data_id:
-          description: Field data_id must be first retrieved using any sort of Uploads API.
-          type: string
-        file_size:
-          description: Field file_size is given in bytes.
-          type: integer
+        is_final:
+          type: boolean
         name:
           type: string
-        url:
-          description: URL that can be used by a user to download attachment's content
-          type: string
       required:
-      - data_id
-      - file_size
-      - content_type
       - name
-      - url
+      - is_final
       type: object
-    Contacts.EmployerInfo:
-      description: employer's info
-      type: object
-      properties:
-        contact_id:
-          type: string
-        company_name:
-          type: string
-        avatar_url:
-          type: string
-    Contacts.LeadsDataContext:
-      type: object
-      properties:
-        context_key:
-          type: object
-        context:
-          type: array
-          items:
-            $ref: '#/components/schemas/Contacts.LeadInStageInfo'
     Contacts.LeadsPipeline:
       properties:
         archived_at:
@@ -764,10 +826,56 @@ components:
       - color
       - lost_reasons
       type: object
-    Attachments.DropboxAttachmentData:
+    Contacts.ContactFilesContext:
+      type: object
+      properties:
+        context_key:
+          type: object
+        context:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contacts.ContactFile'
+    Messages.MessagingAccount:
       allOf:
-      - $ref: '#/components/schemas/Attachments.AttachmentData'
-      - description: Dropbox
+      - $ref: '#/components/schemas/Messages.MessagingAccountIdentifier'
+      properties:
+        avatar_url:
+          type:
+          - string
+          - 'null'
+        comment:
+          description: 'Field comment holds some short freeform text that shows a role of this messaging account to user.
+
+            Examples are ''home'', ''work'', ''assistant'', etc.
+
+            '
+          type: string
+        company:
+          description: Name of account's company, might be null.
+          type: object
+        company_id:
+          description: ID of account's company in Nimble db, might be null.
+          type:
+          - object
+          - 'null'
+        contact_id:
+          description: Nimble contact id associated with this account
+          type:
+          - string
+          - 'null'
+          format: ObjectId
+        user_id:
+          description: Nimble user id (user themself or team member) associated with this account
+          type:
+          - string
+          - 'null'
+          format: ObjectId
+        name:
+          description: Field name is for readable name of a user. Sometimes identifier value is not suitable to be shown to user, for example when it's numerical user id (as for Facebook). Can be null if full name is unknown.
+          oneOf:
+          - type: number
+          - type: string
+      type: object
     Contacts.ExitLeadSuccessfullyRequest:
       properties:
         actual_exit_date:
@@ -783,7 +891,12 @@ components:
           - string
           - 'null'
       type: object
-    Contacts.ContactFilesContext:
+    Contacts.ContactType:
+      enum:
+      - person
+      - company
+      type: string
+    Contacts.EmailListsContext:
       type: object
       properties:
         context_key:
@@ -791,7 +904,75 @@ components:
         context:
           type: array
           items:
-            $ref: '#/components/schemas/Contacts.ContactFile'
+            $ref: '#/components/schemas/Messages.EmailList'
+    Attachments.OneDriveAttachmentData:
+      allOf:
+      - $ref: '#/components/schemas/Attachments.AttachmentData'
+      - description: OneDrive
+    Sequences.SequenceProgressionOutcomes:
+      enum:
+      - successful
+      - unsuccessful
+      - error
+      - removed
+    Contacts.LastContacted:
+      properties:
+        deletion_tstamp:
+          type: object
+        object_id:
+          type: object
+        tstamp:
+          type: object
+        type:
+          type: object
+        user_id:
+          type: object
+        direction:
+          enum:
+          - inbound
+          - outbound
+      required:
+      - tstamp
+      - type
+      - object_id
+      - user_id
+      - deletion_tstamp
+      type: object
+    Messages.MessagingAccountIdentifier:
+      properties:
+        account_type:
+          enum:
+          - email
+          - mass_mail
+          type: string
+        identifier:
+          description: 'Account identifier specific to account_type. For account_type: email it should be email address. '
+          type: string
+      required:
+      - account_type
+      - identifier
+      type: object
+    Contacts.UploadedContactFile:
+      type: object
+      properties:
+        file_id:
+          type: string
+        contact_id:
+          type: string
+        file_name:
+          type: string
+        file_size:
+          type: number
+        mime_type:
+          type: string
+        uploader:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        uploaded_at:
+          type: string
+        pipeline_ids:
+          type: array
+          items:
+            type: string
     Accounts.ShortUserInfo:
       properties:
         avatar_url:
@@ -811,21 +992,29 @@ components:
       - avatar_url
       - is_active
       type: object
-    Attachments.GoogleDriveAttachmentData:
-      allOf:
-      - $ref: '#/components/schemas/Attachments.AttachmentData'
-      - description: GoogleDrive
-    Contacts.ContactType:
-      enum:
-      - person
-      - company
-      type: string
     Messages.MessageTemplateContentMode:
       type: string
       enum:
       - standard
       - builder
       - custom_html
+    Settings.MessagingAccountIdentifier:
+      properties:
+        account_type:
+          type: string
+        identifier:
+          type: string
+      required:
+      - account_type
+      - identifier
+      type: object
+    Contacts.LastContactedDataContext:
+      type: object
+      properties:
+        context_key:
+          type: object
+        context:
+          $ref: '#/components/schemas/Contacts.UserLastContactedView'
     Contacts.ExitLeadUnsuccessfullyRequest:
       properties:
         actual_exit_date:
@@ -846,69 +1035,50 @@ components:
           - string
           - 'null'
       type: object
-    Contacts.LastContactedDirectedContainer:
+    Contacts.LeadStage:
       properties:
-        in:
-          $ref: '#/components/schemas/Contacts.LastContacted'
-        out:
-          $ref: '#/components/schemas/Contacts.LastContacted'
-        last:
-          $ref: '#/components/schemas/Contacts.LastContacted'
-    Sequences.CompletedSequenceStepRecord:
-      type: object
-      properties:
-        step_id:
+        archived_at:
+          type:
+          - string
+          - 'null'
+        created:
           type: string
-          description: ID (name) of the completed sequence step
-        step_type:
-          description: the type of the completed sequence step
-          enum:
-          - delay
-          - send_message
-          - condition
-        when:
-          type: string
-          description: iso8601 timestamp of when the step was completed
-        step_name:
-          type: string
-          description: the name of a step this contact completed
-    Contacts.ContactViewContext:
-      oneOf:
-      - $ref: '#/components/schemas/Contacts.ContactFilesContext'
-      - $ref: '#/components/schemas/Contacts.EmployersDataContext'
-      - $ref: '#/components/schemas/Contacts.LastContactedDataContext'
-      - $ref: '#/components/schemas/Contacts.LeadsDataContext'
-      - $ref: '#/components/schemas/Contacts.InSequenceContactInfoContext'
-      - $ref: '#/components/schemas/Contacts.EmailListsContext'
-      discriminator:
-        propertyName: context_key
-        mapping:
-          last_contacted_data: '#/components/schemas/Contacts.LastContactedDataContext'
-          employers_data: '#/components/schemas/Contacts.EmployersDataContext'
-          leads_data: '#/components/schemas/Contacts.LeadsDataContext'
-          contact_files: '#/components/schemas/Contacts.ContactFilesContext'
-          sequences_data: '#/components/schemas/Contacts.InSequenceContactInfoContext'
-          email_lists: '#/components/schemas/Contacts.EmailListsContext'
-    Contacts.LeadInStageInfo:
-      description: info about stage where lead is
-      properties:
-        pipeline_id:
-          type: string
-          format: ObjectId
-        pipeline_name:
-          type: string
-        stage_name:
-          type: string
-        entered_data:
-          type: string
-          format: datetime
-        is_final:
-          type: boolean
+        creator:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
         days_limit:
           type:
-          - integer
+          - number
           - 'null'
-    Contacts.EmployersDataContext:
+        description:
+          type:
+          - string
+          - 'null'
+        name:
+          type: string
+        pipeline_id:
+          type: string
+        position:
+          type: number
+        role:
+          $ref: '#/components/schemas/Contacts.StageRole'
+        stage_id:
+          type: string
+        updated:
+          type: string
+      required:
+      - stage_id
+      - pipeline_id
+      - creator
+      - name
+      - description
+      - created
+      - updated
+      - archived_at
+      - position
+      - days_limit
+      - role
+      type: object
+    Contacts.LeadsDataContext:
       type: object
       properties:
         context_key:
@@ -916,7 +1086,7 @@ components:
         context:
           type: array
           items:
-            $ref: '#/components/schemas/Contacts.EmployerInfo'
+            $ref: '#/components/schemas/Contacts.LeadInStageInfo'
     Sequences.InSequenceContactInfo:
       type: object
       properties:
@@ -970,176 +1140,6 @@ components:
 
             '
           type: string
-    Sequences.InSequenceContactExitDetails:
-      type: object
-      properties:
-        when:
-          type: string
-        exit_method:
-          type: string
-          description: '"how" the contact exited the sequence (e.g. by an exit rule or certain message condition)
-
-            '
-        outcome:
-          $ref: '#/components/schemas/Sequences.SequenceProgressionOutcomes'
-    Messages.EmailList:
-      type: object
-      properties:
-        list_id:
-          type: string
-          format: objectid
-          description: Unique identifier for the email list
-        name:
-          type: string
-          description: The name of the email list
-        description:
-          type:
-          - string
-          - 'null'
-          description: Description of the email list
-        opt_in_settings:
-          type: object
-          properties:
-            enabled:
-              type: boolean
-              description: whether to enable mandatory opt-in (i.e. confirmation of recipient via email)
-            confirmation_message_request:
-              $ref: '#/components/schemas/Messages.EmailListConfirmationMessageRequest'
-        owner_id:
-          type: string
-          format: objectid
-          description: User id of owner
-        is_private:
-          type: boolean
-          description: whether this mailing list is shared across company or not
-        archived_at:
-          type: string
-          format: date-time
-          description: Timestamp when the list was archived
-        is_archived:
-          type: boolean
-          description: whether this mailing list is archived already
-        total_entries:
-          type: integer
-          description: Total number of recipients in this mailing list
-    Messages.MessagingAccountIdentifier:
-      properties:
-        account_type:
-          enum:
-          - email
-          - mass_mail
-          type: string
-        identifier:
-          description: 'Account identifier specific to account_type. For account_type: email it should be email address. '
-          type: string
-      required:
-      - account_type
-      - identifier
-      type: object
-    Settings.MessagingAccountIdentifier:
-      properties:
-        account_type:
-          type: string
-        identifier:
-          type: string
-      required:
-      - account_type
-      - identifier
-      type: object
-    Messages.MessagingAccount:
-      allOf:
-      - $ref: '#/components/schemas/Messages.MessagingAccountIdentifier'
-      properties:
-        avatar_url:
-          type:
-          - string
-          - 'null'
-        comment:
-          description: 'Field comment holds some short freeform text that shows a role of this messaging account to user.
-
-            Examples are ''home'', ''work'', ''assistant'', etc.
-
-            '
-          type: string
-        company:
-          description: Name of account's company, might be null.
-          type: object
-        company_id:
-          description: ID of account's company in Nimble db, might be null.
-          type:
-          - object
-          - 'null'
-        contact_id:
-          description: Nimble contact id associated with this account
-          type:
-          - string
-          - 'null'
-          format: ObjectId
-        user_id:
-          description: Nimble user id (user themself or team member) associated with this account
-          type:
-          - string
-          - 'null'
-          format: ObjectId
-        name:
-          description: Field name is for readable name of a user. Sometimes identifier value is not suitable to be shown to user, for example when it's numerical user id (as for Facebook). Can be null if full name is unknown.
-          oneOf:
-          - type: number
-          - type: string
-      type: object
-    Sequences.SequenceProgressionOutcomes:
-      enum:
-      - successful
-      - unsuccessful
-      - error
-      - removed
-    Attachments.OneDriveAttachmentData:
-      allOf:
-      - $ref: '#/components/schemas/Attachments.AttachmentData'
-      - description: OneDrive
-    Contacts.LeadStage:
-      properties:
-        archived_at:
-          type:
-          - string
-          - 'null'
-        created:
-          type: string
-        creator:
-          $ref: '#/components/schemas/Accounts.ShortUserInfo'
-        days_limit:
-          type:
-          - number
-          - 'null'
-        description:
-          type:
-          - string
-          - 'null'
-        name:
-          type: string
-        pipeline_id:
-          type: string
-        position:
-          type: number
-        role:
-          $ref: '#/components/schemas/Contacts.StageRole'
-        stage_id:
-          type: string
-        updated:
-          type: string
-      required:
-      - stage_id
-      - pipeline_id
-      - creator
-      - name
-      - description
-      - created
-      - updated
-      - archived_at
-      - position
-      - days_limit
-      - role
-      type: object
   securitySchemes:
     ApiKey:
       type: apiKey

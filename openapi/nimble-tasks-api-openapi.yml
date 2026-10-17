@@ -51,6 +51,141 @@ paths:
           description: ''
 components:
   schemas:
+    Sequences.SequenceBriefInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: unique id of the sequence
+        name:
+          type: string
+          description: name of the sequence
+      required:
+      - id
+      - name
+    Accounts.User:
+      properties:
+        account_type:
+          type: string
+        avatar_url:
+          type:
+          - string
+          - 'null'
+        company_id:
+          type: string
+        company_name:
+          type: string
+        created:
+          format: date-time
+          type: string
+        disabled:
+          type: boolean
+        email:
+          type: string
+        first_name:
+          type: object
+        is_company_owner:
+          type: boolean
+        is_pending:
+          description: true if that user has a pending invite
+          type: boolean
+        last_active:
+          description: timestamp when a user made his last API request to the platform
+          format: date-time
+          type: string
+        last_name:
+          type: object
+        name:
+          type: string
+        permissions:
+          $ref: '#/components/schemas/Settings.UserPermissions'
+        receive_newsletter:
+          type: boolean
+        has_password:
+          type: boolean
+          description: 'if this user has a password set (for some account types, like google accounts, the password is optional)
+
+            '
+        timezone:
+          type: string
+        under_gdpr:
+          type: boolean
+        user_id:
+          type: string
+        metadata:
+          $ref: '#/components/schemas/Legacy.UserMetadata'
+        email_verification_due:
+          type: boolean
+          description: 'A flag indicating whether the email verification is due. Almost all API call will result in 403 response
+
+            for users with unverified email.
+
+            '
+      required:
+      - under_gdpr
+      - user_id
+      - company_id
+      - company_name
+      - email
+      - name
+      - first_name
+      - last_name
+      - timezone
+      - disabled
+      - avatar_url
+      - created
+      - account_type
+      - is_company_owner
+      - receive_newsletter
+      - permissions
+      - last_active
+      - is_pending
+      - metadata
+      - has_password
+      type: object
+    Deals.ShortSavedDeal:
+      properties:
+        deal_id:
+          description: unique id of a deal
+          type: string
+        is_editable:
+          description: Is this deal is editable to a user who retrieved it
+          type: boolean
+        is_viewable:
+          description: Is this deal is viewable to a user who retrieved it (True for private deals
+          type: boolean
+        name:
+          type: string
+        amount:
+          type:
+          - integer
+          - 'null'
+    Tasks.TaskRelatedObjects:
+      properties:
+        contacts:
+          description: Contacts associated with the task.
+          items:
+            $ref: '#/components/schemas/Contacts.ShortContact'
+          type: array
+        deals:
+          description: legacy deal ids (always empty, kept for backwards compatibility)
+          items:
+            type: string
+          type: array
+        new_deals:
+          description: Deals associated with the task.
+          items:
+            $ref: '#/components/schemas/Deals.ShortSavedDeal'
+          type: array
+        sequence:
+          $ref: '#/components/schemas/Sequences.SequenceBriefInfo'
+          description: sequence that created this task, if applicable
+      required:
+      - contacts
+      - deals
+      - new_deals
+      - sequence
+      type: object
     Accounts.ShortUserInfo:
       properties:
         avatar_url:
@@ -70,11 +205,20 @@ components:
       - avatar_url
       - is_active
       type: object
-    Contacts.ContactType:
-      enum:
-      - person
-      - company
-      type: string
+    Tasks.TaskRelatedObjectsSpec:
+      description: Objects to associate with a task. Use `related.contacts` rather than the legacy `related_to` field.
+      properties:
+        contacts:
+          description: Contact IDs to associate with the task.
+          items:
+            type: string
+          type: array
+        deals:
+          description: Deal IDs to associate with the task.
+          items:
+            type: string
+          type: array
+      type: object
     Tasks.NewTaskSpecification:
       properties:
         assigned_to:
@@ -97,32 +241,6 @@ components:
           type: array
       required:
       - subject
-      type: object
-    Sequences.SequenceBriefInfo:
-      type: object
-      properties:
-        id:
-          type: string
-          description: unique id of the sequence
-        name:
-          type: string
-          description: name of the sequence
-      required:
-      - id
-      - name
-    Tasks.TaskRelatedObjectsSpec:
-      description: Objects to associate with a task. Use `related.contacts` rather than the legacy `related_to` field.
-      properties:
-        contacts:
-          description: Contact IDs to associate with the task.
-          items:
-            type: string
-          type: array
-        deals:
-          description: Deal IDs to associate with the task.
-          items:
-            type: string
-          type: array
       type: object
     Errors.NotFoundError:
       example:
@@ -148,6 +266,64 @@ components:
         mass export: 1
         private deals edit: 1
         private deals view: 1
+      type: object
+    Commons.Comment:
+      properties:
+        author:
+          $ref: '#/components/schemas/Accounts.User'
+        comment_id:
+          type: string
+        created:
+          type: string
+        text:
+          type: string
+        updated:
+          type: string
+      required:
+      - comment_id
+      - author
+      - text
+      - created
+      - updated
+      type: object
+    Errors.ValidationError:
+      description: request was malformed
+      example:
+        errors:
+          /:
+            message: 'missing required properties: ["calendar_id", "summary"]'
+          /base_occurrence/start_dtime:
+            message: Can't parse value 20000-01-01T01:01:00 as DATE-TIME
+        message: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]'
+        code: 245
+        human_readable_error: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]"'
+        extra:
+        - {}
+      properties:
+        errors:
+          description: 'mapping where keys are paths to problematic request attributes
+
+            and values are objects with single message attribute
+
+            '
+          type: object
+        message:
+          type: string
+        code:
+          type: integer
+          description: legacy that you <span style='color:red'>SHOULD NOT USE</span>
+        human_readable_error:
+          type: string
+          description: Error message with some changes making it easier to read.
+        extra:
+          type: array
+          items:
+            type: object
+          description: extra data that would be useful to provide
+      required:
+      - message
+      - errors
+      - human_readable_error
       type: object
     Tasks.Task:
       properties:
@@ -322,105 +498,6 @@ components:
       - employees_count
       - help_tour_data
       type: object
-    Commons.Comment:
-      properties:
-        author:
-          $ref: '#/components/schemas/Accounts.User'
-        comment_id:
-          type: string
-        created:
-          type: string
-        text:
-          type: string
-        updated:
-          type: string
-      required:
-      - comment_id
-      - author
-      - text
-      - created
-      - updated
-      type: object
-    Accounts.User:
-      properties:
-        account_type:
-          type: string
-        avatar_url:
-          type:
-          - string
-          - 'null'
-        company_id:
-          type: string
-        company_name:
-          type: string
-        created:
-          format: date-time
-          type: string
-        disabled:
-          type: boolean
-        email:
-          type: string
-        first_name:
-          type: object
-        is_company_owner:
-          type: boolean
-        is_pending:
-          description: true if that user has a pending invite
-          type: boolean
-        last_active:
-          description: timestamp when a user made his last API request to the platform
-          format: date-time
-          type: string
-        last_name:
-          type: object
-        name:
-          type: string
-        permissions:
-          $ref: '#/components/schemas/Settings.UserPermissions'
-        receive_newsletter:
-          type: boolean
-        has_password:
-          type: boolean
-          description: 'if this user has a password set (for some account types, like google accounts, the password is optional)
-
-            '
-        timezone:
-          type: string
-        under_gdpr:
-          type: boolean
-        user_id:
-          type: string
-        metadata:
-          $ref: '#/components/schemas/Legacy.UserMetadata'
-        email_verification_due:
-          type: boolean
-          description: 'A flag indicating whether the email verification is due. Almost all API call will result in 403 response
-
-            for users with unverified email.
-
-            '
-      required:
-      - under_gdpr
-      - user_id
-      - company_id
-      - company_name
-      - email
-      - name
-      - first_name
-      - last_name
-      - timezone
-      - disabled
-      - avatar_url
-      - created
-      - account_type
-      - is_company_owner
-      - receive_newsletter
-      - permissions
-      - last_active
-      - is_pending
-      - metadata
-      - has_password
-      type: object
     Contacts.ShortContact:
       properties:
         avatar_url:
@@ -472,88 +549,11 @@ components:
       - is_viewable
       - phones
       type: object
-    Errors.ValidationError:
-      description: request was malformed
-      example:
-        errors:
-          /:
-            message: 'missing required properties: ["calendar_id", "summary"]'
-          /base_occurrence/start_dtime:
-            message: Can't parse value 20000-01-01T01:01:00 as DATE-TIME
-        message: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]'
-        code: 245
-        human_readable_error: 'Invalid value {} (dict): missing required properties: []"calendar_id", "summary"]"'
-        extra:
-        - {}
-      properties:
-        errors:
-          description: 'mapping where keys are paths to problematic request attributes
-
-            and values are objects with single message attribute
-
-            '
-          type: object
-        message:
-          type: string
-        code:
-          type: integer
-          description: legacy that you <span style='color:red'>SHOULD NOT USE</span>
-        human_readable_error:
-          type: string
-          description: Error message with some changes making it easier to read.
-        extra:
-          type: array
-          items:
-            type: object
-          description: extra data that would be useful to provide
-      required:
-      - message
-      - errors
-      - human_readable_error
-      type: object
-    Tasks.TaskRelatedObjects:
-      properties:
-        contacts:
-          description: Contacts associated with the task.
-          items:
-            $ref: '#/components/schemas/Contacts.ShortContact'
-          type: array
-        deals:
-          description: legacy deal ids (always empty, kept for backwards compatibility)
-          items:
-            type: string
-          type: array
-        new_deals:
-          description: Deals associated with the task.
-          items:
-            $ref: '#/components/schemas/Deals.ShortSavedDeal'
-          type: array
-        sequence:
-          $ref: '#/components/schemas/Sequences.SequenceBriefInfo'
-          description: sequence that created this task, if applicable
-      required:
-      - contacts
-      - deals
-      - new_deals
-      - sequence
-      type: object
-    Deals.ShortSavedDeal:
-      properties:
-        deal_id:
-          description: unique id of a deal
-          type: string
-        is_editable:
-          description: Is this deal is editable to a user who retrieved it
-          type: boolean
-        is_viewable:
-          description: Is this deal is viewable to a user who retrieved it (True for private deals
-          type: boolean
-        name:
-          type: string
-        amount:
-          type:
-          - integer
-          - 'null'
+    Contacts.ContactType:
+      enum:
+      - person
+      - company
+      type: string
   securitySchemes:
     ApiKey:
       type: apiKey

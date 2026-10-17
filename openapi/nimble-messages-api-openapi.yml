@@ -90,172 +90,6 @@ paths:
                 $ref: '#/components/schemas/Messages.DraftMessageWithParticipants'
 components:
   schemas:
-    Accounts.ShortUserInfo:
-      properties:
-        avatar_url:
-          type: string
-        email:
-          type: string
-        is_active:
-          type: boolean
-        name:
-          type: string
-        user_id:
-          type: string
-      required:
-      - user_id
-      - name
-      - email
-      - avatar_url
-      - is_active
-      type: object
-    Contacts.ContactType:
-      enum:
-      - person
-      - company
-      type: string
-    Messages.MessageTrackingConfiguration:
-      description: 'tracking configuration
-
-        '
-      type: object
-      properties:
-        opens_tracking:
-          type: boolean
-          description: whether to track message opens
-        clicks_tracking:
-          type: boolean
-          description: whether to track link clicks in a message
-    Messages.MessageTemplateContentMode:
-      type: string
-      enum:
-      - standard
-      - builder
-      - custom_html
-    Messages.Attachment:
-      properties:
-        content_type:
-          description: MIME type of attachment
-          type: string
-        data_id:
-          description: Field data_id must be first retrieved using any sort of Uploads API.
-          type: string
-        file_size:
-          description: Field file_size is given in bytes.
-          type: integer
-        name:
-          type: string
-        url:
-          description: URL that can be used by a user to download attachment's content
-          type: string
-      required:
-      - data_id
-      - file_size
-      - content_type
-      - name
-      - url
-      type: object
-    Messages.MessagingAccountIdentifier:
-      properties:
-        account_type:
-          enum:
-          - email
-          - mass_mail
-          type: string
-        identifier:
-          description: 'Account identifier specific to account_type. For account_type: email it should be email address. '
-          type: string
-      required:
-      - account_type
-      - identifier
-      type: object
-    Messages.MessagingAccount:
-      allOf:
-      - $ref: '#/components/schemas/Messages.MessagingAccountIdentifier'
-      properties:
-        avatar_url:
-          type:
-          - string
-          - 'null'
-        comment:
-          description: 'Field comment holds some short freeform text that shows a role of this messaging account to user.
-
-            Examples are ''home'', ''work'', ''assistant'', etc.
-
-            '
-          type: string
-        company:
-          description: Name of account's company, might be null.
-          type: object
-        company_id:
-          description: ID of account's company in Nimble db, might be null.
-          type:
-          - object
-          - 'null'
-        contact_id:
-          description: Nimble contact id associated with this account
-          type:
-          - string
-          - 'null'
-          format: ObjectId
-        user_id:
-          description: Nimble user id (user themself or team member) associated with this account
-          type:
-          - string
-          - 'null'
-          format: ObjectId
-        name:
-          description: Field name is for readable name of a user. Sometimes identifier value is not suitable to be shown to user, for example when it's numerical user id (as for Facebook). Can be null if full name is unknown.
-          oneOf:
-          - type: number
-          - type: string
-      type: object
-    Messages.DraftMessageWithParticipants:
-      type: object
-      properties:
-        draft_id:
-          type: string
-        specification:
-          $ref: '#/components/schemas/Messages.IncompleteMessageSpecification'
-        updated:
-          description: last timestamp of when the draft was updated
-          type: string
-        creator:
-          $ref: '#/components/schemas/Accounts.ShortUserInfo'
-        recipients:
-          description: matched recipients
-          items:
-            $ref: '#/components/schemas/Messages.MappedMessagingAccount'
-          type: array
-        cc:
-          description: matched cc addresses
-          items:
-            $ref: '#/components/schemas/Messages.MappedMessagingAccount'
-          type: array
-        bcc:
-          description: matched bcc addresses
-          items:
-            $ref: '#/components/schemas/Messages.MappedMessagingAccount'
-          type: array
-        sender:
-          $ref: '#/components/schemas/Messages.MappedMessagingAccount'
-    Messages.MappedMessagingAccount:
-      description: scheduled message participant (sender, cc, bcc, recipient) matched to a Nimble contact if available
-      type: object
-      properties:
-        email:
-          type: string
-        contact:
-          description: matched Nimble contact if available
-          oneOf:
-          - $ref: '#/components/schemas/Contacts.ShortContact'
-        user:
-          description: matched Nimble user if available
-          type:
-          - object
-          - 'null'
-          oneOf:
-          - $ref: '#/components/schemas/Accounts.ShortUserInfo'
     Messages.IncompleteMessageSpecification:
       description: '"incomplete" message specification. All fields are optional.
 
@@ -337,6 +171,119 @@ components:
           - 'null'
           format: ObjectId
           description: credential to send this message (if null, credential will be determined by sender)
+    Messages.Attachment:
+      properties:
+        content_type:
+          description: MIME type of attachment
+          type: string
+        data_id:
+          description: Field data_id must be first retrieved using any sort of Uploads API.
+          type: string
+        file_size:
+          description: Field file_size is given in bytes.
+          type: integer
+        name:
+          type: string
+        url:
+          description: URL that can be used by a user to download attachment's content
+          type: string
+      required:
+      - data_id
+      - file_size
+      - content_type
+      - name
+      - url
+      type: object
+    Messages.MessagingAccountIdentifier:
+      properties:
+        account_type:
+          enum:
+          - email
+          - mass_mail
+          type: string
+        identifier:
+          description: 'Account identifier specific to account_type. For account_type: email it should be email address. '
+          type: string
+      required:
+      - account_type
+      - identifier
+      type: object
+    Messages.MessageTrackingConfiguration:
+      description: 'tracking configuration
+
+        '
+      type: object
+      properties:
+        opens_tracking:
+          type: boolean
+          description: whether to track message opens
+        clicks_tracking:
+          type: boolean
+          description: whether to track link clicks in a message
+    Messages.DraftMessageWithParticipants:
+      type: object
+      properties:
+        draft_id:
+          type: string
+        specification:
+          $ref: '#/components/schemas/Messages.IncompleteMessageSpecification'
+        updated:
+          description: last timestamp of when the draft was updated
+          type: string
+        creator:
+          $ref: '#/components/schemas/Accounts.ShortUserInfo'
+        recipients:
+          description: matched recipients
+          items:
+            $ref: '#/components/schemas/Messages.MappedMessagingAccount'
+          type: array
+        cc:
+          description: matched cc addresses
+          items:
+            $ref: '#/components/schemas/Messages.MappedMessagingAccount'
+          type: array
+        bcc:
+          description: matched bcc addresses
+          items:
+            $ref: '#/components/schemas/Messages.MappedMessagingAccount'
+          type: array
+        sender:
+          $ref: '#/components/schemas/Messages.MappedMessagingAccount'
+    Accounts.ShortUserInfo:
+      properties:
+        avatar_url:
+          type: string
+        email:
+          type: string
+        is_active:
+          type: boolean
+        name:
+          type: string
+        user_id:
+          type: string
+      required:
+      - user_id
+      - name
+      - email
+      - avatar_url
+      - is_active
+      type: object
+    Messages.WatchRepliesRequest:
+      description: 'pass this object if we want to watch for the replies to this message
+
+        '
+      type: object
+      properties:
+        expiration_interval:
+          type:
+          - number
+          - 'null'
+          description: expiration interval in seconds
+        expiration_tstamp:
+          type:
+          - string
+          - 'null'
+          description: some concrete datetime when the thread watcher expires
     Contacts.ShortContact:
       properties:
         avatar_url:
@@ -388,22 +335,75 @@ components:
       - is_viewable
       - phones
       type: object
-    Messages.WatchRepliesRequest:
-      description: 'pass this object if we want to watch for the replies to this message
-
-        '
-      type: object
+    Messages.MessageTemplateContentMode:
+      type: string
+      enum:
+      - standard
+      - builder
+      - custom_html
+    Messages.MessagingAccount:
+      allOf:
+      - $ref: '#/components/schemas/Messages.MessagingAccountIdentifier'
       properties:
-        expiration_interval:
-          type:
-          - number
-          - 'null'
-          description: expiration interval in seconds
-        expiration_tstamp:
+        avatar_url:
           type:
           - string
           - 'null'
-          description: some concrete datetime when the thread watcher expires
+        comment:
+          description: 'Field comment holds some short freeform text that shows a role of this messaging account to user.
+
+            Examples are ''home'', ''work'', ''assistant'', etc.
+
+            '
+          type: string
+        company:
+          description: Name of account's company, might be null.
+          type: object
+        company_id:
+          description: ID of account's company in Nimble db, might be null.
+          type:
+          - object
+          - 'null'
+        contact_id:
+          description: Nimble contact id associated with this account
+          type:
+          - string
+          - 'null'
+          format: ObjectId
+        user_id:
+          description: Nimble user id (user themself or team member) associated with this account
+          type:
+          - string
+          - 'null'
+          format: ObjectId
+        name:
+          description: Field name is for readable name of a user. Sometimes identifier value is not suitable to be shown to user, for example when it's numerical user id (as for Facebook). Can be null if full name is unknown.
+          oneOf:
+          - type: number
+          - type: string
+      type: object
+    Contacts.ContactType:
+      enum:
+      - person
+      - company
+      type: string
+    Messages.MappedMessagingAccount:
+      description: scheduled message participant (sender, cc, bcc, recipient) matched to a Nimble contact if available
+      type: object
+      properties:
+        email:
+          type: string
+        contact:
+          description: matched Nimble contact if available
+          oneOf:
+          - $ref: '#/components/schemas/Contacts.ShortContact'
+        user:
+          description: matched Nimble user if available
+          type:
+          - object
+          - 'null'
+          oneOf:
+          - $ref: '#/components/schemas/Accounts.ShortUserInfo'
   securitySchemes:
     ApiKey:
       type: apiKey
