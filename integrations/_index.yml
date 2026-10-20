@@ -15,6 +15,7 @@
   evidence: https://zapier.com/apps/mailchimp/integrations/nimble/394/create-nimble-contacts-from-mailchimp-subscribers
   template: https://zapier.com/apps/mailchimp/integrations/nimble/394/create-nimble-contacts-from-mailchimp-subscribers
   source: template
+  relationship: ipaas-bridge
   status: pending-generation
   arazzo: null
 - slug: nimble-turn-mailchimp-unsubscribes-into-nimble-tasks
@@ -29,6 +30,7 @@
   evidence: https://zapier.com/apps/mailchimp/integrations/nimble/2979/turn-mailchimp-unsubscribes-into-nimble-tasks
   template: https://zapier.com/apps/mailchimp/integrations/nimble/2979/turn-mailchimp-unsubscribes-into-nimble-tasks
   source: template
+  relationship: ipaas-bridge
   status: pending-generation
   arazzo: null
 - slug: nimble-create-nimble-contacts-from-gravity-form-submissions
@@ -43,6 +45,7 @@
   evidence: https://zapier.com/apps/gravity-forms/integrations/nimble/2921/create-nimble-contacts-from-gravity-form-submissions
   template: https://zapier.com/apps/gravity-forms/integrations/nimble/2921/create-nimble-contacts-from-gravity-form-submissions
   source: template
+  relationship: ipaas-bridge
   status: pending-generation
   arazzo: null
 - slug: nimble-add-new-nimble-contacts-to-mailchimp
@@ -57,6 +60,7 @@
   evidence: https://zapier.com/apps/mailchimp/integrations/nimble/2922/add-new-nimble-contacts-to-mailchimp
   template: https://zapier.com/apps/mailchimp/integrations/nimble/2922/add-new-nimble-contacts-to-mailchimp
   source: template
+  relationship: ipaas-bridge
   status: pending-generation
   arazzo: null
 - slug: nimble-turn-your-new-ninja-form-submissions-into-nimble-contacts
@@ -70,6 +74,7 @@
   evidence: https://zapier.com/apps/nimble/integrations/ninjaforms/2974/turn-your-new-ninja-form-submissions-into-nimble-contacts
   template: https://zapier.com/apps/nimble/integrations/ninjaforms/2974/turn-your-new-ninja-form-submissions-into-nimble-contacts
   source: template
+  relationship: ipaas-bridge
   status: pending-partner-spec
   arazzo: null
 - slug: nimble-create-nimble-contacts-from-wufoo
@@ -84,333 +89,8 @@
   evidence: https://zapier.com/apps/nimble/integrations/wufoo/235/create-nimble-contacts-from-wufoo
   template: https://zapier.com/apps/nimble/integrations/wufoo/235/create-nimble-contacts-from-wufoo
   source: template
+  relationship: ipaas-bridge
   status: pending-generation
-  arazzo: null
-- slug: nimble-linkedin
-  label: LinkedIn
-  partner: linkedin
-  partner_name: LinkedIn
-  category: Microsoft
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/linkedin
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-activecampaign
-  label: ActiveCampaign
-  partner: activecampaign
-  partner_name: ActiveCampaign
-  category: Marketing Automation
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/activecampaign
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-quickbooks-online
-  label: QuickBooks Online
-  partner_name: QuickBooks Online
-  category: Accounting
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/quickbooks
-  source: edge
-  status: pending-partner-spec
-  arazzo: null
-- slug: nimble-aweber
-  label: AWeber
-  partner: aweber
-  partner_name: AWeber
-  category: Email Newsletters
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/aweber
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-typeform
-  label: Typeform
-  partner: typeform
-  partner_name: Typeform
-  category: Forms & Surveys
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/typeform
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-hubspot
-  label: HubSpot
-  partner: hubspot
-  partner_name: HubSpot
-  category: Marketing Automation
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/hubspot
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-asana
-  label: Asana
-  partner: asana
-  partner_name: Asana
-  category: Project Management
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/asana
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-intercom
-  label: Intercom
-  partner: intercom
-  partner_name: Intercom
-  category: Customer Support
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/intercom
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-google-tasks
-  label: Google Tasks
-  partner: google-tasks
-  partner_name: Google Tasks
-  category: Google
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/google-tasks
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-seamless
-  label: Seamless
-  partner: seamless-ai
-  partner_name: Seamless
-  category: AI Sales Tools
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/seamless
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-calendly
-  label: Calendly
-  partner: calendly
-  partner_name: Calendly
-  category: Scheduling & Booking
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/calendly
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-eventbrite
-  label: Eventbrite
-  partner: eventbrite
-  partner_name: Eventbrite
-  category: Event Management
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/eventbrite
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-google-ads
-  label: Google Ads
-  partner: google-ads
-  partner_name: Google Ads
-  category: Ads & Conversion
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/google-ads
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-wpforms
-  label: WPForms
-  partner_name: WPForms
-  category: Forms & Surveys
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/wpforms
-  source: edge
-  status: pending-partner-spec
-  arazzo: null
-- slug: nimble-zendesk-sell
-  label: Zendesk Sell
-  partner: zendesk-sell
-  partner_name: Zendesk Sell
-  category: CRM (Customer Relationship Management)
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/zendesk-sell
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-acuity-scheduling
-  label: Acuity Scheduling
-  partner: acuity-scheduling
-  partner_name: Acuity Scheduling
-  category: Scheduling & Booking
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/acuity-scheduling
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-kartra
-  label: Kartra
-  partner: kartra
-  partner_name: Kartra
-  category: Marketing Automation
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/kartra
-  source: edge
-  status: pending-partner-spec
-  arazzo: null
-- slug: nimble-magento
-  label: Magento
-  partner: magento
-  partner_name: Magento
-  category: eCommerce
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/magento
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-constant-contact
-  label: Constant Contact
-  partner: constant-contact
-  partner_name: Constant Contact
-  category: Email Newsletters
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/constant-contact
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-oncehub
-  label: OnceHub
-  partner_name: OnceHub
-  category: Scheduling & Booking
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/oncehub
-  source: edge
-  status: pending-partner-spec
-  arazzo: null
-- slug: nimble-freshdesk
-  label: Freshdesk
-  partner: freshdesk
-  partner_name: Freshdesk
-  category: Customer Support
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/freshdesk
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-google-forms
-  label: Google Forms
-  partner: google-forms
-  partner_name: Google Forms
-  category: Forms & Surveys
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/google-forms
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-apollo
-  label: Apollo
-  partner: apollo
-  partner_name: Apollo
-  category: Sales & CRM
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/apollo
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-dropbox
-  label: Dropbox
-  partner: dropbox
-  partner_name: Dropbox
-  category: File Management & Storage
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/dropbox
-  source: edge
-  status: pending-generation
-  arazzo: null
-- slug: nimble-autopilot-journeys
-  label: Autopilot Journeys
-  partner_name: Autopilot Journeys
-  category: Marketing Automation
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/autopilot
-  source: edge
-  status: pending-partner-spec
-  arazzo: null
-- slug: nimble-mailshake
-  label: Mailshake
-  partner_name: Mailshake
-  category: Drip Emails
-  type: marketplace
-  marketplace: zapier
-  channel: ipaas-usage
-  evidence: https://zapier.com/apps/nimble/integrations/mailshake
-  source: edge
-  status: pending-partner-spec
-  arazzo: null
-- slug: nimble-mcp-registry
-  label: MCP Registry
-  partner: mcp
-  partner_name: MCP Registry
-  type: register
-  channel: standard-directory
-  evidence: https://registry.modelcontextprotocol.io/v0/servers?search=com.nimble.app
-  source: edge
-  relationship: standard-participant
-  contract_reference:
-    register: registry.modelcontextprotocol.io
-    spec_file: null
-    role: mcp-server-listing
-    registered_name: com.nimble.app/nimble-crm
-    register_id: com.nimble.app/nimble-crm
-    detected_by: sweep-agent-tools.py
-    detected: '2026-10-15'
-  status: not-a-workflow
   arazzo: null
 - slug: nimble-zapier
   label: Zapier
@@ -449,4 +129,357 @@
   source: edge
   relationship: platform-app
   status: not-a-workflow
+  arazzo: null
+- slug: nimble-mcp-registry
+  label: MCP Registry
+  partner: mcp
+  partner_name: MCP Registry
+  type: register
+  channel: standard-directory
+  evidence: https://registry.modelcontextprotocol.io/v0/servers?search=com.nimble.app
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: registry.modelcontextprotocol.io
+    spec_file: null
+    role: mcp-server-listing
+    registered_name: com.nimble.app/nimble-crm
+    register_id: com.nimble.app/nimble-crm
+    detected_by: sweep-agent-tools.py
+    detected: '2026-10-19'
+  status: not-a-workflow
+  arazzo: null
+- slug: nimble-linkedin
+  label: LinkedIn
+  partner: linkedin-ads
+  partner_name: LinkedIn
+  category: Microsoft
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/linkedin
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-activecampaign
+  label: ActiveCampaign
+  partner: activecampaign
+  partner_name: ActiveCampaign
+  category: Marketing Automation
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/activecampaign
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-quickbooks-online
+  label: QuickBooks Online
+  partner: quickbooks
+  partner_name: QuickBooks Online
+  category: Accounting
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/quickbooks
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-partner-spec
+  arazzo: null
+- slug: nimble-aweber
+  label: AWeber
+  partner: aweber
+  partner_name: AWeber
+  category: Email Newsletters
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/aweber
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-typeform
+  label: Typeform
+  partner: typeform
+  partner_name: Typeform
+  category: Forms & Surveys
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/typeform
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-hubspot
+  label: HubSpot
+  partner: hubspot
+  partner_name: HubSpot
+  category: Marketing Automation
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/hubspot
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-asana
+  label: Asana
+  partner: asana
+  partner_name: Asana
+  category: Project Management
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/asana
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-intercom
+  label: Intercom
+  partner: intercom
+  partner_name: Intercom
+  category: Customer Support
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/intercom
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-google-tasks
+  label: Google Tasks
+  partner: google-tasks
+  partner_name: Google Tasks
+  category: Google
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/google-tasks
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-seamless
+  label: Seamless
+  partner: seamless-ai
+  partner_name: Seamless
+  category: AI Sales Tools
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/seamless
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-calendly
+  label: Calendly
+  partner: calendly
+  partner_name: Calendly
+  category: Scheduling & Booking
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/calendly
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-eventbrite
+  label: Eventbrite
+  partner: eventbrite
+  partner_name: Eventbrite
+  category: Event Management
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/eventbrite
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-google-ads
+  label: Google Ads
+  partner: google-ads
+  partner_name: Google Ads
+  category: Ads & Conversion
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/google-ads
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-wpforms
+  label: WPForms
+  partner_name: WPForms
+  category: Forms & Surveys
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/wpforms
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-partner-spec
+  arazzo: null
+- slug: nimble-zendesk-sell
+  label: Zendesk Sell
+  partner: zendesk-sell
+  partner_name: Zendesk Sell
+  category: CRM (Customer Relationship Management)
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/zendesk-sell
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-acuity-scheduling
+  label: Acuity Scheduling
+  partner: acuity-scheduling
+  partner_name: Acuity Scheduling
+  category: Scheduling & Booking
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/acuity-scheduling
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-kartra
+  label: Kartra
+  partner: kartra
+  partner_name: Kartra
+  category: Marketing Automation
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/kartra
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-partner-spec
+  arazzo: null
+- slug: nimble-magento
+  label: Magento
+  partner: magento
+  partner_name: Magento
+  category: eCommerce
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/magento
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-constant-contact
+  label: Constant Contact
+  partner: constant-contact
+  partner_name: Constant Contact
+  category: Email Newsletters
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/constant-contact
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-oncehub
+  label: OnceHub
+  partner_name: OnceHub
+  category: Scheduling & Booking
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/oncehub
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-partner-spec
+  arazzo: null
+- slug: nimble-freshdesk
+  label: Freshdesk
+  partner: freshdesk
+  partner_name: Freshdesk
+  category: Customer Support
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/freshdesk
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-google-forms
+  label: Google Forms
+  partner: google-forms
+  partner_name: Google Forms
+  category: Forms & Surveys
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/google-forms
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-apollo
+  label: Apollo
+  partner: apollo-io
+  partner_name: Apollo
+  category: Sales & CRM
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/apollo
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-dropbox
+  label: Dropbox
+  partner: dropbox
+  partner_name: Dropbox
+  category: File Management & Storage
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/dropbox
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-generation
+  arazzo: null
+- slug: nimble-autopilot-journeys
+  label: Autopilot Journeys
+  partner_name: Autopilot Journeys
+  category: Marketing Automation
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/autopilot
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-partner-spec
+  arazzo: null
+- slug: nimble-mailshake
+  label: Mailshake
+  partner_name: Mailshake
+  category: Drip Emails
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/nimble/integrations/mailshake
+  source: edge
+  relationship: ipaas-bridge
+  status: pending-partner-spec
   arazzo: null
