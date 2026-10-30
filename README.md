@@ -1,4 +1,4 @@
-# Nimble (nimble)
+# Nimble
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,64 +64,167 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Nimble is a relationship-focused CRM that unifies contacts, communications, social profiles, calendar, and email into a single workspace for small businesses and sales teams. The platform enriches contact records with social and business data, supports pipeline management, group messaging, and workflow automation across Microsoft 365 and Google Workspace. Nimble's REST API exposes contacts, deals, activities, and tasks via Bearer token authentication for building integrations and syncing CRM data.
+Nimble is a relationship-focused CRM that unifies contacts, communications, social profiles, calendar and email into a single shared record for small businesses and whole-company teams. Founded in 2010 by GoldMine co-founder Jon Ferrara and headquartered in Santa Monica, California, the platform combines contact management, sales pipelines, email marketing, sequences, web forms, web chat and workflow automation, and enriches contact profiles automatically from email, calendar, social and web data. Nimble publishes a full OpenAPI 3.0.0 contract for its REST API — 89 operations over contacts, user-definable contact fields, contact and deal pipelines, deals, leads, activities, tasks and messages — authenticated with an account API key or OAuth 2.0 authorization_code.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/nimble/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/nimble/refs/heads/main/apis.yml)
+**Areas:** CRM · Sales · Contact Management · Relationship Management · Marketing Automation · Pipeline Management · Small Business · Email Marketing · Sales Automation · Lead Management
 
-## Scope
+## Nimble on APIs.io
 
-- **Type:** Index
+Everything profiled for Nimble is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/nimble/](https://apis.io/providers/nimble/)** — or go straight to one of the APIs or properties below.
 
-## Tags
+### APIs (12)
 
-- CRM
-- Sales
-- Contact Management
-- Relationship Management
-- Marketing Automation
-- Pipeline Management
+- [Nimble Activities API](https://apis.io/apis/nimble/nimble-activities-api/) — Account activity stream — list activities across contacts and deals, walked with a next_tstamp timestamp cursor. 1 operation(s).
+- [Nimble Contacts API](https://apis.io/apis/nimble/nimble-contacts-api/) — Contact records — the Nimble platform root object. Create, read, update and delete person and company contacts, search them with keyword or the advanced…
+- [Nimble Contacts Fields API](https://apis.io/apis/nimble/nimble-contacts-fields-api/) — User-definable contact field schema — fields, choice option lists, field groups and tabs, plus primary-value marks on multi-valued fields. The field set…
+- [Nimble Contacts Pipelines API](https://apis.io/apis/nimble/nimble-contacts-pipelines-api/) — Contact pipelines — the lead-progression surface for contacts, distinct from deal pipelines. 8 operation(s).
+- [Nimble Deals API](https://apis.io/apis/nimble/nimble-deals-api/) — Deals on the /api/v2 surface — create, update and delete deals, attach notes and files, manage deal tags, list overdue activity and read the won-last-month…
+- [Nimble Deals Fields API](https://apis.io/apis/nimble/nimble-deals-fields-api/) — Deal field surface — the user deal field list and the column catalogue backing Nimble's deal listing views. 2 operation(s).
+- [Nimble Deals Pipelines API](https://apis.io/apis/nimble/nimble-deals-pipelines-api/) — Deal pipelines and stages — create and reshape pipelines, add and archive stages, set lost reasons, and read the deal book grouped by stage or by owner. 13…
+- [Nimble Deals Pipelines Fields API](https://apis.io/apis/nimble/nimble-deals-pipelines-fields-api/) — Per-pipeline deal custom fields — fields, choice lists and field groups scoped to a single deal pipeline. 9 operation(s).
+- [Nimble Leads API](https://apis.io/apis/nimble/nimble-leads-api/) — Lead transitions through contact pipelines — move a lead between stages, mark it exited successfully or unsuccessfully, and undo a transition. 7 operation(s).
+- [Nimble Messages API](https://apis.io/apis/nimble/nimble-messages-api/) — Message drafts — list and create draft messages. 2 operation(s).
+- [Nimble Tasks API](https://apis.io/apis/nimble/nimble-tasks-api/) — Task creation against contacts. 1 operation(s).
+- [Nimble Users API](https://apis.io/apis/nimble/nimble-users-api/) — The authenticated user record — the credential-verification endpoint. 1 operation(s).
 
-## Timestamps
+### Published properties
 
-- **Created:** 2026-05-11
-- **Modified:** 2026-05-11
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## APIs
+#### MCP servers (1)
 
-### Nimble REST API
+Model Context Protocol servers that expose the API to agents.
 
-REST API for managing contacts, companies, deals, activities, tasks, and notes in Nimble CRM. Authentication uses an API key passed as a Bearer token in the Authorization header.
+- [nimble](https://apis.io/servers/nimble/nimble/)
 
-- **Human URL:** [https://www.nimble.com/developers/docs/](https://www.nimble.com/developers/docs/)
-- **Base URL:** `https://api.nimble.com/api/v1`
+#### Agentic access (1)
 
-#### Tags
+Which operations an agent can call, which act, and which need a human in the loop.
 
-- CRM
-- Contacts
-- Deals
-- Activities
-- Tasks
+- [Nimble Agentic Access](https://apis.io/agentic-access/nimble/nimble-agentic-access/)
 
-#### Properties
+#### Collections (8)
 
-- [Documentation](https://www.nimble.com/developers/docs/)
-- [Developer  Portal](https://www.nimble.com/developers/)
-- [Authentication](https://nimble.readthedocs.io/en/latest/authentication.html)
-- [Postman Collection](collections/nimble.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/nimble.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+Postman and Open Collection request collections.
 
-## Common Properties
+- [Nimble CRM API](https://apis.io/collections/nimble/open-nimble/)
+- [Nimble CRM Contacts API](https://apis.io/collections/nimble/open-nimble-contacts-api/)
+- [Nimble CRM Contacts Deals API](https://apis.io/collections/nimble/open-nimble-deals-api/)
+- [Nimble CRM Contacts Fields API](https://apis.io/collections/nimble/open-nimble-fields-api/)
+- [Nimble CRM Contacts Messages API](https://apis.io/collections/nimble/open-nimble-messages-api/)
+- [Nimble CRM Contacts Notes API](https://apis.io/collections/nimble/open-nimble-notes-api/)
+- [Nimble CRM Contacts Pipelines API](https://apis.io/collections/nimble/open-nimble-pipelines-api/)
+- [Nimble CRM Contacts Users API](https://apis.io/collections/nimble/open-nimble-users-api/)
 
-- [LinkedIn](https://www.linkedin.com/company/nimblecrm)
+#### Overlays (12)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Nimble Activities Overlay](https://apis.io/overlays/nimble/nimble-activities-overlay/)
+- [Nimble Contacts Fields Overlay](https://apis.io/overlays/nimble/nimble-contacts-fields-overlay/)
+- [Nimble Contacts Overlay](https://apis.io/overlays/nimble/nimble-contacts-overlay/)
+- [Nimble Contacts Pipelines Overlay](https://apis.io/overlays/nimble/nimble-contacts-pipelines-overlay/)
+- [Nimble Deals Fields Overlay](https://apis.io/overlays/nimble/nimble-deals-fields-overlay/)
+- [Nimble Deals Overlay](https://apis.io/overlays/nimble/nimble-deals-overlay/)
+- [Nimble Deals Pipelines Fields Overlay](https://apis.io/overlays/nimble/nimble-deals-pipelines-fields-overlay/)
+- [Nimble Deals Pipelines Overlay](https://apis.io/overlays/nimble/nimble-deals-pipelines-overlay/)
+- [Nimble Leads Overlay](https://apis.io/overlays/nimble/nimble-leads-overlay/)
+- [Nimble Messages Overlay](https://apis.io/overlays/nimble/nimble-messages-overlay/)
+- [Nimble Tasks Overlay](https://apis.io/overlays/nimble/nimble-tasks-overlay/)
+- [Nimble Users Overlay](https://apis.io/overlays/nimble/nimble-users-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Nimble Authentication](https://apis.io/security/nimble/nimble-authentication/)
+- [Nimble Domain Security](https://apis.io/security/nimble/nimble-domain-security/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Nimble Scopes](https://apis.io/scopes/nimble/nimble-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Nimble Plans Pricing](https://apis.io/plans/nimble/nimble-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Nimble Rate Limits](https://apis.io/rate-limits/nimble/nimble-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
 - [Website](https://www.nimble.com)
 - [Documentation](https://www.nimble.com/developers/docs/)
+- [Getting started](https://support.nimble.com/en/articles/502755-nimble-api-access)
+- [API reference](https://www.nimble.com/developers/docs/)
 - [Pricing](https://www.nimble.com/pricing/)
-- [Sign Up](https://app.nimble.com/signup)
-- [Support](https://support.nimble.com)
-- [Developer  Portal](https://www.nimble.com/developers/)
+- [Sign up](https://www.nimble.com/register/business_trial/)
+- [Support](https://support.nimble.com/en/)
+- [Blog](https://www.nimble.com/blog/)
+- [Terms of service](https://www.nimble.com/company/terms-of-service/)
+- [Privacy policy](https://www.nimble.com/company/privacy/)
+- [Status](https://status.nimble.com/)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 50.1** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 52.1 |
+| Contract governance | 4.5 |
+| Operational transparency | 15.8 |
+| Developer ergonomics | 58.9 |
+| Access clarity | 65.8 |
+
+**Agent readiness 32.1** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | documented (partial credit) |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 34.3** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/nimble/](https://apis.io/providers/nimble/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Nimble: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/nimble/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
